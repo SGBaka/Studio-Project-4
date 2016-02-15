@@ -1,13 +1,25 @@
 #include "Servant.h"
 
-cServant::cServant() : route(""), routeCounter(0), route2(""), routeCounter2(0), route3(""), routeCounter3(0), patrolPath(CPathing()), direction(0, -1, 0), angle(0), turnTo(0, 0, 0),
-rotating(false), rotCounter(0), hasSetDest(false), hasFood(false), gotoServe(false), gotoNavi(false), gotoRoam(false), hasSetDest2(false)
+cServant::cServant()
+: route("")
+, routeCounter(0)
+, route2("")
+, routeCounter2(0)
+, route3("")
+, routeCounter3(0)
+, patrolPath(CPathing())
+, direction(0, -1, 0)
+, angle(0)
+, turnTo(0, 0, 0)
+, rotating(false)
+, rotCounter(0)
+, hasSetDest(false)
+, gotoServe(false)
+, gotoNavi(false)
+, gotoRoam(false)
+, hasSetDest2(false)
 {
 	name = "Servant";
-	f_HungerMeter = 100.f;
-	f_PeeMeter = 100.f;
-	b_NeedtoEat = false;
-	b_NeedtoPee = false;
 
 	n = MainScene::GetInstance()->ML_map.map_width;
 	m = MainScene::GetInstance()->ML_map.map_height;
@@ -51,14 +63,13 @@ void cServant::Update(double dt)
 	}
 
 
-	if ((gotoNavi || gotoRoam) && routeCounter == 0 && routeCounter2 == 0 && routeCounter3 == 0 && !hasFood)
+	if ((gotoNavi || gotoRoam) && routeCounter == 0 && routeCounter2 == 0 && routeCounter3 == 0)
 	{
 		if (gotoNavi)
 		{
 			route3 = "";
 			routeCounter3 = 0;
 			hasSetDest2 = false;
-			AI_STATE = AS_NAVI;
 		}
 		
 		else if (gotoRoam)
@@ -99,28 +110,9 @@ void cServant::Update(double dt)
 			route2 = "";
 			routeCounter2 = 0;
 			hasSetDest = false;
-			AI_STATE = AS_SERVE;
 		}
 
 		break;
-
-	case cServant::AS_SERVE:
-
-		break;
-
-	case cServant::AS_BATHROOM:
-
-		break;
-
-	case cServant::AS_EATING:
-		break;
-
-	case cServant::AS_BOMB:
-		break;
-
-	case cServant::AS_NAVI:
-		break;
-
 	default:
 		break;
 	}
@@ -420,21 +412,6 @@ std::string cServant::getState(void)
 	{
 	case cServant::AS_ROAM:
 		return "Roam";
-		break;
-	case cServant::AS_SERVE:
-		return "Serve";
-		break;
-	case cServant::AS_BATHROOM:
-		return "Bathroom";
-		break;
-	case cServant::AS_BOMB:
-		return "Bomb";
-		break;
-	case cServant::AS_EATING:
-		return "Eat";
-		break;
-	case cServant::AS_NAVI:
-		return "Navigation (Role Change)";
 		break;
 	default:
 		return "Undefined";

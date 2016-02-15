@@ -16,18 +16,10 @@ public:
 	enum AI_STATES
 	{
 		AS_ROAM,
-		AS_SERVE,
-		AS_BATHROOM,
-		AS_EATING,
-		AS_BOMB,
-		AS_NAVI,
 	};
 
 	enum AI_MESSAGES
 	{
-		AM_PILOT_FOOD,
-		AM_COPILOT_FOOD,
-		AM_COPILOT_TAKEOVER,
 		AM_TOTAL_MSG,
 	};
 
@@ -61,7 +53,7 @@ private:
 
 	int n, m;
 
-	bool hasSetDest, hasSetDest2, hasFood;
+	bool hasSetDest, hasSetDest2;
 
 	bool gotoServe, gotoNavi, gotoRoam;
 };

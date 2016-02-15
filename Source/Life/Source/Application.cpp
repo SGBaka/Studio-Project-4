@@ -25,13 +25,13 @@ GLFWwindow* m_window;
 unsigned char FPS = 120; // FPS of this game
 unsigned int frameTime = 1000 / FPS; // time for each frame
 bool frameLimiter = false;
-bool FULL_SCREEN = false;
+bool FULL_SCREEN = true;
 const char* WIN_NAME = "Project 42";
-const int initWidth = 1600;
-const int initHeight = 900;
+const int initWidth = 1920;
+const int initHeight = 1280;
 int Application::i_WINDOW_WIDTH = initWidth;
 int Application::i_WINDOW_HEIGHT = initHeight;
-static bool togglefullscreen = false;
+static bool togglefullscreen = true;
 static bool loaddone = false;
 static bool b_quitProgram = false;
 
