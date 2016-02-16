@@ -24,6 +24,8 @@ public:
 
 	bool checkCollision(int mode);
 
+	int roundUp(int numToRound, int multiple);
+
 	vector<bool> moveToDir;
 
 	float moveSpeed;

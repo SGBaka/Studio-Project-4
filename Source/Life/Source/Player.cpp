@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player() 
-: moveSpeed(4)
+: moveSpeed(250)
 {
 	for (int i = 0; i < 4; ++i)
 	{
@@ -125,16 +125,28 @@ void Player::movePlayer(int mode, double dt)
 	switch (mode)
 	{
 	case 0:
-		position.x -= moveSpeed;
+		position.x -= roundUp(moveSpeed * dt, 2);
 		break;
 	case 1:
-		position.x += moveSpeed;
+		position.x += roundUp(moveSpeed * dt, 2);
 		break;
 	case 2:
-		position.y += moveSpeed;
+		position.y += roundUp(moveSpeed * dt, 2);
 		break;
 	case 3:
-		position.y -= moveSpeed;
+		position.y -= roundUp(moveSpeed * dt, 2);
 		break;
 	}
+}
+
+int Player::roundUp(int numToRound, int multiple)
+{
+	if (multiple == 0)
+		return numToRound;
+
+	int remainder = numToRound % multiple;
+	if (remainder == 0)
+		return numToRound;
+
+	return numToRound + multiple - remainder;
 }
