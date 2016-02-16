@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player() 
-: moveSpeed(300)
+: moveSpeed(50)
 {
 	for (int i = 0; i < 4; ++i)
 	{
