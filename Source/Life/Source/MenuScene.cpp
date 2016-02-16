@@ -102,7 +102,8 @@ void MenuScene::Init()
 		us_control[i] = 0;
 	}
 
-	SH_1.init("GameData//GameData.GameData");
+	LuaScript scriptSH("GameData");
+	SH_1.init(scriptSH.getGameData("gamedata.gamedata").c_str());
 	assignsave(false);
 
 	InitMeshList();
@@ -134,8 +135,9 @@ void MenuScene::Init()
 		break;
 	}
 
-	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound("GameData//Sounds//UI//click.wav");
-	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound("GameData//Sounds//UI//click2.wav");
+	LuaScript sound("Sound");
+	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.ui.button_click").c_str());
+	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.ui.button_click2").c_str());
 }
 
 /******************************************************************************/
@@ -200,30 +202,32 @@ void MenuScene::InitMeshList()
 	{
 		P_meshArray[i] = NULL;
 	}
+	
+	LuaScript script("tga");
 
 	P_meshArray[E_GEO_AXES] = MeshBuilder::GenerateAxes("AXES", 10000, 10000, 10000);
 
 	//Text
 	P_meshArray[E_GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	P_meshArray[E_GEO_TEXT]->textureID[0] = LoadTGA("GameData//Image//font//inputm.tga", false, false);
+	P_meshArray[E_GEO_TEXT]->textureID[0] = LoadTGA(script.getGameData("image.font.mainmenu").c_str(), false, false);
 
 	P_meshArray[E_GEO_BACKGROUND] = MeshBuilder::GenerateQuad("Background", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
-	P_meshArray[E_GEO_BACKGROUND]->textureID[0] = LoadTGA("GameData//Image//UI//Background.tga", true, false);
+	P_meshArray[E_GEO_BACKGROUND]->textureID[0] = LoadTGA(script.getGameData("image.background.background").c_str(), true, false);
 
 	P_meshArray[E_GEO_SPLASH] = MeshBuilder::GenerateQuad("Splash", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
-	P_meshArray[E_GEO_SPLASH]->textureID[0] = LoadTGA("GameData//Image//UI//Logo.tga", true);
+	P_meshArray[E_GEO_SPLASH]->textureID[0] = LoadTGA(script.getGameData("image.background.splash").c_str(), true);
 
 	P_meshArray[E_GEO_LOADING_BACKGROUND] = MeshBuilder::GenerateQuad("Loading Screen", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
-	P_meshArray[E_GEO_LOADING_BACKGROUND]->textureID[0] = LoadTGA("GameData//Image//UI//Loading.tga", true);
+	P_meshArray[E_GEO_LOADING_BACKGROUND]->textureID[0] = LoadTGA(script.getGameData("image.background.load").c_str(), true);
 
 	P_meshArray[E_GEO_BUTTON_BACK] = MeshBuilder::GenerateQuad("Button Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_BUTTON_BACK]->textureID[0] = LoadTGA("GameData//Image//UI//Arrow//back.tga", true);
+	P_meshArray[E_GEO_BUTTON_BACK]->textureID[0] = LoadTGA(script.getGameData("image.button.back").c_str(), true);
 
 	P_meshArray[E_GEO_BUTTON_LEFT] = MeshBuilder::GenerateQuad("Button Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_BUTTON_LEFT]->textureID[0] = LoadTGA("GameData//Image//UI//Arrow//left.tga", true);
+	P_meshArray[E_GEO_BUTTON_LEFT]->textureID[0] = LoadTGA(script.getGameData("image.button.left").c_str(), true);
 
 	P_meshArray[E_GEO_BUTTON_RIGHT] = MeshBuilder::GenerateQuad("Button Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_BUTTON_RIGHT]->textureID[0] = LoadTGA("GameData//Image//UI//Arrow//right.tga", true);
+	P_meshArray[E_GEO_BUTTON_RIGHT]->textureID[0] = LoadTGA(script.getGameData("image.button.right").c_str(), true);
 }
 
 /******************************************************************************/
@@ -262,12 +266,12 @@ void MenuScene::InitMenu(void)
 		S_MB->gamestate = E_M_MAIN;
 		v_textButtonList.push_back(S_MB);
 
-		/*S_MB = new TextButton;
-		S_MB->pos.Set(Application::GetWindowWidth()*0.22f - 4.f, Application::GetWindowHeight()*0.5f - 60.f, 0.1f);
-		S_MB->scale.Set(25, 25, 25);
-		S_MB->text = "Options";
-		S_MB->gamestate = E_M_MAIN;
-		v_textButtonList.push_back(S_MB);*/
+		//S_MB = new TextButton;
+		//S_MB->pos.Set(Application::GetWindowWidth()*0.22f - 4.f, Application::GetWindowHeight()*0.5f - 60.f, 0.1f);
+		//S_MB->scale.Set(25, 25, 25);
+		//S_MB->text = "Options";
+		//S_MB->gamestate = E_M_MAIN;
+		//v_textButtonList.push_back(S_MB);
 
 		S_MB = new TextButton;
 		S_MB->pos.Set(Application::GetWindowWidth()*0.22f - 4.f, Application::GetWindowHeight()*0.5f - 60.f, 0.1f);
@@ -815,8 +819,11 @@ Initializes all the Shaders & Lights
 /******************************************************************************/
 void MenuScene::InitShadersAndLights(void)
 {
+	LuaScript scriptshader("Shader");
+	
 	//Load vertex and fragment shaders
-	u_m_programID = LoadShaders("GameData//Shader//comg.vertexshader", "GameData//Shader//comg.fragmentshader");
+	//u_m_programID = LoadShaders("GameData//Shader//comg.vertexshader", "GameData//Shader//comg.fragmentshader");
+	u_m_programID = LoadShaders(scriptshader.getGameData("shader.shader.vertex").c_str(), scriptshader.getGameData("shader.shader.fragment").c_str());
 	glUseProgram(u_m_programID);
 
 	// Get a handle for our "colorTexture" uniform

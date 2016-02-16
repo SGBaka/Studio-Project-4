@@ -91,6 +91,9 @@
     <Filter Include="Source Files\Player">
       <UniqueIdentifier>{12be7daf-376e-4f4f-abd3-e29d2fe60a59}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Lua">
+      <UniqueIdentifier>{80bd2425-e7d7-4d4d-ac2f-4874f4ed1ee3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -194,6 +197,9 @@
     </ClCompile>
     <ClCompile Include="Source\Player.cpp">
       <Filter>Source Files\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LuaScript.cpp">
+      <Filter>Header Files\Lua</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -313,6 +319,9 @@
     </ClInclude>
     <ClInclude Include="Source\Player.h">
       <Filter>Header Files\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LuaScript.h">
+      <Filter>Header Files\Lua</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

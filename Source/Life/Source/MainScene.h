@@ -25,6 +25,7 @@ Main menu for the openGL framework
 #include "CharacterObject.h"
 #include "SpecialObject.h"
 #include "maploader.h"
+#include "LuaScript.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -153,6 +154,7 @@ public:
 
 	Vector3 calTilePos(Vector3 Worldpos);
 	Vector3 calWorldPos(Vector3 Tilepos);
+
 private:
 	// Static Constants
 	/******************************************************************************/

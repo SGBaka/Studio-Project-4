@@ -77,8 +77,9 @@ void MainScene::Init()
 
 	f_fov_target = f_fov;
 
-	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound("GameData//Sounds//UI//click.wav");
-	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound("GameData//Sounds//UI//click2.wav");
+	LuaScript sound("Sound");
+	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.ui.button_click").c_str());
+	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.ui.button_click2").c_str());
 
 	LEVEL = 1;
 	InitSimulation();
@@ -136,29 +137,31 @@ void MainScene::InitMeshList()
 		P_meshArray[i] = NULL;
 	}
 
+	LuaScript script("tga");
+
 	P_meshArray[E_GEO_AXES] = MeshBuilder::GenerateAxes("AXES", 10000, 10000, 10000);
 	//Text
 	P_meshArray[E_GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	P_meshArray[E_GEO_TEXT]->textureID[0] = LoadTGA("GameData//Image//font//inputm.tga", false, false);
+	P_meshArray[E_GEO_TEXT]->textureID[0] = LoadTGA(script.getGameData("image.font.mainmenu").c_str(), false, false);
 
 	P_meshArray[E_GEO_BUTTON_LEFT] = MeshBuilder::GenerateQuad("Button Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_BUTTON_LEFT]->textureID[0] = LoadTGA("GameData//Image//UI//Arrow//left.tga", true);
+	P_meshArray[E_GEO_BUTTON_LEFT]->textureID[0] = LoadTGA(script.getGameData("image.button.left").c_str(), true);
 
 	P_meshArray[E_GEO_BUTTON_RIGHT] = MeshBuilder::GenerateQuad("Button Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_BUTTON_RIGHT]->textureID[0] = LoadTGA("GameData//Image//UI//Arrow//right.tga", true);
+	P_meshArray[E_GEO_BUTTON_RIGHT]->textureID[0] = LoadTGA(script.getGameData("image.button.right").c_str(), true);
 
 	P_meshArray[E_GEO_BUTTON_REFRESH] = MeshBuilder::GenerateQuad("Button Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_BUTTON_REFRESH]->textureID[0] = LoadTGA("GameData//Image//UI//Arrow//refresh.tga", true);
+	P_meshArray[E_GEO_BUTTON_REFRESH]->textureID[0] = LoadTGA(script.getGameData("image.button.refresh").c_str(), true);
 
 	//World
 	P_meshArray[E_GEO_FLOOR_1] = MeshBuilder::GenerateQuad("Floor Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_FLOOR_1]->textureID[0] = LoadTGA("GameData//Image//Floor_1.tga", true);
+	P_meshArray[E_GEO_FLOOR_1]->textureID[0] = LoadTGA(script.getGameData("image.tile.floor").c_str(), true);
 
 	P_meshArray[E_GEO_WALL_1] = MeshBuilder::GenerateQuad("Wall Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_WALL_1]->textureID[0] = LoadTGA("GameData//Image//Wall_1.tga", true);
+	P_meshArray[E_GEO_WALL_1]->textureID[0] = LoadTGA(script.getGameData("image.tile.wall").c_str(), true);
 
 	P_meshArray[E_GEO_PLAYER] = MeshBuilder::GenerateQuad("AI Servant", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_PLAYER]->textureID[0] = LoadTGA("GameData//Image//Servant.tga", true);
+	P_meshArray[E_GEO_PLAYER]->textureID[0] = LoadTGA(script.getGameData("image.tile.servant").c_str(), true);
 }
 
 /******************************************************************************/
@@ -252,10 +255,9 @@ the level to load
 bool MainScene::InitLevel(int level)
 {
 	std::cout << "\nLoading map...\n";
-	std::string MAPLOC = "GameData//Maps//";
-	MAPLOC += std::to_string(static_cast<unsigned long long>(level));
-	MAPLOC += ".csv";
-	if (!ML_map.loadMap(MAPLOC))
+	LuaScript scriptlevel("maps");
+	std::string luaName = "map.map.level_" + std::to_string(static_cast<unsigned long long>(level));
+	if (!ML_map.loadMap(scriptlevel.getGameData(luaName.c_str())))
 	{
 		std::cout << "!!!ERROR!!! Unable to load map\n";
 		return false;
@@ -645,8 +647,10 @@ Initializes all the Shaders & Lights
 /******************************************************************************/
 void MainScene::InitShadersAndLights(void)
 {
+	LuaScript scriptshader("Shader");
+
 	//Load vertex and fragment shaders
-	u_m_programID = LoadShaders("GameData//Shader//comg.vertexshader", "GameData//Shader//comg.fragmentshader");
+	u_m_programID = LoadShaders(scriptshader.getGameData("shader.shader.vertex").c_str(), scriptshader.getGameData("shader.shader.fragment").c_str());
 	glUseProgram(u_m_programID);
 
 	// Get a handle for our "colorTexture" uniform
