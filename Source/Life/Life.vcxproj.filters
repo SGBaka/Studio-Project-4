@@ -85,6 +85,12 @@
     <Filter Include="Source Files\AI">
       <UniqueIdentifier>{b279eb40-ce50-41eb-8fc1-265c48d14b65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Player">
+      <UniqueIdentifier>{65a233fd-0439-4d52-b8a2-b7bc378a35f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Player">
+      <UniqueIdentifier>{12be7daf-376e-4f4f-abd3-e29d2fe60a59}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -185,6 +191,9 @@
     </ClCompile>
     <ClCompile Include="Source\SpecialObject.cpp">
       <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player.cpp">
+      <Filter>Source Files\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -301,6 +310,9 @@
     </ClInclude>
     <ClInclude Include="Source\SpecialObject.h">
       <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player.h">
+      <Filter>Header Files\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

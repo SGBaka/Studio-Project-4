@@ -58,14 +58,7 @@ public:
 		//World
 		E_GEO_FLOOR_1,
 		E_GEO_WALL_1,
-		E_GEO_AI_SERVANT,
-		E_GEO_AI_COPILOT,
-		E_GEO_AI_PILOT,
-		E_GEO_FLIGHT_STICK,
-		E_GEO_TOILET,
-		E_GEO_FOOD,
-		E_GEO_ITEM_1,
-
+		E_GEO_PLAYER,
 		E_GEO_TOTAL,
 	};
 private:

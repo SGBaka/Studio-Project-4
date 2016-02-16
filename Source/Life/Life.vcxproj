@@ -111,6 +111,7 @@
     <ClCompile Include="Source\Node.cpp" />
     <ClCompile Include="Source\particle.cpp" />
     <ClCompile Include="Source\Pathing.cpp" />
+    <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\SaveHandler.cpp" />
     <ClCompile Include="Source\SceneManager.cpp" />
     <ClCompile Include="Source\Servant.cpp" />
@@ -131,6 +132,7 @@
     <ClInclude Include="Source\Node.h" />
     <ClInclude Include="Source\Pathfinding.h" />
     <ClInclude Include="Source\Pathing.h" />
+    <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\SceneManager.h" />
     <ClInclude Include="Source\Servant.h" />
     <ClInclude Include="Source\SoundEngine.h" />

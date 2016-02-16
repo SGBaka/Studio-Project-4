@@ -25,6 +25,7 @@ Main menu for the openGL framework
 #include <sstream>
 #include "Pathfinding.h"
 #include "Servant.h"
+#include "Player.h"
 //#include <vld.h>
 
 MainScene* MainScene::Instance = NULL;
@@ -156,27 +157,8 @@ void MainScene::InitMeshList()
 	P_meshArray[E_GEO_WALL_1] = MeshBuilder::GenerateQuad("Wall Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_WALL_1]->textureID[0] = LoadTGA("GameData//Image//Wall_1.tga", true);
 
-	P_meshArray[E_GEO_FLIGHT_STICK] = MeshBuilder::GenerateQuad("Flight Stick", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_FLIGHT_STICK]->textureID[0] = LoadTGA("GameData//Image//FlightStick.tga", true);
-
-	P_meshArray[E_GEO_TOILET] = MeshBuilder::GenerateQuad("Toilet", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_TOILET]->textureID[0] = LoadTGA("GameData//Image//toilet.tga", true);
-
-	P_meshArray[E_GEO_FOOD] = MeshBuilder::GenerateQuad("Food area", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_FOOD]->textureID[0] = LoadTGA("GameData//Image//food.tga", true);
-	
-
-	P_meshArray[E_GEO_AI_SERVANT] = MeshBuilder::GenerateQuad("AI Servant", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_AI_SERVANT]->textureID[0] = LoadTGA("GameData//Image//Servant.tga", true);
-
-	P_meshArray[E_GEO_AI_PILOT] = MeshBuilder::GenerateQuad("AI Pilot", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_AI_PILOT]->textureID[0] = LoadTGA("GameData//Image//Pilot.tga", true);
-
-	P_meshArray[E_GEO_AI_COPILOT] = MeshBuilder::GenerateQuad("AI CoPilot", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_AI_COPILOT]->textureID[0] = LoadTGA("GameData//Image//CoPilot.tga", true);
-
-	P_meshArray[E_GEO_ITEM_1] = MeshBuilder::GenerateQuad("AI Thief", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_ITEM_1]->textureID[0] = LoadTGA("GameData//Image//obj.tga", true);
+	P_meshArray[E_GEO_PLAYER] = MeshBuilder::GenerateQuad("AI Servant", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_PLAYER]->textureID[0] = LoadTGA("GameData//Image//Servant.tga", true);
 }
 
 /******************************************************************************/
@@ -309,16 +291,16 @@ bool MainScene::InitLevel(int level)
 
 				GO_List.push_back(GO);
 
-				if (ML_map.map_data[y][x] == "S")
+				if (ML_map.map_data[y][x] == "P")
 				{
-					cServant *Servant;
-					Servant = new cServant;
-					Servant->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0));
-					Servant->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
-					Servant->mesh = P_meshArray[E_GEO_AI_SERVANT];
-					Servant->currTile.Set(x, y);
+					Player *player;
+					player = new Player;
+					player->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0));
+					player->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
+					player->mesh = P_meshArray[E_GEO_PLAYER];
+					player->currTile.Set(x, y);
 
-					GO_List.push_back(Servant);
+					GO_List.push_back(player);
 				}
 
 				continue;
@@ -526,6 +508,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	}
 
 	//-----------------------------------------------------------------------------
+
 	for (unsigned i = 0; i < GO_List.size(); ++i)
 	{
 		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[i]);
@@ -533,44 +516,8 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		if (CO != NULL)
 		{
 			CO->Update(dt);
-
-			if (!CO->b_NeedtoEat)
-			{
-				if (CO->f_HungerMeter > 0)
-				{
-					CO->f_HungerMeter -= Math::RandFloatMinMax(0, 3) * static_cast<float>(dt);
-				}
-				else if (rand() % 2)
-				{
-					CO->b_NeedtoEat = true;
-				}
-
-				else
-				{
-					CO->f_HungerMeter = 100;
-				}
-			}
-
-			if (!CO->b_NeedtoPee)
-			{
-				if (CO->f_PeeMeter > 0)
-				{
-					CO->f_PeeMeter -= Math::RandFloatMinMax(0, Math::RandFloatMinMax(0, 5)) * static_cast<float>(dt);
-				}
-				else if (rand() % 2)
-				{
-					CO->b_NeedtoPee = true;
-				}
-
-				else
-				{
-					CO->f_PeeMeter = 100;
-				}
-			}
 		}
 	}
-
-	//-----------------------------------------------------------------------------
 
 	static bool isEscPressed = false;
 	if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
