@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player() 
-: moveSpeed(250)
+: moveSpeed(300)
 {
 	for (int i = 0; i < 4; ++i)
 	{
@@ -125,28 +125,41 @@ void Player::movePlayer(int mode, double dt)
 	switch (mode)
 	{
 	case 0:
-		position.x -= roundUp(moveSpeed * dt, 2);
+		position.x -= roundUp(moveSpeed * dt, 20);
 		break;
 	case 1:
-		position.x += roundUp(moveSpeed * dt, 2);
+		position.x += roundUp(moveSpeed * dt, 20);
 		break;
 	case 2:
-		position.y += roundUp(moveSpeed * dt, 2);
+		position.y += roundUp(moveSpeed * dt, 20);
 		break;
 	case 3:
-		position.y -= roundUp(moveSpeed * dt, 2);
+		position.y -= roundUp(moveSpeed * dt, 20);
 		break;
 	}
+
+	cout << roundUp(moveSpeed * dt, 2) << endl;
 }
 
-int Player::roundUp(int numToRound, int multiple)
+int Player::roundUp(int numToRound, int factor)
 {
-	if (multiple == 0)
-		return numToRound;
+	vector<int> factors;
 
-	int remainder = numToRound % multiple;
-	if (remainder == 0)
-		return numToRound;
+	for (int i = 2; i <= factor; ++i)
+	{
+		while (factor % i == 0)
+		{
+			factor /= i;
+			factors.push_back(i);
+		}
+	}
 
-	return numToRound + multiple - remainder;
+	for (int i = 0; i < factors.size(); ++i)
+	{
+		if (numToRound <= factors[i])
+		{
+			numToRound = factors[i];
+			return numToRound;
+		}
+	}
 }
