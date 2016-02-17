@@ -38,8 +38,6 @@ public:
 
 private:
 	int mapWidth, mapHeight;
-
-	float test;
 };
 
 

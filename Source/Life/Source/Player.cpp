@@ -4,7 +4,6 @@ Player::Player()
 : moveSpeed(300)
 , sonarCooldown(2)
 , sonarTimer(sonarCooldown)
-, test(1)
 {
 	for (int i = 0; i < 4; ++i)
 	{
