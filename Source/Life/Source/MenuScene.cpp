@@ -34,7 +34,7 @@ Default Constructor
 /******************************************************************************/
 MenuScene::MenuScene() : ui_NUM_LIGHTS(1)
 {
-	
+
 }
 
 /******************************************************************************/
@@ -128,6 +128,9 @@ void MenuScene::Init()
 	case MenuScene::MT_MAIN_MENU_SPLASH:
 		MENU_STATE = E_M_SPLASH;
 		break;
+	case MenuScene::MT_OPTION_MENU:
+		MENU_STATE = E_M_OPTIONS;
+		break;
 	case MenuScene::MT_PAUSE_MENU:
 		MENU_STATE = E_M_OPTIONS;
 		break;
@@ -136,8 +139,8 @@ void MenuScene::Init()
 	}
 
 	LuaScript sound("Sound");
-	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.ui.button_click").c_str());
-	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.ui.button_click2").c_str());
+	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
+	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
 }
 
 /******************************************************************************/
@@ -202,7 +205,7 @@ void MenuScene::InitMeshList()
 	{
 		P_meshArray[i] = NULL;
 	}
-	
+
 	LuaScript script("tga");
 
 	P_meshArray[E_GEO_AXES] = MeshBuilder::GenerateAxes("AXES", 10000, 10000, 10000);
@@ -250,35 +253,57 @@ void MenuScene::InitMenu(void)
 	v3_Menupos[E_M_OPTIONS_CONTROLS_SETCONTROL].Set(4000, 4000, 0);
 
 	transcomplete = false;
+	LuaScript buttonScript("button");
+
+
+
+
 
 	switch (CUR_MENU)
 	{
 	case MenuScene::MT_PAUSE_MENU:
 		break;
+	case MenuScene::MT_OPTION_MENU:
+	{
+									  int total_option = buttonScript.get<int>("option.total_option");
+									  for (int i = 1; i <= total_option; i++)
+									  {
+										  std::string buttonName = "option.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
+
+										  int total_button = buttonScript.get<int>(buttonName + "total_button");
+										  for (int j = 1; j <= total_button; j++)
+										  {
+											  buttonName = "option.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".button_" + std::to_string(static_cast<unsigned long long>(j)) + ".";
+
+											  S_MB = new TextButton;
+											  S_MB->pos.Set(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+											  S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
+											  S_MB->text = buttonScript.get<std::string>(buttonName + "text");
+											  S_MB->gamestate = E_M_OPTIONS;
+											  v_textButtonList.push_back(S_MB);
+										  }
+									  }
+	}
+		break;
 	case MenuScene::MT_MAIN_MENU:
 	case MenuScene::MT_MAIN_MENU_SPLASH:
 	default:
-		//MAIN--------------------------------------------------------
-		S_MB = new TextButton;
-		S_MB->pos.Set(Application::GetWindowWidth()*0.22f, Application::GetWindowHeight()*0.5f, 0.1f);
-		S_MB->scale.Set(35, 35, 35);
-		S_MB->text = "Start Program";
-		S_MB->gamestate = E_M_MAIN;
-		v_textButtonList.push_back(S_MB);
+	{
+			   //MAIN--------------------------------------------------------
+			   int total_button = buttonScript.get<int>("main.total_button");
+			   for (int i = 1; i <= total_button; i++)
+			   {
+				   std::string buttonName = "main.button_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 
-		//S_MB = new TextButton;
-		//S_MB->pos.Set(Application::GetWindowWidth()*0.22f - 4.f, Application::GetWindowHeight()*0.5f - 60.f, 0.1f);
-		//S_MB->scale.Set(25, 25, 25);
-		//S_MB->text = "Options";
-		//S_MB->gamestate = E_M_MAIN;
-		//v_textButtonList.push_back(S_MB);
+				   S_MB = new TextButton;
+				   S_MB->pos.Set(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+				   S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
+				   S_MB->text = buttonScript.get<std::string>(buttonName + "text");
+				   S_MB->gamestate = E_M_MAIN;
+				   v_textButtonList.push_back(S_MB);
+			   }
 
-		S_MB = new TextButton;
-		S_MB->pos.Set(Application::GetWindowWidth()*0.22f - 4.f, Application::GetWindowHeight()*0.5f - 60.f, 0.1f);
-		S_MB->scale.Set(25, 25, 25);
-		S_MB->text = "Quit";
-		S_MB->gamestate = E_M_MAIN;
-		v_textButtonList.push_back(S_MB);
+	}
 		break;
 	}
 }
@@ -442,46 +467,66 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 	{
 	case MenuScene::MT_PAUSE_MENU:
 		break;
+
+	case MenuScene::MT_OPTION_MENU:
+		if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
+		{
+			bLButtonState = true;
+		}
+		if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
+		{
+			bLButtonState = false;
+		}
+		break;
 	case MenuScene::MT_MAIN_MENU:
 	case MenuScene::MT_MAIN_MENU_SPLASH:
 	default:
 		switch (MENU_STATE)
+	case E_M_LOADING:
 		{
-		case E_M_LOADING:
-		{
-			SceneManager::Instance()->replace(SceneManager::S_GAME);
-			break;
-		}
-		case E_M_MAIN:
-		{
-			if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
 			{
-				bLButtonState = true;
+				SceneManager::Instance()->replace(SceneManager::S_GAME);
+				break;
 			}
-			if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
-			{
-				bLButtonState = false;
+	case E_M_MAIN:
+	{
+					 if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
+					 {
+						 bLButtonState = true;
+					 }
+					 if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
+					 {
+						 bLButtonState = false;
+						 LuaScript nameScript("button");
 
-				if (FetchTB("Start Program")->active)
-				{
-					PREV_STATE = MENU_STATE;
-					MENU_STATE = E_M_LOADING;
-				}
-				else if (FetchTB("Quit")->active)
-				{
-					Application::closeApplication();
-				}
-			}
-			break;
-		}
-		case E_M_SPLASH:
-		{
-			if (f_timer > 2.f || Application::IsKeyPressed(VK_LBUTTON))
-			{
-				MENU_STATE = E_M_MAIN;
-			}
-			break;
-		}
+						 if (FetchTB(nameScript.get<std::string>("main.button_1.text"))->active)
+						 {
+							 PREV_STATE = MENU_STATE;
+							 MENU_STATE = E_M_LOADING;
+						 }
+						 else if (FetchTB(nameScript.get<std::string>("main.button_2.text"))->active)
+						 {
+							 PREV_STATE = MENU_STATE;
+							 MENU_STATE = E_M_OPTIONS;
+							 setMenu(MT_OPTION_MENU);
+							 InitMenu();
+							 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
+						 }
+						 else if (FetchTB(nameScript.get<std::string>("main.button_3.text"))->active)
+						 {
+							 Application::closeApplication();
+						 }
+					 }
+					 break;
+	}
+	case E_M_SPLASH:
+	{
+					   if (f_timer > 2.f || Application::IsKeyPressed(VK_LBUTTON))
+					   {
+						   MENU_STATE = E_M_MAIN;
+					   }
+					   break;
+	}
 		}
 		break;
 	}
@@ -508,87 +553,61 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 								SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
 								PREV_STATE = MENU_STATE;
 								MENU_STATE = E_M_MAIN;
+								setMenu(MT_MAIN_MENU_SPLASH);
+								InitMenu();
 							}
 						}
 
+						static bool mLButtonPressed = false;
+						if (!mLButtonPressed && Application::IsKeyPressed(VK_LBUTTON))
+						{
+							mLButtonPressed = true;
+						}
+						if (mLButtonPressed && !Application::IsKeyPressed(VK_LBUTTON))
+						{
+							mLButtonPressed = false;
+							LuaScript nameScript("button");
 
-		if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
-		{
-			bLButtonState = true;
-		}
-		if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
-		{
-			bLButtonState = false;
+							if (FetchTB(nameScript.get<std::string>("option.option_1.button_1.text"))->active)
+							{
+								std::cout << "Easy" << std::endl;
+							}
+							else if (FetchTB(nameScript.get<std::string>("option.option_1.button_2.text"))->active)
+							{
+								std::cout << "Medium" << std::endl;
+							}
+							else if (FetchTB(nameScript.get<std::string>("option.option_1.button_3.text"))->active)
+							{
+								std::cout << "Hard" << std::endl;
+							}
 
-			if (FetchTB("Controls")->active)
-			{
-				SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
-				PREV_STATE = MENU_STATE;
-				MENU_STATE = E_M_OPTIONS_CONTROLS;
-			}
-			else if (FetchTB("Toggle Fullscreen")->active)
-			{
-				SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
-				Application::fullscreentoggle();
-			}
-			else if (FetchBUTTON(BI_BACK)->active)
-			{
-				if (CUR_MENU == MT_PAUSE_MENU)
-				{
-					assignsave(true);
-					SceneManager::Instance()->pop();
-				}
-				else
-				{
-					SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
-					PREV_STATE = MENU_STATE;
-					MENU_STATE = E_M_MAIN;
-				}				
-			}
-			else if (FetchBUTTON(BI_FOV_INCREASE)->active)
-			{
-				if (f_fov_target < 120)
-				{
-					f_fov_target += 5;
-				}
-			}
-			else if (FetchBUTTON(BI_FOV_DECREASE)->active)
-			{
-				if (f_fov_target > 45)
-				{
-					f_fov_target -= 5;
-				}
-			}
-			else if (FetchBUTTON(BI_SENSITIVITY_INCREASE)->active)
-			{
-				if (f_mouseSensitivity < 50)
-				{
-					f_mouseSensitivity += 0.1f;
-				}
-			}
-			else if (FetchBUTTON(BI_SENSITIVITY_DECREASE)->active)
-			{
-				if (f_mouseSensitivity > 0.1)
-				{
-					f_mouseSensitivity -= 0.1f;
-				}
-			}
-			else if (FetchBUTTON(BI_GRAPHICS_INCREASE)->active)
-			{
-				if (Graphics > GRA_MAX)
-				{
-					--Graphics;
-				}
-			}
-			else if (FetchBUTTON(BI_GRAPHICS_DECREASE)->active)
-			{
-				if (Graphics < GRA_SHIT)
-				{
-					++Graphics;
-				}
-			}
-		}
-		break;
+							/*if (FetchTB("Controls")->active)
+							{
+								SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
+								PREV_STATE = MENU_STATE;
+								MENU_STATE = E_M_OPTIONS_CONTROLS;
+							}
+							else if (FetchTB("Toggle Fullscreen")->active)
+							{
+								SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
+								Application::fullscreentoggle();
+							}
+							else if (FetchBUTTON(BI_BACK)->active)
+							{
+								if (CUR_MENU == MT_PAUSE_MENU)
+								{
+									assignsave(true);
+									SceneManager::Instance()->pop();
+								}
+								else
+								{
+									SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
+									PREV_STATE = MENU_STATE;
+									MENU_STATE = E_M_MAIN;
+								}
+							}*/
+						}
+						break;
 	}
 	case E_M_OPTIONS_CONTROLS:
 	{
@@ -605,66 +624,66 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 									 MENU_STATE = E_M_OPTIONS;
 								 }
 
-		if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
-		{
-			bLButtonState = true;
-		}
-		if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
-		{
-			bLButtonState = false;
+								 if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
+								 {
+									 bLButtonState = true;
+								 }
+								 if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
+								 {
+									 bLButtonState = false;
 
-			if (FetchBUTTON(BI_BACK)->active)
-			{
-				SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
-				PREV_STATE = MENU_STATE;
-				MENU_STATE = E_M_OPTIONS;
-			}
+									 if (FetchBUTTON(BI_BACK)->active)
+									 {
+										 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
+										 PREV_STATE = MENU_STATE;
+										 MENU_STATE = E_M_OPTIONS;
+									 }
 
-			for (unsigned i = 0; i < E_CTRL_TOTAL; ++i)
-			{
-				if (FetchTB(us_controlCB[i].text) != NULL)
-				{
-					if (FetchTB(us_controlCB[i].text)->active)
-					{
-						SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
-						us_ControlChange = &us_control[i];
-						i_ControlChange = i;
-						PREV_STATE = MENU_STATE;
-						MENU_STATE = E_M_OPTIONS_CONTROLS_SETCONTROL;
-					}
-				}
-			}
-		}
-		break;
+									 for (unsigned i = 0; i < E_CTRL_TOTAL; ++i)
+									 {
+										 if (FetchTB(us_controlCB[i].text) != NULL)
+										 {
+											 if (FetchTB(us_controlCB[i].text)->active)
+											 {
+												 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
+												 us_ControlChange = &us_control[i];
+												 i_ControlChange = i;
+												 PREV_STATE = MENU_STATE;
+												 MENU_STATE = E_M_OPTIONS_CONTROLS_SETCONTROL;
+											 }
+										 }
+									 }
+								 }
+								 break;
 	}
 	case E_M_OPTIONS_CONTROLS_SETCONTROL:
 	{
-		for (size_t i = 1; i < VK_OEM_CLEAR; ++i)
-		{
-			if ((GetAsyncKeyState(i) & 0x8000))
-			{
-				if (i == 12)
-				{
-					continue;
-				}
+											for (size_t i = 1; i < VK_OEM_CLEAR; ++i)
+											{
+												if ((GetAsyncKeyState(i) & 0x8000))
+												{
+													if (i == 12)
+													{
+														continue;
+													}
 
-				if (i == 160 || i == 161)
-				{
-					i = 16;
-				}
-				if (i == 162 || i == 163)
-				{
-					i = 17;
-				}
+													if (i == 160 || i == 161)
+													{
+														i = 16;
+													}
+													if (i == 162 || i == 163)
+													{
+														i = 17;
+													}
 
-				*us_ControlChange = i;
-				UpdateControlSettingLabels(i, i_ControlChange);
-				MENU_STATE = E_M_OPTIONS_CONTROLS;
-				SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
-				break;
-			}
-		}
-		break;
+													*us_ControlChange = i;
+													UpdateControlSettingLabels(i, i_ControlChange);
+													MENU_STATE = E_M_OPTIONS_CONTROLS;
+													SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
+													break;
+												}
+											}
+											break;
 	}
 	}
 }
@@ -820,10 +839,10 @@ Initializes all the Shaders & Lights
 void MenuScene::InitShadersAndLights(void)
 {
 	LuaScript scriptshader("Shader");
-	
+
 	//Load vertex and fragment shaders
 	//u_m_programID = LoadShaders("GameData//Shader//comg.vertexshader", "GameData//Shader//comg.fragmentshader");
-	u_m_programID = LoadShaders(scriptshader.getGameData("shader.shader.vertex").c_str(), scriptshader.getGameData("shader.shader.fragment").c_str());
+	u_m_programID = LoadShaders(scriptshader.getGameData("shader.vertex").c_str(), scriptshader.getGameData("shader.fragment").c_str());
 	glUseProgram(u_m_programID);
 
 	// Get a handle for our "colorTexture" uniform
@@ -1251,127 +1270,142 @@ void MenuScene::Render()
 	{
 	case E_M_LOADING:
 	{
-		modelStack.PushMatrix();
-		modelStack.LoadIdentity();
-		modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
-		RenderMeshOnScreen(P_meshArray[E_GEO_LOADING_BACKGROUND]);
-		modelStack.PopMatrix();
-		break;
+						modelStack.PushMatrix();
+						modelStack.LoadIdentity();
+						modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+						RenderMeshOnScreen(P_meshArray[E_GEO_LOADING_BACKGROUND]);
+						modelStack.PopMatrix();
+						break;
 	}
 	case E_M_SPLASH:
 	{
-		modelStack.PushMatrix();
-		modelStack.LoadIdentity();
-		modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
-		RenderMeshOnScreen(P_meshArray[E_GEO_SPLASH]);
-		modelStack.PopMatrix();
-		break;
+					   modelStack.PushMatrix();
+					   modelStack.LoadIdentity();
+					   modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+					   RenderMeshOnScreen(P_meshArray[E_GEO_SPLASH]);
+					   modelStack.PopMatrix();
+					   break;
 	}
 	case E_M_MAIN:
 	{
 
-		break;
+					 break;
 	}
 	case E_M_OPTIONS:
 	{
-		modelStack.PushMatrix();
-		modelStack.Translate(v3_Menupos[MENU_STATE]);
-		//FOV
-		modelStack.PushMatrix();
-		modelStack.Translate(FetchBUTTON(BI_FOV_DECREASE)->Position);
-		modelStack.Translate(-100, 0, 0);
-		modelStack.Scale(25, 25, 25);
-		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], "FOV", UIColor);
-		modelStack.PopMatrix();
+						LuaScript buttonScript("button");
 
-		modelStack.PushMatrix();
-		modelStack.Translate(FetchBUTTON(BI_FOV_INCREASE)->Position);
-		modelStack.Translate(50, 0, 0);
-		modelStack.Scale(25, 25, 25);
+						int total_option = buttonScript.get<int>("option.total_option");
+						for (int i = 1; i <= total_option; i++)
+						{
+							std::string buttonName = "option.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 
-		std::stringstream ss;
-		ss << f_fov_target;
-		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
-		modelStack.PopMatrix();
-		//Mouse
-		modelStack.PushMatrix();
-		modelStack.Translate(FetchBUTTON(BI_SENSITIVITY_DECREASE)->Position);
-		modelStack.Translate(-150, 0, 0);
-		modelStack.Scale(25, 25, 25);
-		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], "Mouse", UIColor);
-		modelStack.PopMatrix();
+							modelStack.PushMatrix();
+							modelStack.Translate(v3_Menupos[MENU_STATE]);
+							modelStack.Translate(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+							modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
+							RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
+							modelStack.PopMatrix();
+						}
 
-		modelStack.PushMatrix();
-		modelStack.Translate(FetchBUTTON(BI_SENSITIVITY_INCREASE)->Position);
-		modelStack.Translate(50, 0, 0);
-		modelStack.Scale(25, 25, 25);
+						//modelStack.PushMatrix();
+						//modelStack.Translate(v3_Menupos[MENU_STATE]);
+						////FOV
+						//modelStack.PushMatrix();
+						//modelStack.Translate(FetchBUTTON(BI_FOV_DECREASE)->Position);
+						//modelStack.Translate(-100, 0, 0);
+						//modelStack.Scale(25, 25, 25);
+						//RenderTextOnScreen(P_meshArray[E_GEO_TEXT], "FOV", UIColor);
+						//modelStack.PopMatrix();
 
-		ss.str("");
-		ss << (f_mouseSensitivity*100.f);
-		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
-		modelStack.PopMatrix();
-		//Graphics
-		modelStack.PushMatrix();
-		modelStack.Translate(FetchBUTTON(BI_GRAPHICS_DECREASE)->Position);
-		modelStack.Translate(-225, 0, 0);
-		modelStack.Scale(25, 25, 25);
-		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], "Graphics", UIColor);
-		modelStack.PopMatrix();
+						//modelStack.PushMatrix();
+						//modelStack.Translate(FetchBUTTON(BI_FOV_INCREASE)->Position);
+						//modelStack.Translate(50, 0, 0);
+						//modelStack.Scale(25, 25, 25);
 
-		modelStack.PushMatrix();
-		modelStack.Translate(FetchBUTTON(BI_GRAPHICS_INCREASE)->Position);
-		modelStack.Translate(50, 0, 0);
-		modelStack.Scale(25, 25, 25);
+						//std::stringstream ss;
+						//ss << f_fov_target;
+						//RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+						//modelStack.PopMatrix();
+						////Mouse
+						//modelStack.PushMatrix();
+						//modelStack.Translate(FetchBUTTON(BI_SENSITIVITY_DECREASE)->Position);
+						//modelStack.Translate(-150, 0, 0);
+						//modelStack.Scale(25, 25, 25);
+						//RenderTextOnScreen(P_meshArray[E_GEO_TEXT], "Mouse", UIColor);
+						//modelStack.PopMatrix();
 
-		ss.str("");
-		if (Graphics == GRA_MAX)
-		{
-			ss << "Max";
-		}
-		else if (Graphics == GRA_MEDIUM)
-		{
-			ss << "Medium";
-		}
-		else if (Graphics == GRA_LOW)
-		{
-			ss << "Low";
-		}
-		else
-		{
-			ss << "Shit";
-		}
+						//modelStack.PushMatrix();
+						//modelStack.Translate(FetchBUTTON(BI_SENSITIVITY_INCREASE)->Position);
+						//modelStack.Translate(50, 0, 0);
+						//modelStack.Scale(25, 25, 25);
 
-		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
-		modelStack.PopMatrix();
+						//ss.str("");
+						//ss << (f_mouseSensitivity*100.f);
+						//RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+						//modelStack.PopMatrix();
+						////Graphics
+						//modelStack.PushMatrix();
+						//modelStack.Translate(FetchBUTTON(BI_GRAPHICS_DECREASE)->Position);
+						//modelStack.Translate(-225, 0, 0);
+						//modelStack.Scale(25, 25, 25);
+						//RenderTextOnScreen(P_meshArray[E_GEO_TEXT], "Graphics", UIColor);
+						//modelStack.PopMatrix();
 
-		modelStack.PopMatrix();
-		break;
+						//modelStack.PushMatrix();
+						//modelStack.Translate(FetchBUTTON(BI_GRAPHICS_INCREASE)->Position);
+						//modelStack.Translate(50, 0, 0);
+						//modelStack.Scale(25, 25, 25);
+
+						//ss.str("");
+						//if (Graphics == GRA_MAX)
+						//{
+						//	ss << "Max";
+						//}
+						//else if (Graphics == GRA_MEDIUM)
+						//{
+						//	ss << "Medium";
+						//}
+						//else if (Graphics == GRA_LOW)
+						//{
+						//	ss << "Low";
+						//}
+						//else
+						//{
+						//	ss << "Shit";
+						//}
+
+						//RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+						//modelStack.PopMatrix();
+
+						//modelStack.PopMatrix();
+						break;
 	}
 	case E_M_OPTIONS_CONTROLS:
 	{
-		for (unsigned i = 0; i < E_CTRL_TOTAL; ++i)
-		{
-			if (us_controlCB[i].button != NULL)
-			{
-				modelStack.PushMatrix();
-				modelStack.Translate(v3_Menupos[MENU_STATE]);
-				modelStack.Translate(us_controlCB[i].button->pos);
-				modelStack.Translate(300, 0, 0);
-				modelStack.Scale(us_controlCB[i].button->scale);
-				RenderTextOnScreen(P_meshArray[E_GEO_TEXT], us_controlCB[i].CONTROLTEXT, UIColorPressed);
-				modelStack.PopMatrix();
-			}
-		}
+								 for (unsigned i = 0; i < E_CTRL_TOTAL; ++i)
+								 {
+									 if (us_controlCB[i].button != NULL)
+									 {
+										 modelStack.PushMatrix();
+										 modelStack.Translate(v3_Menupos[MENU_STATE]);
+										 modelStack.Translate(us_controlCB[i].button->pos);
+										 modelStack.Translate(300, 0, 0);
+										 modelStack.Scale(us_controlCB[i].button->scale);
+										 RenderTextOnScreen(P_meshArray[E_GEO_TEXT], us_controlCB[i].CONTROLTEXT, UIColorPressed);
+										 modelStack.PopMatrix();
+									 }
+								 }
 
-		break;
+								 break;
 	}
 	case E_M_OPTIONS_CONTROLS_SETCONTROL:
 	{
-		modelStack.PushMatrix();
-		modelStack.Translate(v3_Menupos[MENU_STATE]);
-		RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], "Enter a key", UIColor, 40.f, Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f);
-		modelStack.PopMatrix();
-		break;
+											modelStack.PushMatrix();
+											modelStack.Translate(v3_Menupos[MENU_STATE]);
+											RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], "Enter a key", UIColor, 40.f, Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f);
+											modelStack.PopMatrix();
+											break;
 	}
 	}
 

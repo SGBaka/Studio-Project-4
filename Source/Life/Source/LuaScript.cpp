@@ -99,63 +99,10 @@ std::string LuaScript::getGameData(const std::string& variableName)
 			if (file == "sound")
 			{
 				s += "Sounds//";
-				file = "";
-
-				while (variableName[i] != '.')
-				{
-					file += variableName[i];
-					i++;
-				}
-
-				if (file == "ambience")
-				{
-					s += "Ambience//";
-				}
-				else if (file == "effect")
-				{
-					s += "Effects//";
-				}
-				else if (file == "other")
-				{
-					s += "Other//";
-				}
-				else if (file == "ui")
-				{
-					s += "UI//";
-				}
-				else if (file == "weapon")
-				{
-					s += "Weapons//";
-				}
 			}
 			else if (file == "image")
 			{
 				s += "Image//";
-				file = "";
-
-				while (variableName[i] != '.')
-				{
-					file += variableName[i];
-					i++;
-				}
-
-				if (file == "font")
-				{
-					s += "Font//";
-				}
-				else if (file == "tile")
-				{
-					s += "Tile//";
-				}
-				else
-				{
-					s += "UI//";
-
-					if (file == "button")
-					{
-						s += "Button//";
-					}
-				}
 			}
 			else if (file == "map")
 			{

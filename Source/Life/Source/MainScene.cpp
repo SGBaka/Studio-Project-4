@@ -78,8 +78,8 @@ void MainScene::Init()
 	f_fov_target = f_fov;
 
 	LuaScript sound("Sound");
-	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.ui.button_click").c_str());
-	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.ui.button_click2").c_str());
+	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
+	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
 
 	LEVEL = 1;
 	InitSimulation();
@@ -654,7 +654,7 @@ void MainScene::InitShadersAndLights(void)
 	LuaScript scriptshader("Shader");
 
 	//Load vertex and fragment shaders
-	u_m_programID = LoadShaders(scriptshader.getGameData("shader.shader.vertex").c_str(), scriptshader.getGameData("shader.shader.fragment").c_str());
+	u_m_programID = LoadShaders(scriptshader.getGameData("shader.vertex").c_str(), scriptshader.getGameData("shader.fragment").c_str());
 	glUseProgram(u_m_programID);
 
 	// Get a handle for our "colorTexture" uniform

@@ -1,33 +1,30 @@
 background = {
-    background = "Background.tga",
-    splash = "Logo.tga",
-    load = "Loading.tga",
-    button = "Button.tga"
+    background = "UI//Background.tga",
+    splash = "UI//Logo.tga",
+    load = "UI//Loading.tga",
+    button = "UI//Button.tga"
 }
 
 button = {
-    back = "back.tga",
-    left = "left.tga",
-    right = "right.tga",
-    refresh = "refresh.tga"
+    back = "UI//Button//back.tga",
+    left = "UI//Button//left.tga",
+    right = "UI//Button//right.tga",
+    refresh = "UI//Button//refresh.tga"
 }
 
 font = {
-    mainmenu = "inputm.tga",
-    calibri = "calibri.tga",
-    prism = "Prism.tga",
-    segoeUI = "SegoeUI.tga",
-    univers = "univers.tga"
+    mainmenu = "Font//inputm.tga",
+    calibri = "Font//calibri.tga",
+    prism = "Font//Prism.tga",
+    segoeUI = "Font//SegoeUI.tga",
+    univers = "Font//univers.tga"
 }
 
 tile = {
-    floor = "Floor_1.tga",
-    wall = "Wall_1.tga",
-    flight_stick = "FlightStick.tga",
-    toilet = "toilet.tga",
-    food = "food.tga",
-    servant = "Servant.tga",
-    pilot = "Pilot.tga",
-    copilot = "CoPilot.tga",
-    item_1 = "obj.tga"
+    floor = "Tile//Floor_1.tga",
+    wall = "Tile//Wall_1.tga",
+    servant = "Tile//Servant.tga",
+    pilot = "Tile//Pilot.tga",
+    copilot = "Tile//CoPilot.tga",
+    item_1 = "Tile//obj.tga"
 }

@@ -1,24 +1,14 @@
-ambience = {
-	backgroundO = "background.ogg",
-	backgroundW = "background.wav"
-}
+backgroundO = "Ambience//background.ogg";
+backgroundW = "Ambience//background.wav";
 
-effect = {
-	dead = "death.mp3",
-	heartbeat = "heartbeat.mp3"
-}
+dead = "Effects//death.mp3";
+heartbeat = "Effects//heartbeat.mp3";
 
-other = {
-	alarm = "Alarm.mp3",
-	alert = "alert.wav"
-}
+alarm = "Other//Alarm.mp3";
+alert = "Other//alert.wav";
 
-ui = {
-	button_click = "click.wav",
-	button_click2 = "click2.wav"
-}
+button_click = "UI//click.wav";
+button_click2 = "UI//click2.wav";
 
-weapon = {
-	M9 = "M9//FIRE.wav",
-	MP5K = "MP5K//FIRE.wav"
-}
+M9 = "Weapons//M9//FIRE.wav";
+MP5K = "Weapons//MP5K//FIRE.wav"

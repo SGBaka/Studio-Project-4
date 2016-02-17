@@ -196,6 +196,7 @@ public:
 	{
 		MT_MAIN_MENU,
 		MT_MAIN_MENU_SPLASH,
+		MT_OPTION_MENU,
 		MT_PAUSE_MENU,
 	};
 

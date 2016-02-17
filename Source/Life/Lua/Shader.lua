@@ -1,4 +1,2 @@
-shader = {
-	vertex = "comg.vertexshader",
-	fragment = "comg.fragmentshader"
-}
+vertex = "comg.vertexshader";
+fragment = "comg.fragmentshader"
