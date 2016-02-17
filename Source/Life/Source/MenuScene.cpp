@@ -214,8 +214,20 @@ void MenuScene::InitMeshList()
 	P_meshArray[E_GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	P_meshArray[E_GEO_TEXT]->textureID[0] = LoadTGA(script.getGameData("image.font.mainmenu").c_str(), false, false);
 
-	P_meshArray[E_GEO_BACKGROUND] = MeshBuilder::GenerateQuad("Background", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
-	P_meshArray[E_GEO_BACKGROUND]->textureID[0] = LoadTGA(script.getGameData("image.background.background").c_str(), true, false);
+	P_meshArray[E_GEO_BACKGROUND_MAIN] = MeshBuilder::GenerateQuad("Background_Main", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
+	P_meshArray[E_GEO_BACKGROUND_MAIN]->textureID[0] = LoadTGA(script.getGameData("image.background.background_main").c_str(), true, false);
+
+	P_meshArray[E_GEO_BACKGROUND_OPTION] = MeshBuilder::GenerateQuad("Background_Option", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
+	P_meshArray[E_GEO_BACKGROUND_OPTION]->textureID[0] = LoadTGA(script.getGameData("image.background.background_option").c_str(), true, false);
+
+	P_meshArray[E_GEO_BACKGROUND_CREDIT] = MeshBuilder::GenerateQuad("Background_Credit", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
+	P_meshArray[E_GEO_BACKGROUND_CREDIT]->textureID[0] = LoadTGA(script.getGameData("image.background.background_credit").c_str(), true, false);
+
+	P_meshArray[E_GEO_BACKGROUND_TUTORIAL] = MeshBuilder::GenerateQuad("Background_Tutorial", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
+	P_meshArray[E_GEO_BACKGROUND_TUTORIAL]->textureID[0] = LoadTGA(script.getGameData("image.background.background_tutorial").c_str(), true, false);
+
+	P_meshArray[E_GEO_BACKGROUND_END] = MeshBuilder::GenerateQuad("Background_End", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
+	P_meshArray[E_GEO_BACKGROUND_END]->textureID[0] = LoadTGA(script.getGameData("image.background.background_end").c_str(), true, false);
 
 	P_meshArray[E_GEO_SPLASH] = MeshBuilder::GenerateQuad("Splash", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
 	P_meshArray[E_GEO_SPLASH]->textureID[0] = LoadTGA(script.getGameData("image.background.splash").c_str(), true);
@@ -1294,7 +1306,7 @@ void MenuScene::Render()
 					 modelStack.PushMatrix();
 					 modelStack.LoadIdentity();
 					 modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
-					 RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND]);
+					 RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_MAIN]);
 					 modelStack.PopMatrix();
 
 					 RenderTextButtons();
@@ -1306,7 +1318,7 @@ void MenuScene::Render()
 						modelStack.PushMatrix();
 						modelStack.LoadIdentity();
 						modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
-						RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND]);
+						RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_OPTION]);
 						modelStack.PopMatrix();
 
 						LuaScript buttonScript("button");
