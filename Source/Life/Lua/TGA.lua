@@ -1,5 +1,5 @@
 background = {
-    background = "UI//Background.tga",
+    background = "UI//Sonar_background.tga",
     splash = "UI//Logo.tga",
     load = "UI//Loading.tga",
     button = "UI//Button.tga"

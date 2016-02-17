@@ -1263,13 +1263,13 @@ void MenuScene::Render()
 	modelStack.PushMatrix();
 	modelStack.Translate(-v3_MenuCam);
 
-	RenderTextButtons();
-	RenderButtons();
-
 	switch (MENU_STATE)
 	{
 	case E_M_LOADING:
 	{
+						RenderTextButtons();
+						RenderButtons();
+
 						modelStack.PushMatrix();
 						modelStack.LoadIdentity();
 						modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
@@ -1279,6 +1279,9 @@ void MenuScene::Render()
 	}
 	case E_M_SPLASH:
 	{
+					   RenderTextButtons();
+					   RenderButtons();
+
 					   modelStack.PushMatrix();
 					   modelStack.LoadIdentity();
 					   modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
@@ -1288,11 +1291,24 @@ void MenuScene::Render()
 	}
 	case E_M_MAIN:
 	{
+					 modelStack.PushMatrix();
+					 modelStack.LoadIdentity();
+					 modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+					 RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND]);
+					 modelStack.PopMatrix();
 
+					 RenderTextButtons();
+					 RenderButtons();
 					 break;
 	}
 	case E_M_OPTIONS:
 	{
+						modelStack.PushMatrix();
+						modelStack.LoadIdentity();
+						modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+						RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND]);
+						modelStack.PopMatrix();
+
 						LuaScript buttonScript("button");
 
 						int total_option = buttonScript.get<int>("option.total_option");
@@ -1307,6 +1323,9 @@ void MenuScene::Render()
 							RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
 							modelStack.PopMatrix();
 						}
+
+						RenderTextButtons();
+						RenderButtons();
 
 						//modelStack.PushMatrix();
 						//modelStack.Translate(v3_Menupos[MENU_STATE]);
@@ -1383,6 +1402,9 @@ void MenuScene::Render()
 	}
 	case E_M_OPTIONS_CONTROLS:
 	{
+								 RenderTextButtons();
+								 RenderButtons();
+
 								 for (unsigned i = 0; i < E_CTRL_TOTAL; ++i)
 								 {
 									 if (us_controlCB[i].button != NULL)
@@ -1401,6 +1423,9 @@ void MenuScene::Render()
 	}
 	case E_M_OPTIONS_CONTROLS_SETCONTROL:
 	{
+											RenderTextButtons();
+											RenderButtons();
+
 											modelStack.PushMatrix();
 											modelStack.Translate(v3_Menupos[MENU_STATE]);
 											RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], "Enter a key", UIColor, 40.f, Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f);
