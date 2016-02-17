@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player() 
-: moveSpeed(300)
+: moveSpeed(5)
 , sonarCooldown(2)
 , sonarTimer(sonarCooldown)
 {
@@ -146,16 +146,16 @@ void Player::movePlayer(int mode, double dt)
 	switch (mode)
 	{
 	case 0:
-		position.x -= roundUp(moveSpeed * dt, 20);
+		position.x -= roundUp(moveSpeed, 20);
 		break;
 	case 1:
-		position.x += roundUp(moveSpeed * dt, 20);
+		position.x += roundUp(moveSpeed, 20);
 		break;
 	case 2:
-		position.y += roundUp(moveSpeed * dt, 20);
+		position.y += roundUp(moveSpeed, 20);
 		break;
 	case 3:
-		position.y -= roundUp(moveSpeed * dt, 20);
+		position.y -= roundUp(moveSpeed, 20);
 		break;
 	}
 }
