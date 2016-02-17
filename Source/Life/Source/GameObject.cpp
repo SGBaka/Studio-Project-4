@@ -1,6 +1,6 @@
 #include "GameObject.h"
 
-GameObject::GameObject() : enableCollision(false), active(true), currTile(0,0)
+GameObject::GameObject() : enableCollision(false), active(true), currTile(0, 0), rotation(0)
 {
 
 }

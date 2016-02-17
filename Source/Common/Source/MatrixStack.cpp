@@ -127,7 +127,7 @@ Multiply the top matrix with a rotation matrix based on the following parameters
 	Z-component of the rotation axis
 */
 /******************************************************************************/
-void MS::Rotate(float degrees, float axisX, float axisY, float axisZ) {
+void MS::Rotate(double degrees, float axisX, float axisY, float axisZ) {
 	Mtx44 mat;
 	mat.SetToRotation(degrees, axisX, axisY, axisZ);
 	ms.top() = ms.top() * mat;

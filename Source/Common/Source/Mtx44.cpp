@@ -318,23 +318,23 @@ Set Matrix to a rotation matrix about arbitrary axis
 	Thrown if rotation axis is a zero vector
 */
 /******************************************************************************/
-void Mtx44::SetToRotation(float degrees, float axisX, float axisY, float axisZ) throw( DivideByZero ) {
+void Mtx44::SetToRotation(double degrees, float axisX, float axisY, float axisZ) throw( DivideByZero ) {
 	double mag = sqrt(axisX * axisX + axisY * axisY + axisZ * axisZ);
-	if(Math::FAbs((float)mag) < Math::EPSILON)
+	if (Math::FAbs((double)mag) < Math::EPSILON)
 		throw DivideByZero();
 	double x = axisX / mag, y = axisY / mag, z = axisZ/ mag;
 	double c = cos(degrees * Math::PI / 180), s = sin(degrees * Math::PI / 180);
-	a[0] = (float)(x * x * (1.f - c) + c);
-	a[1] = (float)(y * x * (1.f - c) + z * s);
-	a[2] = (float)(x * z * (1.f - c) - y * s);
+	a[0] = (double)(x * x * (1.f - c) + c);
+	a[1] = (double)(y * x * (1.f - c) + z * s);
+	a[2] = (double)(x * z * (1.f - c) - y * s);
 	a[3] = 0;
-	a[4] = (float)(x * y * (1.f - c) - z * s);
-	a[5] = (float)(y * y * (1.f - c) + c);
-	a[6] = (float)(y * z * (1.f - c) + x * s);
+	a[4] = (double)(x * y * (1.f - c) - z * s);
+	a[5] = (double)(y * y * (1.f - c) + c);
+	a[6] = (double)(y * z * (1.f - c) + x * s);
 	a[7] = 0;
-	a[8] = (float)(x * z * (1.f - c) + y * s);
-	a[9] = (float)(y * z * (1.f - c) - x * s);
-	a[10] = (float)(z * z * (1.f - c) + c);
+	a[8] = (double)(x * z * (1.f - c) + y * s);
+	a[9] = (double)(y * z * (1.f - c) - x * s);
+	a[10] = (double)(z * z * (1.f - c) + c);
 	a[11] = 0;
 	a[12] = 0;
 	a[13] = 0;

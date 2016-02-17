@@ -94,6 +94,12 @@
     <Filter Include="Header Files\Lua">
       <UniqueIdentifier>{80bd2425-e7d7-4d4d-ac2f-4874f4ed1ee3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Sonar">
+      <UniqueIdentifier>{e650686c-1a07-483e-9f49-61860114711e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Sonar">
+      <UniqueIdentifier>{24f0d1d7-9051-4018-b62d-356a46cd58e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -200,6 +206,12 @@
     </ClCompile>
     <ClCompile Include="Source\LuaScript.cpp">
       <Filter>Header Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Sonar.cpp">
+      <Filter>Source Files\Sonar</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RingSegments.cpp">
+      <Filter>Source Files\Sonar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -322,6 +334,12 @@
     </ClInclude>
     <ClInclude Include="Source\LuaScript.h">
       <Filter>Header Files\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Sonar.h">
+      <Filter>Header Files\Sonar</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RingSegments.h">
+      <Filter>Header Files\Sonar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

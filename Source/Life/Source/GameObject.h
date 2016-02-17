@@ -17,6 +17,7 @@ public:
 	Vector3 position;
 	Vector3 velocity;
 	Vector3 scale;
+	double rotation;
 
 	virtual void Init(Vector3 position);
 	virtual void Update(double dt);

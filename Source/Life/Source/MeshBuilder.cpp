@@ -306,7 +306,6 @@ Mesh* MeshBuilder::GenerateQuad(const std::string &meshName, Color color, float 
 	mesh->indexSize = index_buffer_data.size();
 	mesh->mode = Mesh::DRAW_TRIANGLES;
 
-
 	std::vector<Vertex>().swap(vertex_buffer_data);
 	std::vector<GLuint>().swap(index_buffer_data);
 

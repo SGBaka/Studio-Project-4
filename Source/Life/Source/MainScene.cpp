@@ -162,6 +162,8 @@ void MainScene::InitMeshList()
 
 	P_meshArray[E_GEO_PLAYER] = MeshBuilder::GenerateQuad("AI Servant", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_PLAYER]->textureID[0] = LoadTGA(script.getGameData("image.tile.servant").c_str(), true);
+
+	P_meshArray[E_GEO_LINE] = MeshBuilder::GenerateQuad("Ring Segment", Color(1.f, 0.f, 0.f), 1, 1);
 }
 
 /******************************************************************************/
@@ -302,6 +304,7 @@ bool MainScene::InitLevel(int level)
 					player->mesh = P_meshArray[E_GEO_PLAYER];
 					player->currTile.Set(x, y);
 
+					player_ptr = player;
 					GO_List.push_back(player);
 				}
 
@@ -521,6 +524,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		}
 	}
 
+
 	static bool isEscPressed = false;
 	if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
 	{
@@ -578,22 +582,22 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		f_camSpeed *= 2.f;
 	}
 
-	if (Application::IsKeyPressed('W'))
-	{
-		v3_2DCam.y += static_cast<float>(dt) * f_camSpeed;
-	}
-	if (Application::IsKeyPressed('S'))
-	{
-		v3_2DCam.y -= static_cast<float>(dt) * f_camSpeed;
-	}
-	if (Application::IsKeyPressed('A'))
-	{
-		v3_2DCam.x -= static_cast<float>(dt) * f_camSpeed;
-	}
-	if (Application::IsKeyPressed('D'))
-	{
-		v3_2DCam.x += static_cast<float>(dt) * f_camSpeed;
-	}
+	//if (Application::IsKeyPressed('W'))
+	//{
+	//	v3_2DCam.y += static_cast<float>(dt) * f_camSpeed;
+	//}
+	//if (Application::IsKeyPressed('S'))
+	//{
+	//	v3_2DCam.y -= static_cast<float>(dt) * f_camSpeed;
+	//}
+	//if (Application::IsKeyPressed('A'))
+	//{
+	//	v3_2DCam.x -= static_cast<float>(dt) * f_camSpeed;
+	//}
+	//if (Application::IsKeyPressed('D'))
+	//{
+	//	v3_2DCam.x += static_cast<float>(dt) * f_camSpeed;
+	//}
 }
 
 /******************************************************************************/
@@ -940,13 +944,18 @@ void MainScene::RenderMeshOnScreen(Mesh* mesh, float Glow, Color GlowColor)
 	glUniform1i(u_m_parameters[U_UNI_GLOW], static_cast<GLint>(Glow));
 	glUniform3fv(u_m_parameters[U_UNI_GLOW_COLOR], 1, &GlowColor.r);
 
-
 	glDisable(GL_DEPTH_TEST);
 	glUniform1i(u_m_parameters[E_UNI_LIGHTENABLED], 0);
-	glUniform1i(u_m_parameters[E_UNI_COLOR_TEXTURE_ENABLED], 1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, mesh->textureID[0]);
-	glUniform1i(u_m_parameters[E_UNI_COLOR_TEXTURE], 0);
+
+	if (mesh->textureID > 0)
+	{
+		glUniform1i(u_m_parameters[E_UNI_COLOR_TEXTURE_ENABLED], 1);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, mesh->textureID[0]);
+		glUniform1i(u_m_parameters[E_UNI_COLOR_TEXTURE], 0);
+	}
+	else
+		glUniform1i(u_m_parameters[E_UNI_COLOR_TEXTURE_ENABLED], 0);
 
 	Mtx44 ortho;
 	ortho.SetToOrtho(0, Application::GetWindowWidth(), 0, Application::GetWindowHeight(), -10, 10); //size of screen UI
@@ -963,7 +972,9 @@ void MainScene::RenderMeshOnScreen(Mesh* mesh, float Glow, Color GlowColor)
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	if (mesh->textureID > 0)
+		glBindTexture(GL_TEXTURE_2D, 0);
+
 	glUniform1i(u_m_parameters[E_UNI_TEXT_ENABLED], 0);
 	glEnable(GL_DEPTH_TEST);
 	glUniform1i(u_m_parameters[U_UNI_GLOW], 0);
@@ -1135,8 +1146,25 @@ void MainScene::RenderGO()
 			{
 				modelStack.PushMatrix();
 				modelStack.Translate(GO_List[i]->position);
+				modelStack.Rotate(GO_List[i]->rotation, 0, 0, 1);
 				modelStack.Scale(GO_List[i]->scale);
 				RenderMeshOnScreen(GO_List[i]->mesh);
+				modelStack.PopMatrix();
+			}
+		}
+	}
+
+	for (int i = 0; i < player_ptr->sonarList.size(); ++i)
+	{
+		for (int j = 0; j < player_ptr->sonarList[i]->segmentList.size(); ++j)
+		{
+			if (player_ptr->sonarList[i]->segmentList[i]->active)
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(player_ptr->sonarList[i]->segmentList[j]->position);
+				modelStack.Rotate(player_ptr->sonarList[i]->segmentList[j]->rotation, 0, 0, 1);
+				modelStack.Scale(player_ptr->sonarList[i]->segmentList[j]->scale);
+				RenderMeshOnScreen(player_ptr->sonarList[i]->segmentList[j]->mesh, 100, Color(0, 0, 1));
 				modelStack.PopMatrix();
 			}
 		}

@@ -1,7 +1,10 @@
 #include "Player.h"
 
 Player::Player() 
-: moveSpeed(50)
+: moveSpeed(300)
+, sonarCooldown(2)
+, sonarTimer(sonarCooldown)
+, test(1)
 {
 	for (int i = 0; i < 4; ++i)
 	{
@@ -35,12 +38,31 @@ void Player::Update(double dt)
 			checkMovement(3, dt);
 		else if (Application::IsKeyPressed('D') && !checkCollision(1))
 			checkMovement(1, dt);
+		if (Application::IsKeyPressed('F') && sonarTimer >= sonarCooldown)
+		{
+			sonarTimer = 0;
+			Sonar *SNR;
+			SNR = new Sonar();
+			SNR->Init(100, 40);
+			SNR->GenerateSonar(position);
+			sonarList.push_back(SNR);
+		}
+	}
+
+	if (sonarTimer < sonarCooldown)
+		sonarTimer += dt;
+
+	for (int i = 0; i < sonarList.size(); ++i)
+	{
+		sonarList[i]->Update(dt);
 	}
 
 	for (int i = 0; i < moveToDir.size(); ++i)
 	{
 		checkDirection(i, dt);
 	}
+
+
 }
 
 bool Player::checkCollision(int mode)
@@ -137,8 +159,6 @@ void Player::movePlayer(int mode, double dt)
 		position.y -= roundUp(moveSpeed * dt, 20);
 		break;
 	}
-
-	cout << roundUp(moveSpeed * dt, 2) << endl;
 }
 
 int Player::roundUp(int numToRound, int factor)

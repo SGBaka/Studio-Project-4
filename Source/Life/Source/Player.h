@@ -5,6 +5,7 @@
 #include "MainScene.h"
 #include "Application.h"
 #include <algorithm> 
+#include "Sonar.h"
 
 using namespace::std;
 
@@ -30,8 +31,15 @@ public:
 
 	float moveSpeed;
 
+	vector<Sonar*> sonarList;
+
+	int sonarCooldown;
+	float sonarTimer;
+
 private:
 	int mapWidth, mapHeight;
+
+	float test;
 };
 
 

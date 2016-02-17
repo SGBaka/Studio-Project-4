@@ -37,7 +37,7 @@ public:
 	Mtx44& operator=(const Mtx44& rhs);
 	Mtx44 operator*(float scalar) const;
 	Vector3 operator*(const Vector3& rhs) const;
-	void SetToRotation(float degrees, float axisX, float axisY, float axisZ) throw( DivideByZero );
+	void SetToRotation(double degrees, float axisX, float axisY, float axisZ) throw( DivideByZero );
 	void SetToScale(float sx, float sy, float sz);
 	void SetToTranslation(float tx, float ty, float tz);
 	void SetToFrustum(double left, double right, double	bottom, double top, double near, double far);

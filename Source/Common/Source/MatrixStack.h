@@ -31,7 +31,7 @@ public:
 	void LoadIdentity();
 	void LoadMatrix(const Mtx44 &matrix);
 	void MultMatrix(const Mtx44 &matrix);
-	void Rotate(float degrees, float axisX, float axisY, float axisZ);
+	void Rotate(double degrees, float axisX, float axisY, float axisZ);
 	void Scale(float scaleX, float scaleY, float scaleZ);
 	void Scale(Vector3 ScaleV3);
 	void Translate(float translateX, float translateY, float translateZ);

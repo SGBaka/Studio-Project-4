@@ -113,10 +113,12 @@
     <ClCompile Include="Source\particle.cpp" />
     <ClCompile Include="Source\Pathing.cpp" />
     <ClCompile Include="Source\Player.cpp" />
+    <ClCompile Include="Source\RingSegments.cpp" />
     <ClCompile Include="Source\SaveHandler.cpp" />
     <ClCompile Include="Source\SceneManager.cpp" />
     <ClCompile Include="Source\Servant.cpp" />
     <ClCompile Include="Source\shader.cpp" />
+    <ClCompile Include="Source\Sonar.cpp" />
     <ClCompile Include="Source\SoundEngine.cpp" />
     <ClCompile Include="Source\SpecialObject.cpp" />
     <ClCompile Include="Source\SpriteAnimation.cpp" />
@@ -135,8 +137,10 @@
     <ClInclude Include="Source\Pathfinding.h" />
     <ClInclude Include="Source\Pathing.h" />
     <ClInclude Include="Source\Player.h" />
+    <ClInclude Include="Source\RingSegments.h" />
     <ClInclude Include="Source\SceneManager.h" />
     <ClInclude Include="Source\Servant.h" />
+    <ClInclude Include="Source\Sonar.h" />
     <ClInclude Include="Source\SoundEngine.h" />
     <ClInclude Include="Source\SpecialObject.h" />
     <ClInclude Include="Source\TextButton.h" />

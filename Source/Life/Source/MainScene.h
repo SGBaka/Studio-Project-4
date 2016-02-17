@@ -31,6 +31,7 @@ Main menu for the openGL framework
 #include <fstream>
 
 class CharacterObject;
+class Player;
 
 /******************************************************************************/
 /*!
@@ -60,6 +61,10 @@ public:
 		E_GEO_FLOOR_1,
 		E_GEO_WALL_1,
 		E_GEO_PLAYER,
+
+		//Projectile
+		E_GEO_LINE,
+
 		E_GEO_TOTAL,
 	};
 private:
@@ -156,6 +161,8 @@ public:
 	Vector3 calWorldPos(Vector3 Tilepos);
 
 private:
+	Player *player_ptr;
+
 	// Static Constants
 	/******************************************************************************/
 	/*!

@@ -64,14 +64,18 @@ void Mesh::Render()
 	glEnableVertexAttribArray(0); // 1st attribute buffer : vertices
 	glEnableVertexAttribArray(1); // 2nd attribute buffer : colors
 	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-
+	
 	//Render call setup
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)sizeof(Position));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(Position) + sizeof(Color)));
-	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(Position) + sizeof(Color) + sizeof(Vector3)));
+
+	if (textureID > 0)
+	{
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(Position)+sizeof(Color)+sizeof(Vector3)));
+	}
 
 
 	//Actual render call
@@ -90,8 +94,9 @@ void Mesh::Render()
 		glDrawElements(GL_LINES, indexSize, GL_UNSIGNED_INT, 0);
 	}
 
-	//if(textureID > 0)
-	glDisableVertexAttribArray(3);
+	if(textureID > 0)
+		glDisableVertexAttribArray(3);
+
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
