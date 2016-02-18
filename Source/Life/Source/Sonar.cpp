@@ -84,30 +84,35 @@ void Sonar::Update(double dt)
 
 	for (int i = 0; i < segmentList.size(); ++i)
 	{
-		segmentList[i]->position.x = radius * cos(2 * Math::PI * i / numSides) + position.x;
-		segmentList[i]->position.y = radius * sin(2 * Math::PI * i / numSides) + position.y;
-		float lengthOfSide = 2 * radius * tan(Math::PI / numSides);
-		segmentList[i]->scale.Set(lengthOfSide / 2, 1, 1);
+		if (segmentList[i]->active)
+		{
+			segmentList[i]->position.x = radius * cos(2 * Math::PI * i / numSides) + position.x;
+			segmentList[i]->position.y = radius * sin(2 * Math::PI * i / numSides) + position.y;
+			float lengthOfSide = 2 * radius * tan(Math::PI / numSides);
+			segmentList[i]->scale.Set(lengthOfSide / 2, 1, 1);
 
-		segmentList[i]->posStart = segmentList[i]->position + (lengthOfSide / 2);
-		segmentList[i]->posEnd = segmentList[i]->position - (lengthOfSide / 2);
-		segmentList[i]->startTrans = segmentList[i]->posStart - segmentList[i]->position;
-		segmentList[i]->endTrans = segmentList[i]->posEnd - segmentList[i]->position;
+			segmentList[i]->posStart = segmentList[i]->position + (lengthOfSide / 2);
+			segmentList[i]->posEnd = segmentList[i]->position - (lengthOfSide / 2);
+			segmentList[i]->startTrans = segmentList[i]->posStart - segmentList[i]->position;
+			segmentList[i]->endTrans = segmentList[i]->posEnd - segmentList[i]->position;
 
-		double angle = Math::DegreeToRadian(segmentList[i]->rotation);
+			double angle = Math::DegreeToRadian(segmentList[i]->rotation);
 
-		double oldStartX = segmentList[i]->startTrans.x;
-		segmentList[i]->startTrans.x = segmentList[i]->startTrans.x * cos(angle) - segmentList[i]->startTrans.y * sin(angle);
-		segmentList[i]->startTrans.y = oldStartX * sin(angle) + segmentList[i]->startTrans.y * cos(angle);
+			double oldStartX = segmentList[i]->startTrans.x;
+			segmentList[i]->startTrans.x = segmentList[i]->startTrans.x * cos(angle) - segmentList[i]->startTrans.y * sin(angle);
+			segmentList[i]->startTrans.y = oldStartX * sin(angle) + segmentList[i]->startTrans.y * cos(angle);
 
-		double oldEndX = segmentList[i]->endTrans.x;
-		segmentList[i]->endTrans.x = segmentList[i]->endTrans.x * cos(angle) - segmentList[i]->endTrans.y * sin(angle);
-		segmentList[i]->endTrans.y = oldEndX * sin(angle) + segmentList[i]->endTrans.y * cos(angle);
+			double oldEndX = segmentList[i]->endTrans.x;
+			segmentList[i]->endTrans.x = segmentList[i]->endTrans.x * cos(angle) - segmentList[i]->endTrans.y * sin(angle);
+			segmentList[i]->endTrans.y = oldEndX * sin(angle) + segmentList[i]->endTrans.y * cos(angle);
 
-		segmentList[i]->posStart = segmentList[i]->startTrans + segmentList[i]->position;
-		segmentList[i]->posEnd = segmentList[i]->endTrans + segmentList[i]->position;
+			segmentList[i]->posStart = segmentList[i]->startTrans + segmentList[i]->position;
+			segmentList[i]->posEnd = segmentList[i]->endTrans + segmentList[i]->position;
+		}
 	}
+
 }
+
 float Sonar::GetSonarRadius()
 {
 	return radius;
