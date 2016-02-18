@@ -2,7 +2,7 @@
 
 Player::Player() 
 : moveSpeed(5)
-, sonarCooldown(2)
+, sonarCooldown(1)
 , sonarTimer(sonarCooldown)
 {
 	for (int i = 0; i < 4; ++i)

@@ -288,8 +288,8 @@ private:
 
 	//Collision
 	bool checkForCollision(Vector3 position_start, Vector3 position_end, Vector3 top_left, Vector3 bottom_right, Vector3 &Hit = Vector3(0, 0, 0));
-	int GetIntersection(float fDist1, float fDist2, Vector3 P1, Vector3 P2, Vector3 &Hit);
-	int InBox(Vector3 Hit, Vector3 B1, Vector3 B2, const int Axis);
+	bool LineIntersectsRect(Vector3 p1, Vector3 p2, Vector3 topLeft, Vector3 botRight, Vector3 topRight, Vector3 botLeft);
+	bool LineIntersectsLine(Vector3 l1p1, Vector3 l1p2, Vector3 l2p1, Vector3 l2p2);
 
 	//Other
 	Vector3 v3_2DCam;

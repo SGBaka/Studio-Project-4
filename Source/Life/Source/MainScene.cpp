@@ -1290,52 +1290,54 @@ bool MainScene::checkForCollision(Vector3 position_start, Vector3 position_end, 
 {
 	Vector3 ObjectTopLeft = top_left;
 	Vector3 ObjectBottomRight = bottom_right;
-	if (position_end.x < ObjectBottomRight.x && position_start.x < ObjectBottomRight.x)
-		return false;
-	if (position_end.x > ObjectTopLeft.x && position_start.x > ObjectTopLeft.x)
-		return false;
-	if (position_end.y < ObjectBottomRight.y && position_start.y < ObjectBottomRight.y)
-		return false;
-	if (position_end.y > ObjectTopLeft.y && position_start.y > ObjectTopLeft.y)
-		return false;
 	
-	if (position_start.x > ObjectBottomRight.x && position_start.x < ObjectTopLeft.x &&
-		position_start.y > ObjectBottomRight.y && position_start.y < ObjectTopLeft.y)
+	if ((position_start.x < ObjectBottomRight.x && position_start.x > ObjectTopLeft.x &&
+		position_start.y > ObjectBottomRight.y && position_start.y < ObjectTopLeft.y) ||
+		(position_end.x < ObjectBottomRight.x && position_end.x > ObjectTopLeft.x &&
+		position_end.y > ObjectBottomRight.y && position_end.y < ObjectTopLeft.y))
 	{
 		Hit = position_start;
 		return true;
 	}
-	if ((GetIntersection(position_start.x - ObjectBottomRight.x, position_end.x - ObjectBottomRight.x, position_start,
-		position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 1))
-		|| (GetIntersection(position_start.y - ObjectBottomRight.y, position_end.y - ObjectBottomRight.y, position_start,
-		position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 2))
-		|| (GetIntersection(position_start.z - ObjectBottomRight.z, position_end.z - ObjectBottomRight.z, position_start,
-		position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 3))
-		|| (GetIntersection(position_start.x - ObjectTopLeft.x, position_end.x - ObjectTopLeft.x, position_start,
-		position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 1))
-		|| (GetIntersection(position_start.y - ObjectTopLeft.y, position_end.y - ObjectTopLeft.y, position_start,
-		position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 2))
-		|| (GetIntersection(position_start.z - ObjectTopLeft.z, position_end.z - ObjectTopLeft.z, position_start,
-		position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 3)))
-		return true;
 
+	Vector3 botLeft = Vector3(ObjectBottomRight.x - ML_map.worldSize * 2, ObjectBottomRight.y);
+	Vector3 topRight = Vector3(ObjectBottomRight.x, ObjectBottomRight.y + ML_map.worldSize * 2);
+
+	if (LineIntersectsRect(position_start, position_end, ObjectTopLeft, ObjectBottomRight, topRight, botLeft))
+		return true;
+		
 	return false;
 }
 
-int MainScene::GetIntersection(float fDist1, float fDist2, Vector3 P1, Vector3 P2, Vector3 &Hit)
+bool  MainScene::LineIntersectsRect(Vector3 p1, Vector3 p2, Vector3 topLeft, Vector3 botRight, Vector3 topRight, Vector3 botLeft)
 {
-	if ((fDist1 * fDist2) >= 0.0f) return 0;
-	if (fDist1 == fDist2) return 0;
-	Hit = P1 + (P2 - P1) * (-fDist1 / (fDist2 - fDist1));
-	return 1;
+	return LineIntersectsLine(p1, p2, botLeft, botRight) ||
+		LineIntersectsLine(p1, p2, botRight, topRight) ||
+		LineIntersectsLine(p1, p2, topRight, topLeft) ||
+		LineIntersectsLine(p1, p2, topLeft, botLeft);
 }
 
-int MainScene::InBox(Vector3 Hit, Vector3 B1, Vector3 B2, const int Axis)
+bool  MainScene::LineIntersectsLine(Vector3 l1p1, Vector3 l1p2, Vector3 l2p1, Vector3 l2p2)
 {
-	if (Axis == 1 && Hit.z > B1.z && Hit.z < B2.z && Hit.y > B1.y && Hit.y < B2.y) return 1;
-	if (Axis == 2 && Hit.z > B1.z && Hit.z < B2.z && Hit.x > B1.y && Hit.x < B2.x) return 1;
-	if (Axis == 3 && Hit.x > B1.x && Hit.x < B2.x && Hit.y > B1.y && Hit.y < B2.y) return 1;
-	return 0;
+	float q = (l1p1.y - l2p1.y) * (l2p2.x - l2p1.x) - (l1p1.x - l2p1.x) * (l2p2.y - l2p1.y);
+	float d = (l1p2.x - l1p1.x) * (l2p2.y - l2p1.y) - (l1p2.y - l1p1.y) * (l2p2.x - l2p1.x);
+
+	if (d == 0)
+	{
+		return false;
+	}
+
+	float r = q / d;
+
+	q = (l1p1.y - l2p1.y) * (l1p2.x - l1p1.x) - (l1p1.x - l2p1.x) * (l1p2.y - l1p1.y);
+	float s = q / d;
+
+	if (r < 0 || r > 1 || s < 0 || s > 1)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 /******************************************************************************/
