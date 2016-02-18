@@ -24,7 +24,7 @@ Main menu for the openGL framework
 #include "Utility.h"
 #include <sstream>
 #include "Pathfinding.h"
-#include "Servant.h"
+#include "Enemy.h"
 #include "EditAvatar.h"
 //#include <vld.h>
 
@@ -164,8 +164,8 @@ void MapScene::InitMeshList()
 	P_meshArray[E_GEO_WALL_1] = MeshBuilder::GenerateQuad("Wall Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_WALL_1]->textureID[0] = LoadTGA(script.getGameData("image.tile.wall").c_str(), true);
 
-	P_meshArray[E_GEO_PLAYER] = MeshBuilder::GenerateQuad("AI Servant", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_PLAYER]->textureID[0] = LoadTGA(script.getGameData("image.tile.servant").c_str(), true);
+	P_meshArray[E_GEO_PLAYER] = MeshBuilder::GenerateQuad("AI enemy", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_PLAYER]->textureID[0] = LoadTGA(script.getGameData("image.tile.enemy").c_str(), true);
 
 	P_meshArray[E_GEO_LINE] = MeshBuilder::GenerateQuad("Ring Segment", Color(1.f, 0.f, 0.f), 1, 1);
 }
@@ -180,7 +180,7 @@ void MapScene::InitMenu(void)
 {
 	UIColor.Set(0.48235f, 0.70196f, 1.f);
 	UIColorPressed.Set(0.9098f, 0.41568f, 0.94117f);
-	UIColorServant.Set(0.0f, 0.8f, 0.4f);
+	UIColorEnemy.Set(0.0f, 0.8f, 0.4f);
 	//TextButton* S_MB;
 
 	MENU_STATE = 1;

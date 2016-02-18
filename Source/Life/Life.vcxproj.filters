@@ -198,9 +198,6 @@
     <ClCompile Include="Source\CharacterObject.cpp">
       <Filter>Source Files\AI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Servant.cpp">
-      <Filter>Source Files\AI</Filter>
-    </ClCompile>
     <ClCompile Include="Source\SpecialObject.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
@@ -215,6 +212,15 @@
     </ClCompile>
     <ClCompile Include="Source\LuaScript.cpp">
       <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Enemy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MapScene.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EditAvatar.cpp">
+      <Filter>Source Files\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -326,9 +332,6 @@
     <ClInclude Include="Source\CharacterObject.h">
       <Filter>Header Files\AI</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Servant.h">
-      <Filter>Header Files\AI</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SpecialObject.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
@@ -343,6 +346,15 @@
     </ClInclude>
     <ClInclude Include="Source\RingSegments.h">
       <Filter>Header Files\Sonar</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MapScene.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\EditAvatar.h">
+      <Filter>Header Files\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

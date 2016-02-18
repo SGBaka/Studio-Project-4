@@ -256,7 +256,7 @@ private:
 	/******************************************************************************/
 	unsigned short *us_ControlChange;
 
-	Color UIColor, UIColorPressed, UIColorServant;
+	Color UIColor, UIColorPressed, UIColorEnemy;
 	std::vector<TextButton*> v_textButtonList;
 	TextButton* FetchTB(std::string name);
 	void UpdateTextButtons(void);
