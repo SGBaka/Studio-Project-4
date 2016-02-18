@@ -613,6 +613,7 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 							  {
 								  //PREV_STATE = MENU_STATE;
 								  //MENU_STATE = E_M_LOADING;
+								  SceneManager::Instance()->replace(SceneManager::S_EDITOR);
 							  }
 						  }
 						  break;
