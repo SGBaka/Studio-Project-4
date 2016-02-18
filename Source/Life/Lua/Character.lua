@@ -1,5 +1,5 @@
 player = {
-	sonar_radius = 200.0,
+	sonar_radius = 100.0,
 	sonar_sides = 120
 }
 
