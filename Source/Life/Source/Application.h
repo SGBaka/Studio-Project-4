@@ -11,6 +11,7 @@ To handle the window and the application
 #define APPLICATION_H
 
 #include "timer.h"
+#include "LuaScript.h"
 
 class SceneManager;
 

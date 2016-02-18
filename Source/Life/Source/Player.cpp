@@ -39,10 +39,12 @@ void Player::Update(double dt)
 			checkMovement(1, dt);
 		if (Application::IsKeyPressed('F') && sonarTimer >= sonarCooldown)
 		{
+			LuaScript playerScript("character");
+
 			sonarTimer = 0;
 			Sonar *SNR;
 			SNR = new Sonar();
-			SNR->Init(100, 40);
+			SNR->Init(playerScript.get<float>("player.sonar_radius"), playerScript.get<int>("player.sonar_sides"));
 			SNR->GenerateSonar(position);
 			sonarList.push_back(SNR);
 		}

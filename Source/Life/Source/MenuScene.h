@@ -21,7 +21,6 @@ Main menu for the openGL framework
 #include "Button.h"
 #include "GabrielDLC.h"
 #include "SoundEngine.h"
-#include "LuaScript.h"
 #include <string>
 #include <iostream>
 #include <fstream>
