@@ -400,7 +400,7 @@ void Application::Run()
 		m_dAccumulatedTime_ThreadOne += m_dElapsedTime;
 		m_dAccumulatedTime_ThreadTwo += m_dElapsedTime;
 
-		if ((m_dAccumulatedTime_ThreadOne > 0.016))
+		if (m_dAccumulatedTime_ThreadOne > 0.016)
 		{
 			if (!loaddone)
 			{
@@ -410,6 +410,11 @@ void Application::Run()
 			//S_MANAGER->Update(m_dAccumulatedTime_ThreadOne);
 			S_MANAGER->Update(m_dElapsedTime);
 			m_dAccumulatedTime_ThreadOne = 0.0;
+		}
+		if (m_dAccumulatedTime_ThreadTwo > 0.03)
+		{
+			//Update
+			m_dAccumulatedTime_ThreadTwo = 0.0;
 		}
 
 		S_MANAGER->Render();
