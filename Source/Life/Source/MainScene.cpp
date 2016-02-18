@@ -311,28 +311,23 @@ bool MainScene::InitLevel(int level)
 					player_ptr = player;
 					GO_List.push_back(player);
 				}
-				if (ML_map.map_data[y][x] == "E1")
+				if (isdigit(ML_map.map_data[y][x][0]))
 				{
-					cEnemy *enemy;
-					enemy = new cEnemy;
-					enemy->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0),1);
-					enemy->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
-					enemy->mesh = P_meshArray[E_GEO_ENEMY];
-					enemy->currTile.Set(x, y);
+					if (stoi(ML_map.map_data[y][x]) >= 50 && stoi(ML_map.map_data[y][x]) < 100)
+					{
+						cEnemy *enemy;
+						enemy = new cEnemy;
+						enemy->ID = stoi(ML_map.map_data[y][x]);
+						enemy->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0));
+						enemy->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
+						enemy->mesh = P_meshArray[E_GEO_ENEMY];
+						enemy->currTile.Set(x, y);
+						enemy->name = "ENEMY";
+						enemy->topLeft = enemy->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
+						enemy->bottomRight = enemy->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
 
-				
-					GO_List.push_back(enemy);
-				}
-				if (ML_map.map_data[y][x] == "E2")
-				{
-					cEnemy *enemy;
-					enemy = new cEnemy;
-					enemy->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0), 2);
-					enemy->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
-					enemy->mesh = P_meshArray[E_GEO_ENEMY];
-					enemy->currTile.Set(x, y);
-
-					GO_List.push_back(enemy);
+						GO_List.push_back(enemy);
+					}
 				}
 				continue;
 			}
@@ -636,7 +631,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			{
 				for (int k = 0; k < GO_List.size(); ++k)
 				{
-					if (GO_List[k]->name == "WALL" &&
+					if ((GO_List[k]->name == "WALL" || GO_List[k]->name == "ENEMY") &&
 						checkForCollision(player_ptr->sonarList[i]->segmentList[j]->posStart,
 									      player_ptr->sonarList[i]->segmentList[j]->posEnd,
 										  GO_List[k]->topLeft, GO_List[k]->bottomRight))

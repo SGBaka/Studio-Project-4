@@ -24,10 +24,10 @@ public:
 	{
 		AM_TOTAL_MSG,
 	};
-
+	int ID;
 	AI_STATES AI_STATE;
 
-	void Init(Vector3 position,int route);
+	void Init(Vector3 position);
 	void Update(double dt);
 
 	cEnemy();
@@ -61,9 +61,6 @@ private:
 
 	bool gotoServe, gotoNavi, gotoRoam,gotochase;
 	Sonar sonar;
-	std::vector<Vector3> listofwaypoints;
-	std::vector<Vector3> listofwaypoints1;
-	std::vector<Vector3> listofwaypoints2;
 };
 
 #endif

@@ -35,13 +35,6 @@ cEnemy::cEnemy()
 				Map[j][i] = stoi(MainScene::GetInstance()->ML_map.map_data[i][j]);
 		}
 	}
-	patrolPath.setWayPoints(4, 100, 101, 102, 103);
-	listofwaypoints1 = patrolPath.WayPointTileList;
-	patrolPath.WayPointTileList.clear();
-
-	patrolPath.setWayPoints(4, 104, 105, 106, 107);
-	listofwaypoints2 = patrolPath.WayPointTileList;
-	patrolPath.WayPointTileList.clear();
 }
 
 cEnemy::~cEnemy()
@@ -49,16 +42,11 @@ cEnemy::~cEnemy()
 
 }
 
-void cEnemy::Init(Vector3 position,int route)
+void cEnemy::Init(Vector3 position)
 {
 	AI_STATE = AS_ROAM;
 	this->position = position;
-	if (route == 1)
-	{
-		this->listofwaypoints = listofwaypoints1;
-	}
-	else
-		this->listofwaypoints = listofwaypoints2;
+	setWaypoints();
 	rotation = 0.f;
 	srand((unsigned int)time(NULL));
 }
@@ -74,8 +62,8 @@ void cEnemy::Update(double dt)
 		patrolPath.location = 0;
 
 		route = pathFind(currTile.x, currTile.y,
-			listofwaypoints[patrolPath.location].x,
-			listofwaypoints[patrolPath.location].y);
+			patrolPath.WayPointTileList[patrolPath.location].x,
+			patrolPath.WayPointTileList[patrolPath.location].y);
 	}
 	if ((gotoNavi || gotoRoam) && routeCounter == 0 && routeCounter2 == 0 && routeCounter3 == 0)
 	{
@@ -102,18 +90,18 @@ void cEnemy::Update(double dt)
 	
 		gotoRoam = false;
 
-		if (currTile.x == listofwaypoints[patrolPath.location].x &&
-			currTile.y == listofwaypoints[patrolPath.location].y &&
+		if (currTile.x == patrolPath.WayPointTileList[patrolPath.location].x &&
+			currTile.y == patrolPath.WayPointTileList[patrolPath.location].y &&
 			routeCounter == 0 && rotating == false)
 		{
 			patrolPath.location++;
 
-			if (patrolPath.location >= listofwaypoints1.size())
+			if (patrolPath.location >= patrolPath.WayPointTileList.size())
 				patrolPath.location = 0;
 
 			route = pathFind(currTile.x, currTile.y,
-				listofwaypoints[patrolPath.location].x,
-				listofwaypoints[patrolPath.location].y);
+				patrolPath.WayPointTileList[patrolPath.location].x,
+				patrolPath.WayPointTileList[patrolPath.location].y);
 
 		}
 		if (!MainScene::GetInstance()->player_ptr->sonarList.empty())
@@ -400,6 +388,12 @@ bool cEnemy::executePath(double dt, string& route, float& routeCounter)
 				this->position.x += this->direction.x * dt * speed;
 				this->position.y += -this->direction.y * dt * speed;
 
+				this->topLeft.x += this->direction.x * dt * speed;
+				this->topLeft.y += -this->direction.y * dt * speed;
+
+				this->bottomRight.x += this->direction.x * dt * speed;
+				this->bottomRight.y += -this->direction.y * dt * speed;
+
 				routeCounter += (this->direction * dt * speed).Length();
 
 				if (routeCounter >= MainScene::GetInstance()->ML_map.worldSize * 2)
@@ -430,7 +424,17 @@ bool cEnemy::executePath(double dt, string& route, float& routeCounter)
 
 void cEnemy::setWaypoints(void)
 {
-	patrolPath.setWayPoints(4, 100, 101, 102, 103);
+	switch (ID)
+	{
+	case 50:
+		patrolPath.setWayPoints(4, 100, 101, 102, 103);
+		break;
+	case 51:
+		patrolPath.setWayPoints(4, 104, 105, 106, 107);
+		break;
+	default:
+		break;
+	}	
 }
 
 std::string cEnemy::getState(void)
