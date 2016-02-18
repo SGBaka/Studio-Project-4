@@ -55,7 +55,8 @@ private:
 	SceneManager *S_MANAGER;
 
 	double m_dElapsedTime;
-	double m_dAccumulatedTime_Thread;
+	double m_dAccumulatedTime_ThreadOne;
+	double m_dAccumulatedTime_ThreadTwo;
 	/******************************************************************************/
 	/*!
 			int windowWidth:

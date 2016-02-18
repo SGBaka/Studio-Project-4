@@ -328,7 +328,7 @@ void Application::Init()
 	glfwWindowHint(GLFW_BLUE_BITS, win_data->blueBits);
 	glfwWindowHint(GLFW_REFRESH_RATE, win_data->refreshRate);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	
+
 
 
 	FPS = win_data->refreshRate; // FPS of this game
@@ -376,7 +376,8 @@ void Application::Init()
 
 	togglefullscreen = false;
 	m_dElapsedTime = 0.0;
-	m_dAccumulatedTime_Thread = 0.0;
+	m_dAccumulatedTime_ThreadOne = 0.0;
+	m_dAccumulatedTime_ThreadTwo = 0.0;
 
 	S_MANAGER = SceneManager::Instance();
 	S_MANAGER->Init(SceneManager::S_MAIN_MENU_SPLASH);
@@ -395,18 +396,21 @@ void Application::Run()
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!b_quitProgram)
 	{
-		m_dAccumulatedTime_Thread += m_timer.getElapsedTime();
+		m_dElapsedTime = m_timer.getElapsedTime();
+		m_dAccumulatedTime_ThreadOne += m_dElapsedTime;
+		m_dAccumulatedTime_ThreadTwo += m_dElapsedTime;
 
-		//if (!frameLimiter || (m_dAccumulatedTime_Thread > 0.016 && frameLimiter))
-		//{
-		if (!loaddone)
+		if ((m_dAccumulatedTime_ThreadOne > 0.016))
 		{
-			loaddone = true;
-			m_dAccumulatedTime_Thread = 0.0;
+			if (!loaddone)
+			{
+				loaddone = true;
+				m_dAccumulatedTime_ThreadOne = 0.0;
+			}
+			//S_MANAGER->Update(m_dAccumulatedTime_ThreadOne);
+			S_MANAGER->Update(m_dElapsedTime);
+			m_dAccumulatedTime_ThreadOne = 0.0;
 		}
-		S_MANAGER->Update(m_dAccumulatedTime_Thread);
-		m_dAccumulatedTime_Thread = 0.0;
-		//}
 
 		S_MANAGER->Render();
 
@@ -424,7 +428,7 @@ void Application::Run()
 
 		/*if (IsKeyPressed(VK_ESCAPE))
 		{
-			b_quitProgram = true;
+		b_quitProgram = true;
 		}*/
 
 		static bool t1 = false;
@@ -481,7 +485,7 @@ void Application::Run()
 				glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 				m_window = glfwCreateWindow(i_WINDOW_WIDTH, i_WINDOW_HEIGHT, WIN_NAME, NULL, NULL);
 				glfwMakeContextCurrent(m_window);
-				
+
 				S_MANAGER->getCurScene()->InitShaders();
 				S_MANAGER->getCurScene()->Init();
 			}
