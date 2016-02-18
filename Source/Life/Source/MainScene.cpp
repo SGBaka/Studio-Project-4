@@ -26,6 +26,7 @@ Main menu for the openGL framework
 #include "Pathfinding.h"
 #include "Servant.h"
 #include "Player.h"
+
 //#include <vld.h>
 
 MainScene* MainScene::Instance = NULL;
@@ -319,6 +320,9 @@ bool MainScene::InitLevel(int level)
 				GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
 				GO->enableCollision = true;
 				GO->mesh = P_meshArray[E_GEO_WALL_1];
+				GO->name = "WALL";
+				GO->topLeft = GO->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
+				GO->bottomRight = GO->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
 				GO_List.push_back(GO);
 			}
 		}
@@ -598,6 +602,26 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	//{
 	//	v3_2DCam.x += static_cast<float>(dt) * f_camSpeed;
 	//}
+
+	for (int i = 0; i < player_ptr->sonarList.size(); ++i)
+	{
+		for (int j = 0; j < player_ptr->sonarList[i]->segmentList.size(); ++j)
+		{
+			if (player_ptr->sonarList[i]->segmentList[j]->active)
+			{
+				for (int k = 0; k < GO_List.size(); ++k)
+				{
+					if (GO_List[k]->name == "WALL" &&
+						checkForCollision(player_ptr->sonarList[i]->segmentList[j]->posStart,
+									      player_ptr->sonarList[i]->segmentList[j]->posEnd,
+										  GO_List[k]->topLeft, GO_List[k]->bottomRight))
+					{
+						player_ptr->sonarList[i]->segmentList[j]->active = false;
+					}
+				}
+			}
+		}
+	}
 }
 
 /******************************************************************************/
@@ -1158,7 +1182,7 @@ void MainScene::RenderGO()
 	{
 		for (int j = 0; j < player_ptr->sonarList[i]->segmentList.size(); ++j)
 		{
-			if (player_ptr->sonarList[i]->segmentList[i]->active)
+			if (player_ptr->sonarList[i]->segmentList[j]->active)
 			{
 				modelStack.PushMatrix();
 				modelStack.Translate(player_ptr->sonarList[i]->segmentList[j]->position);
@@ -1166,6 +1190,22 @@ void MainScene::RenderGO()
 				modelStack.Scale(player_ptr->sonarList[i]->segmentList[j]->scale);
 				RenderMeshOnScreen(player_ptr->sonarList[i]->segmentList[j]->mesh, 100, Color(0, 0, 1));
 				modelStack.PopMatrix();
+
+				////debuging
+
+				//modelStack.PushMatrix();
+				//modelStack.Translate(player_ptr->sonarList[i]->segmentList[j]->posEnd);
+				//modelStack.Rotate(player_ptr->sonarList[i]->segmentList[j]->rotation, 0, 0, 1);
+				//modelStack.Scale(Vector3(1,1,1));
+				//RenderMeshOnScreen(player_ptr->sonarList[i]->segmentList[j]->mesh, 100, Color(0, 0, 1));
+				//modelStack.PopMatrix();
+
+				//modelStack.PushMatrix();
+				//modelStack.Translate(player_ptr->sonarList[i]->segmentList[j]->posStart);
+				//modelStack.Rotate(player_ptr->sonarList[i]->segmentList[j]->rotation, 0, 0, 1);
+				//modelStack.Scale(Vector3(1, 1, 1));
+				//RenderMeshOnScreen(player_ptr->sonarList[i]->segmentList[j]->mesh, 100, Color(0, 0, 1));
+				//modelStack.PopMatrix();
 			}
 		}
 	}
@@ -1219,6 +1259,58 @@ void MainScene::CO_drop(CharacterObject *CO)
 	CO->Holding->position = CO->position;
 	CO->Holding->active = true;
 	CO->Holding = NULL;
+}
+
+bool MainScene::checkForCollision(Vector3 position_start, Vector3 position_end, Vector3 top_left, Vector3 bottom_right, Vector3 &Hit)
+{
+	Vector3 ObjectTopLeft = top_left;
+	Vector3 ObjectBottomRight = bottom_right;
+	if (position_end.x < ObjectBottomRight.x && position_start.x < ObjectBottomRight.x)
+		return false;
+	if (position_end.x > ObjectTopLeft.x && position_start.x > ObjectTopLeft.x)
+		return false;
+	if (position_end.y < ObjectBottomRight.y && position_start.y < ObjectBottomRight.y)
+		return false;
+	if (position_end.y > ObjectTopLeft.y && position_start.y > ObjectTopLeft.y)
+		return false;
+	
+	if (position_start.x > ObjectBottomRight.x && position_start.x < ObjectTopLeft.x &&
+		position_start.y > ObjectBottomRight.y && position_start.y < ObjectTopLeft.y)
+	{
+		Hit = position_start;
+		return true;
+	}
+	if ((GetIntersection(position_start.x - ObjectBottomRight.x, position_end.x - ObjectBottomRight.x, position_start,
+		position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 1))
+		|| (GetIntersection(position_start.y - ObjectBottomRight.y, position_end.y - ObjectBottomRight.y, position_start,
+		position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 2))
+		|| (GetIntersection(position_start.z - ObjectBottomRight.z, position_end.z - ObjectBottomRight.z, position_start,
+		position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 3))
+		|| (GetIntersection(position_start.x - ObjectTopLeft.x, position_end.x - ObjectTopLeft.x, position_start,
+		position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 1))
+		|| (GetIntersection(position_start.y - ObjectTopLeft.y, position_end.y - ObjectTopLeft.y, position_start,
+		position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 2))
+		|| (GetIntersection(position_start.z - ObjectTopLeft.z, position_end.z - ObjectTopLeft.z, position_start,
+		position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 3)))
+		return true;
+
+	return false;
+}
+
+int MainScene::GetIntersection(float fDist1, float fDist2, Vector3 P1, Vector3 P2, Vector3 &Hit)
+{
+	if ((fDist1 * fDist2) >= 0.0f) return 0;
+	if (fDist1 == fDist2) return 0;
+	Hit = P1 + (P2 - P1) * (-fDist1 / (fDist2 - fDist1));
+	return 1;
+}
+
+int MainScene::InBox(Vector3 Hit, Vector3 B1, Vector3 B2, const int Axis)
+{
+	if (Axis == 1 && Hit.z > B1.z && Hit.z < B2.z && Hit.y > B1.y && Hit.y < B2.y) return 1;
+	if (Axis == 2 && Hit.z > B1.z && Hit.z < B2.z && Hit.x > B1.y && Hit.x < B2.x) return 1;
+	if (Axis == 3 && Hit.x > B1.x && Hit.x < B2.x && Hit.y > B1.y && Hit.y < B2.y) return 1;
+	return 0;
 }
 
 /******************************************************************************/

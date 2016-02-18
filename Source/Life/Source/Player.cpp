@@ -56,6 +56,13 @@ void Player::Update(double dt)
 	for (int i = 0; i < sonarList.size(); ++i)
 	{
 		sonarList[i]->Update(dt);
+
+		if (sonarList[i]->segmentList.empty())
+		{
+			delete sonarList[i];
+			sonarList.erase(sonarList.begin() + i);
+		}
+
 	}
 
 	for (int i = 0; i < moveToDir.size(); ++i)

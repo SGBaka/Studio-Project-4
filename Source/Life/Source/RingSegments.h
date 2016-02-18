@@ -13,6 +13,10 @@ public:
 	void Init(Vector3 position);
 	void Update(double dt);
 
+	Vector3 posStart, posEnd;
+	
+	Vector3 endTrans, startTrans;
+
 private:
 
 };

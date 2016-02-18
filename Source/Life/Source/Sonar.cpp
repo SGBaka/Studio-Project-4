@@ -2,7 +2,7 @@
 
 Sonar::Sonar()
 : numSides(0)
-, radius(1)
+, radius(1)  
 , rotationCounter(0)
 , maxRad(0)
 {
@@ -50,6 +50,25 @@ void Sonar::GenerateSonar(Vector3 position)
 		RS->Init(Vector3(vertexStorage[i].x, vertexStorage[i].y, 0));
 		RS->scale.Set(lengthOfSide / 2, 1, 1);
 		RS->rotation = rotationCounter;
+
+		RS->posStart = RS->position + (lengthOfSide / 2);
+		RS->posEnd = RS->position - (lengthOfSide / 2);
+		RS->startTrans = RS->posStart - RS->position;
+		RS->endTrans = RS->posEnd - RS->position;
+
+		double angle = Math::DegreeToRadian(RS->rotation);
+
+		double oldStartX = RS->startTrans.x;
+		RS->startTrans.x = RS->startTrans.x * cos(angle) - RS->startTrans.y * sin(angle);
+		RS->startTrans.y = oldStartX * sin(angle) + RS->startTrans.y * cos(angle);
+
+		double oldEndX = RS->endTrans.x;
+		RS->endTrans.x = RS->endTrans.x * cos(angle) - RS->endTrans.y * sin(angle);
+		RS->endTrans.y = oldEndX * sin(angle) + RS->endTrans.y * cos(angle);
+
+		RS->posStart = RS->startTrans + RS->position;
+		RS->posEnd = RS->endTrans + RS->position;
+
 		RS->mesh = MainScene::GetInstance()->P_meshArray[MainScene::E_GEO_LINE];
 		segmentList.push_back(RS);
 	}
@@ -61,7 +80,6 @@ void Sonar::Update(double dt)
 	if (radius >= maxRad)
 		segmentList.clear();
 
-
 	radius += dt * 100;
 
 	for (int i = 0; i < segmentList.size(); ++i)
@@ -70,5 +88,23 @@ void Sonar::Update(double dt)
 		segmentList[i]->position.y = radius * sin(2 * Math::PI * i / numSides) + position.y;
 		float lengthOfSide = 2 * radius * tan(Math::PI / numSides);
 		segmentList[i]->scale.Set(lengthOfSide / 2, 1, 1);
+
+		segmentList[i]->posStart = segmentList[i]->position + (lengthOfSide / 2);
+		segmentList[i]->posEnd = segmentList[i]->position - (lengthOfSide / 2);
+		segmentList[i]->startTrans = segmentList[i]->posStart - segmentList[i]->position;
+		segmentList[i]->endTrans = segmentList[i]->posEnd - segmentList[i]->position;
+
+		double angle = Math::DegreeToRadian(segmentList[i]->rotation);
+
+		double oldStartX = segmentList[i]->startTrans.x;
+		segmentList[i]->startTrans.x = segmentList[i]->startTrans.x * cos(angle) - segmentList[i]->startTrans.y * sin(angle);
+		segmentList[i]->startTrans.y = oldStartX * sin(angle) + segmentList[i]->startTrans.y * cos(angle);
+
+		double oldEndX = segmentList[i]->endTrans.x;
+		segmentList[i]->endTrans.x = segmentList[i]->endTrans.x * cos(angle) - segmentList[i]->endTrans.y * sin(angle);
+		segmentList[i]->endTrans.y = oldEndX * sin(angle) + segmentList[i]->endTrans.y * cos(angle);
+
+		segmentList[i]->posStart = segmentList[i]->startTrans + segmentList[i]->position;
+		segmentList[i]->posEnd = segmentList[i]->endTrans + segmentList[i]->position;
 	}
 }

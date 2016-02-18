@@ -285,6 +285,11 @@ private:
 	void RenderUI();
 	void RenderGO();
 
+	//Collision
+	bool checkForCollision(Vector3 position_start, Vector3 position_end, Vector3 top_left, Vector3 bottom_right, Vector3 &Hit = Vector3(0, 0, 0));
+	int GetIntersection(float fDist1, float fDist2, Vector3 P1, Vector3 P2, Vector3 &Hit);
+	int InBox(Vector3 Hit, Vector3 B1, Vector3 B2, const int Axis);
+
 	//Other
 	Vector3 v3_2DCam;
 
