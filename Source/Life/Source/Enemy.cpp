@@ -17,6 +17,7 @@ cEnemy::cEnemy()
 , gotoServe(false)
 , gotoNavi(false)
 , gotoRoam(false)
+, gotochase(false)
 , hasSetDest2(false)
 {
 	name = "Enemy";
@@ -98,7 +99,7 @@ void cEnemy::Update(double dt)
 	{
 
 	case cEnemy::AS_ROAM:
-
+	
 		gotoRoam = false;
 
 		if (currTile.x == listofwaypoints[patrolPath.location].x &&
@@ -109,26 +110,35 @@ void cEnemy::Update(double dt)
 
 			if (patrolPath.location >= listofwaypoints1.size())
 				patrolPath.location = 0;
-				
+
 			route = pathFind(currTile.x, currTile.y,
 				listofwaypoints[patrolPath.location].x,
 				listofwaypoints[patrolPath.location].y);
 
 		}
-		//cout << sonar.GetSonarRadius() << endl;
-		//if (GetDistance(MainScene::GetInstance()->player_ptr->position.x, MainScene::GetInstance()->player_ptr->position.y, position.x, position.y) < sonar.GetSonarRadius())
+		if (!MainScene::GetInstance()->player_ptr->sonarList.empty())
 		{
-		//	cout << "hit" << endl;
+			for (int i = 0; i < MainScene::GetInstance()->player_ptr->sonarList.size(); i++)
+			{
+				if (MainScene::GetInstance()->player_ptr->sonarList[i] != NULL)
+				{
+					if (GetDistance(MainScene::GetInstance()->player_ptr->position.x, MainScene::GetInstance()->player_ptr->position.y, position.x, position.y) < MainScene::GetInstance()->player_ptr->sonarList[i]->GetSonarRadius())
+					{
+						gotochase = true;
+						cout << "detected!" << endl;
+					}
+				}
+			}
 		}
 		executePath(dt, route, routeCounter);
 
-		if (gotoServe && routeCounter == 0)
+		if (gotochase && routeCounter == 0)
 		{
+			AI_STATE = AS_CHASE;
 			route2 = "";
 			routeCounter2 = 0;
 			hasSetDest = false;
 		}
-
 		break;
 	default:
 		break;

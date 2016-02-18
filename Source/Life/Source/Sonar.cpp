@@ -108,3 +108,7 @@ void Sonar::Update(double dt)
 		segmentList[i]->posEnd = segmentList[i]->endTrans + segmentList[i]->position;
 	}
 }
+float Sonar::GetSonarRadius()
+{
+	return radius;
+}

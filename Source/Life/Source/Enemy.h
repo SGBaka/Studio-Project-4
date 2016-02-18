@@ -59,7 +59,7 @@ private:
 
 	bool hasSetDest, hasSetDest2;
 
-	bool gotoServe, gotoNavi, gotoRoam;
+	bool gotoServe, gotoNavi, gotoRoam,gotochase;
 	Sonar sonar;
 	std::vector<Vector3> listofwaypoints;
 	std::vector<Vector3> listofwaypoints1;

@@ -18,7 +18,7 @@ public:
 	void GenerateSonar(Vector3 position);
 	void Init(float radius, int numSides);
 	void Update(double dt);
-
+	float GetSonarRadius();
 	vector<RingSegments*> segmentList;
 
 private:
