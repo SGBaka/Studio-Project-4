@@ -122,6 +122,9 @@ void SceneManager::push(SCENES newScene)
 	case SceneManager::S_GAME:
 		scene = MainScene::GetInstance();
 		break;
+	case SceneManager::S_EDITOR:
+		scene = MapScene::GetInstance();
+		break;
 	case SceneManager::S_PAUSE_MENU:
 	{
 		scene = new MenuScene();
@@ -174,6 +177,11 @@ void SceneManager::pop(bool reloadscene)
 			if (scene == MainScene::GetInstance())
 			{
 				MainScene::Destroy();
+				scene = NULL;
+			}
+			if (scene == MapScene::GetInstance())
+			{
+				MapScene::Destroy();
 				scene = NULL;
 			}
 			else

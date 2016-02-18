@@ -28,6 +28,7 @@ public:
 		S_MAIN_MENU,
 		S_PAUSE_MENU,
 		S_GAME,
+		S_EDITOR,
 	};
 	
 	void Init(SCENES firstScene = S_MAIN_MENU);
