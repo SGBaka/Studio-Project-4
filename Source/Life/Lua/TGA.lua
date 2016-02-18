@@ -30,5 +30,6 @@ tile = {
     enemy = "Tile//Servant.tga",
     player = "Tile//Pilot.tga",
     copilot = "Tile//CoPilot.tga",
-    item_1 = "Tile//obj.tga"
+    item_1 = "Tile//obj.tga",
+    border = "Tile//border.tga"
 }
