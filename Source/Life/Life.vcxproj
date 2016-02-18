@@ -116,7 +116,7 @@
     <ClCompile Include="Source\RingSegments.cpp" />
     <ClCompile Include="Source\SaveHandler.cpp" />
     <ClCompile Include="Source\SceneManager.cpp" />
-    <ClCompile Include="Source\Servant.cpp" />
+    <ClCompile Include="Source\Enemy.cpp" />
     <ClCompile Include="Source\shader.cpp" />
     <ClCompile Include="Source\Sonar.cpp" />
     <ClCompile Include="Source\SoundEngine.cpp" />
@@ -139,7 +139,7 @@
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\RingSegments.h" />
     <ClInclude Include="Source\SceneManager.h" />
-    <ClInclude Include="Source\Servant.h" />
+    <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\Sonar.h" />
     <ClInclude Include="Source\SoundEngine.h" />
     <ClInclude Include="Source\SpecialObject.h" />

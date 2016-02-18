@@ -24,7 +24,7 @@ Main menu for the openGL framework
 #include "Utility.h"
 #include <sstream>
 #include "Pathfinding.h"
-#include "Servant.h"
+#include "Enemy.h"
 #include "Player.h"
 
 //#include <vld.h>
@@ -161,8 +161,11 @@ void MainScene::InitMeshList()
 	P_meshArray[E_GEO_WALL_1] = MeshBuilder::GenerateQuad("Wall Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_WALL_1]->textureID[0] = LoadTGA(script.getGameData("image.tile.wall").c_str(), true);
 
-	P_meshArray[E_GEO_PLAYER] = MeshBuilder::GenerateQuad("AI Servant", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_PLAYER]->textureID[0] = LoadTGA(script.getGameData("image.tile.servant").c_str(), true);
+	P_meshArray[E_GEO_PLAYER] = MeshBuilder::GenerateQuad("AI Player", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_PLAYER]->textureID[0] = LoadTGA(script.getGameData("image.tile.player").c_str(), true);
+
+	P_meshArray[E_GEO_ENEMY] = MeshBuilder::GenerateQuad("AI Enemy", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_ENEMY]->textureID[0] = LoadTGA(script.getGameData("image.tile.enemy").c_str(), true);
 
 	P_meshArray[E_GEO_LINE] = MeshBuilder::GenerateQuad("Ring Segment", Color(1.f, 0.f, 0.f), 1, 1);
 }
@@ -308,7 +311,29 @@ bool MainScene::InitLevel(int level)
 					player_ptr = player;
 					GO_List.push_back(player);
 				}
+				if (ML_map.map_data[y][x] == "E1")
+				{
+					cEnemy *enemy;
+					enemy = new cEnemy;
+					enemy->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0),1);
+					enemy->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
+					enemy->mesh = P_meshArray[E_GEO_ENEMY];
+					enemy->currTile.Set(x, y);
 
+				
+					GO_List.push_back(enemy);
+				}
+				if (ML_map.map_data[y][x] == "E2")
+				{
+					cEnemy *enemy;
+					enemy = new cEnemy;
+					enemy->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0), 2);
+					enemy->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
+					enemy->mesh = P_meshArray[E_GEO_ENEMY];
+					enemy->currTile.Set(x, y);
+
+					GO_List.push_back(enemy);
+				}
 				continue;
 			}
 

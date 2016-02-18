@@ -198,9 +198,6 @@
     <ClCompile Include="Source\CharacterObject.cpp">
       <Filter>Source Files\AI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Servant.cpp">
-      <Filter>Source Files\AI</Filter>
-    </ClCompile>
     <ClCompile Include="Source\SpecialObject.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
@@ -215,6 +212,8 @@
     </ClCompile>
     <ClCompile Include="Source\LuaScript.cpp">
       <Filter>Source Files\Lua</Filter>
+    <ClCompile Include="Source\Enemy.cpp">
+      <Filter>Source Files\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -326,9 +325,6 @@
     <ClInclude Include="Source\CharacterObject.h">
       <Filter>Header Files\AI</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Servant.h">
-      <Filter>Header Files\AI</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SpecialObject.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
@@ -343,6 +339,9 @@
     </ClInclude>
     <ClInclude Include="Source\RingSegments.h">
       <Filter>Header Files\Sonar</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy.h">
+      <Filter>Header Files\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

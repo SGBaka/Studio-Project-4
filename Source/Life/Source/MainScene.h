@@ -60,7 +60,7 @@ public:
 		E_GEO_FLOOR_1,
 		E_GEO_WALL_1,
 		E_GEO_PLAYER,
-
+		E_GEO_ENEMY,
 		//Projectile
 		E_GEO_LINE,
 
@@ -158,9 +158,10 @@ public:
 
 	Vector3 calTilePos(Vector3 Worldpos);
 	Vector3 calWorldPos(Vector3 Tilepos);
+	Player *player_ptr;
 
 private:
-	Player *player_ptr;
+	
 
 	// Static Constants
 	/******************************************************************************/
