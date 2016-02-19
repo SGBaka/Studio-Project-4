@@ -5,7 +5,7 @@ Sonar::Sonar()
 , radius(1)  
 , rotationCounter(0)
 , maxRad(0)
-, speed(2)
+, speed(1.5)
 {
 
 }

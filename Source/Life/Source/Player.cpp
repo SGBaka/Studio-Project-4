@@ -4,7 +4,7 @@ Player::Player()
 : moveSpeed(5)
 , sonarCooldown(1)
 , sonarTimer(sonarCooldown)
-, specialCooldown(5)
+, specialCooldown(2)
 , specialTimer(specialCooldown)
 , specialDuration(0.2)
 , specialROF(0.01)
@@ -29,6 +29,12 @@ Player::~Player()
 void Player::Init(Vector3 position)
 {
 	this->position = position;
+
+	LuaScript playerScript("character");
+	sonarCooldown = playerScript.get<float>("player.sonar_cooldown");
+	sonarTimer = sonarCooldown;
+	specialCooldown = playerScript.get<float>("player.special_cooldown");
+	specialTimer = specialCooldown;
 }
 
 
@@ -47,11 +53,10 @@ void Player::Update(double dt)
 		if (Application::IsKeyPressed('F') && sonarTimer >= sonarCooldown)
 		{
 			LuaScript playerScript("character");
-
 			sonarTimer = 0;
 			Sonar *SNR;
 			SNR = new Sonar();
-			SNR->Init(playerScript.get<float>("player.sonar_radius"), playerScript.get<int>("player.sonar_sides"));
+			SNR->Init(playerScript.get<float>("player.sonar_radius"), playerScript.get<int>("player.sonar_sides"), playerScript.get<float>("player.sonar_speed"));
 			SNR->GenerateSonar(position);
 			sonarList.push_back(SNR);
 		}
@@ -70,7 +75,7 @@ void Player::Update(double dt)
 			specialTimer2 = 0;
 			Sonar *SNR;
 			SNR = new Sonar();
-			SNR->Init(playerScript.get<float>("player.special_radius"), playerScript.get<int>("player.special_sides"));
+			SNR->Init(playerScript.get<float>("player.special_radius"), playerScript.get<int>("player.special_sides"), playerScript.get<float>("player.special_speed"));
 			SNR->GenerateSonar(specialPos);
 			sonarList.push_back(SNR);
 		}
