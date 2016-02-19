@@ -97,7 +97,7 @@ void MainScene::InitShaders()
 	Application::SetCursor(true);
 	// Init VBO here
 	// Set background color to whatever
-	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	//Enable depth buffer and depth testing
 	glEnable(GL_DEPTH_TEST);
@@ -1235,24 +1235,8 @@ void MainScene::RenderGO()
 				modelStack.Translate(player_ptr->sonarList[i]->segmentList[j]->position);
 				modelStack.Rotate(player_ptr->sonarList[i]->segmentList[j]->rotation, 0, 0, 1);
 				modelStack.Scale(player_ptr->sonarList[i]->segmentList[j]->scale);
-				RenderMeshOnScreen(player_ptr->sonarList[i]->segmentList[j]->mesh, 100, Color(0, 0, 1));
+				RenderMeshOnScreen(player_ptr->sonarList[i]->segmentList[j]->mesh, 13, player_ptr->sonarList[i]->segmentList[j]->segmentColor);
 				modelStack.PopMatrix();
-
-				////debuging
-
-				//modelStack.PushMatrix();
-				//modelStack.Translate(player_ptr->sonarList[i]->segmentList[j]->posEnd);
-				//modelStack.Rotate(player_ptr->sonarList[i]->segmentList[j]->rotation, 0, 0, 1);
-				//modelStack.Scale(Vector3(1,1,1));
-				//RenderMeshOnScreen(player_ptr->sonarList[i]->segmentList[j]->mesh, 100, Color(0, 0, 1));
-				//modelStack.PopMatrix();
-
-				//modelStack.PushMatrix();
-				//modelStack.Translate(player_ptr->sonarList[i]->segmentList[j]->posStart);
-				//modelStack.Rotate(player_ptr->sonarList[i]->segmentList[j]->rotation, 0, 0, 1);
-				//modelStack.Scale(Vector3(1, 1, 1));
-				//RenderMeshOnScreen(player_ptr->sonarList[i]->segmentList[j]->mesh, 100, Color(0, 0, 1));
-				//modelStack.PopMatrix();
 			}
 		}
 	}
@@ -1325,10 +1309,10 @@ bool MainScene::checkForCollision(Vector3 position_start, Vector3 position_end, 
 	Vector3 ObjectTopLeft = top_left;
 	Vector3 ObjectBottomRight = bottom_right;
 	
-	if ((position_start.x < ObjectBottomRight.x && position_start.x > ObjectTopLeft.x &&
-		position_start.y > ObjectBottomRight.y && position_start.y < ObjectTopLeft.y) ||
-		(position_end.x < ObjectBottomRight.x && position_end.x > ObjectTopLeft.x &&
-		position_end.y > ObjectBottomRight.y && position_end.y < ObjectTopLeft.y))
+	if ((position_start.x <= ObjectBottomRight.x && position_start.x >= ObjectTopLeft.x &&
+		position_start.y >= ObjectBottomRight.y && position_start.y <= ObjectTopLeft.y) ||
+		(position_end.x <= ObjectBottomRight.x && position_end.x >= ObjectTopLeft.x &&
+		position_end.y >= ObjectBottomRight.y && position_end.y <= ObjectTopLeft.y))
 	{
 		Hit = position_start;
 		return true;

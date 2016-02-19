@@ -5,6 +5,7 @@ RingSegments::RingSegments()
 , posEnd(0,0,0)
 , endTrans(0,0,0)
 , startTrans(0,0,0)
+, segmentColor(1,1,1)
 {
 
 }

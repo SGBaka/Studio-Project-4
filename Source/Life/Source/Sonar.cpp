@@ -5,6 +5,7 @@ Sonar::Sonar()
 , radius(1)  
 , rotationCounter(0)
 , maxRad(0)
+, speed(2)
 {
 
 }
@@ -14,10 +15,11 @@ Sonar::~Sonar()
 
 }
 
-void Sonar::Init(float radius, int numSides)
+void Sonar::Init(float radius, int numSides, float speed)
 {
 	this->maxRad = radius;
 	this->numSides = numSides;
+	this->speed = speed;
 }
 
 void Sonar::GenerateSonar(Vector3 position)
@@ -30,8 +32,8 @@ void Sonar::GenerateSonar(Vector3 position)
 	for (int i = 0; i < numSides; ++i)
 	{
 		Vector3 temp;
-		temp.x = radius * cos(2 * Math::PI * i / numSides) + position.x;
-		temp.y = radius * sin(2 * Math::PI * i / numSides) + position.y;
+		temp.x = radius * cos(Math::TWO_PI * (i / numSides)) + position.x;
+		temp.y = radius * sin(Math::TWO_PI * (i / numSides)) + position.y;
 		vertexStorage.push_back(temp);
 	}
 
@@ -44,6 +46,9 @@ void Sonar::GenerateSonar(Vector3 position)
 			rotationCounter = 90;
 		else
 			rotationCounter -= interiorAngle;
+
+		if (rotationCounter <= -360)
+			rotationCounter += 360;
 		
 		RingSegments *RS;
 		RS = new RingSegments();
@@ -80,12 +85,16 @@ void Sonar::Update(double dt)
 	if (radius >= maxRad)
 		segmentList.clear();
 
-	radius += dt * 100;
+	radius += speed;
 
 	for (int i = 0; i < segmentList.size(); ++i)
 	{
 		if (segmentList[i]->active)
 		{
+			segmentList[i]->segmentColor.r = (1 - (radius / maxRad));
+			segmentList[i]->segmentColor.g = (1 - (radius / maxRad));
+			segmentList[i]->segmentColor.b = (1 - (radius / maxRad));
+
 			segmentList[i]->position.x = radius * cos(2 * Math::PI * i / numSides) + position.x;
 			segmentList[i]->position.y = radius * sin(2 * Math::PI * i / numSides) + position.y;
 			float lengthOfSide = 2 * radius * tan(Math::PI / numSides);

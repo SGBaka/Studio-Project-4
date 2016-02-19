@@ -2,6 +2,7 @@
 #define RINGSEGMENTS_H
 
 #include "GameObject.h"
+#include "Vertex.h"
 
 class RingSegments : public GameObject
 {
@@ -16,6 +17,8 @@ public:
 	Vector3 posStart, posEnd;
 	
 	Vector3 endTrans, startTrans;
+
+	Color segmentColor;
 
 private:
 

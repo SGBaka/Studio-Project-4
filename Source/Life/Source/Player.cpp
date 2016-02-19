@@ -4,6 +4,13 @@ Player::Player()
 : moveSpeed(5)
 , sonarCooldown(1)
 , sonarTimer(sonarCooldown)
+, specialCooldown(5)
+, specialTimer(specialCooldown)
+, specialDuration(0.2)
+, specialROF(0.01)
+, specialTimer2(specialROF)
+, specialCounter(0)
+, isSpecial(false)
 {
 	for (int i = 0; i < 4; ++i)
 	{
@@ -48,10 +55,47 @@ void Player::Update(double dt)
 			SNR->GenerateSonar(position);
 			sonarList.push_back(SNR);
 		}
+		else if (Application::IsKeyPressed('G') && specialTimer >= specialCooldown && !isSpecial)
+		{
+			specialPos = position;
+			specialTimer = 0;
+			isSpecial = true;
+		}
+	}
+	if (isSpecial && specialCounter < specialDuration)
+	{
+		if (specialTimer2 >= specialROF)
+		{
+			LuaScript playerScript("character");
+			specialTimer2 = 0;
+			Sonar *SNR;
+			SNR = new Sonar();
+			SNR->Init(playerScript.get<float>("player.special_radius"), playerScript.get<int>("player.special_sides"));
+			SNR->GenerateSonar(specialPos);
+			sonarList.push_back(SNR);
+		}
 	}
 
 	if (sonarTimer < sonarCooldown)
 		sonarTimer += dt;
+
+	if (specialTimer < specialCooldown)
+		specialTimer += dt;
+
+	if (specialTimer2 < specialROF && isSpecial)
+		specialTimer2 += dt;
+
+	if (isSpecial)
+		specialCounter += dt;
+
+	if (specialCounter >= specialDuration)
+	{
+		isSpecial = false;
+		specialCounter = 0;
+		specialTimer2 = 0;
+		specialPos.SetZero();
+	}
+	
 
 	for (int i = 0; i < sonarList.size(); ++i)
 	{
