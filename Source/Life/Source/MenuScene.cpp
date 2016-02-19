@@ -260,6 +260,7 @@ Initializes menu
 void MenuScene::InitMenu(void)
 {
 	TextButton* S_MB;
+	Button *m_B;
 	UIColor.Set(0.0f, 0.0f, 0.0f);
 	UIColorPressed.Set(0.6511f, 0.0611f, 0.5778f);
 
@@ -275,6 +276,7 @@ void MenuScene::InitMenu(void)
 	transcomplete = false;
 	LuaScript buttonScript("button");
 
+	// Option Menu
 	int total_option = buttonScript.get<int>("option.total_option");
 	for (int i = 1; i <= total_option; i++)
 	{
@@ -283,7 +285,7 @@ void MenuScene::InitMenu(void)
 		int total_button = buttonScript.get<int>(buttonName + "total_button");
 		for (int j = 1; j <= total_button; j++)
 		{
-			buttonName = "option.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".button_" + std::to_string(static_cast<unsigned long long>(j)) + ".";
+			buttonName = "option.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".textbutton_" + std::to_string(static_cast<unsigned long long>(j)) + ".";
 
 			S_MB = new TextButton;
 			S_MB->pos.Set(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
@@ -294,6 +296,7 @@ void MenuScene::InitMenu(void)
 		}
 	}
 
+	// Level Selection Menu
 	total_option = buttonScript.get<int>("main_selection.total_option");
 	for (int i = 1; i <= total_option; i++)
 	{
@@ -307,10 +310,11 @@ void MenuScene::InitMenu(void)
 		v_textButtonList.push_back(S_MB);
 	}
 
+	// Main Menu
 	int total_button = buttonScript.get<int>("main_selection.option_1.total_button");
 	for (int j = 1; j <= total_button; j++)
 	{
-		std::string buttonName = "main_selection.option_1.button_" + std::to_string(static_cast<unsigned long long>(j)) + ".";
+		std::string buttonName = "main_selection.option_1.textbutton_" + std::to_string(static_cast<unsigned long long>(j)) + ".";
 
 		S_MB = new TextButton;
 		S_MB->pos.Set(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
@@ -324,7 +328,7 @@ void MenuScene::InitMenu(void)
 	total_button = buttonScript.get<int>("main.total_button");
 	for (int i = 1; i <= total_button; i++)
 	{
-		std::string buttonName = "main.button_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
+		std::string buttonName = "main.textbutton_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 
 		S_MB = new TextButton;
 		S_MB->pos.Set(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
@@ -497,14 +501,6 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 		break;
 
 	case MenuScene::MT_MAIN_MENU_OPTION:
-		if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
-		{
-			bLButtonState = true;
-		}
-		if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
-		{
-			bLButtonState = false;
-		}
 		break;
 	case MenuScene::MT_MAIN_MENU:
 	case MenuScene::MT_MAIN_MENU_SPLASH:
@@ -525,9 +521,10 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 					 if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
 					 {
 						 bLButtonState = false;
+
 						 LuaScript nameScript("button");
 
-						 if (FetchTB(nameScript.get<std::string>("main.button_1.text"))->active)
+						 if (FetchTB(nameScript.get<std::string>("main.textbutton_1.text"))->active)
 						 {
 							 PREV_STATE = MENU_STATE;
 							 MENU_STATE = E_M_SELECTION;
@@ -536,7 +533,7 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 							 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
 							 transcomplete = false;
 						 }
-						 else if (FetchTB(nameScript.get<std::string>("main.button_2.text"))->active)
+						 else if (FetchTB(nameScript.get<std::string>("main.textbutton_2.text"))->active)
 						 {
 							 PREV_STATE = MENU_STATE;
 							 MENU_STATE = E_M_OPTIONS;
@@ -545,7 +542,13 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 							 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
 							 transcomplete = false;
 						 }
-						 else if (FetchTB(nameScript.get<std::string>("main.button_3.text"))->active)
+						 else if (FetchTB(nameScript.get<std::string>("main.textbutton_3.text"))->active)
+						 {
+							 //PREV_STATE = MENU_STATE;
+							 //MENU_STATE = E_M_LOADING;
+							 SceneManager::Instance()->replace(SceneManager::S_EDITOR);
+						 }
+						 else if (FetchTB(nameScript.get<std::string>("main.textbutton_4.text"))->active)
 						 {
 							 Application::closeApplication();
 						 }
@@ -568,20 +571,19 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 	{
 	case E_M_SELECTION:
 	{
-						  static bool isEscPressed = false;
-						  if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
+						  static bool mRButtonPressed = false;
+						  if (Application::IsKeyPressed(VK_RBUTTON) && !mRButtonPressed)
 						  {
-							  isEscPressed = true;
+							  mRButtonPressed = true;
 						  }
-						  else if (!Application::IsKeyPressed(VK_ESCAPE) && isEscPressed)
+						  else if (!Application::IsKeyPressed(VK_RBUTTON) && mRButtonPressed)
 						  {
-							  isEscPressed = false;
+							  mRButtonPressed = false;
 
 							  SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
 							  PREV_STATE = MENU_STATE;
 							  MENU_STATE = E_M_MAIN;
 							  setMenu(MT_MAIN_MENU);
-							  //InitMenu();
 							  transcomplete = false;
 						  }
 
@@ -597,37 +599,33 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 
 							  if (FetchTB(nameScript.get<std::string>("main_selection.option_1.text"))->active)
 							  {
-								  SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
+								  //SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
+								  //PREV_STATE = MENU_STATE;
+								  //MENU_STATE = E_M_LEVEL;
+								  //setMenu(MT_MAIN_MENU_LEVEL);
+								  //transcomplete = false;
+
 								  PREV_STATE = MENU_STATE;
-								  MENU_STATE = E_M_LEVEL;
-								  setMenu(MT_MAIN_MENU_LEVEL);
-								  //InitMenu();
-								  transcomplete = false;
+								  MENU_STATE = E_M_LOADING;
 							  }
 							  else if (FetchTB(nameScript.get<std::string>("main_selection.option_2.text"))->active)
 							  {
 								  //PREV_STATE = MENU_STATE;
 								  //MENU_STATE = E_M_LOADING;
 							  }
-							  else if (FetchTB(nameScript.get<std::string>("main_selection.option_3.text"))->active)
-							  {
-								  //PREV_STATE = MENU_STATE;
-								  //MENU_STATE = E_M_LOADING;
-								  SceneManager::Instance()->replace(SceneManager::S_EDITOR);
-							  }
 						  }
 						  break;
 	}
 	case E_M_LEVEL:
 	{
-					  static bool isEscPressed = false;
-					  if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
+					  static bool mRButtonPressed = false;
+					  if (Application::IsKeyPressed(VK_RBUTTON) && !mRButtonPressed)
 					  {
-						  isEscPressed = true;
+						  mRButtonPressed = true;
 					  }
-					  else if (!Application::IsKeyPressed(VK_ESCAPE) && isEscPressed)
+					  else if (!Application::IsKeyPressed(VK_RBUTTON) && mRButtonPressed)
 					  {
-						  isEscPressed = false;
+						  mRButtonPressed = false;
 
 						  SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
 						  PREV_STATE = MENU_STATE;
@@ -645,24 +643,25 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 					  if (mLButtonPressed && !Application::IsKeyPressed(VK_LBUTTON))
 					  {
 						  mLButtonPressed = false;
+
 						  LuaScript nameScript("button");
 
-						  if (FetchTB(nameScript.get<std::string>("main_selection.option_1.button_1.text"))->active)
+						  if (FetchTB(nameScript.get<std::string>("main_selection.option_1.textbutton_1.text"))->active)
 						  {
 							  PREV_STATE = MENU_STATE;
 							  MENU_STATE = E_M_LOADING;
 						  }
-						  else if (FetchTB(nameScript.get<std::string>("main_selection.option_1.button_2.text"))->active)
+						  else if (FetchTB(nameScript.get<std::string>("main_selection.option_1.textbutton_2.text"))->active)
 						  {
 							  PREV_STATE = MENU_STATE;
 							  MENU_STATE = E_M_LOADING;
 						  }
-						  else if (FetchTB(nameScript.get<std::string>("main_selection.option_1.button_3.text"))->active)
+						  else if (FetchTB(nameScript.get<std::string>("main_selection.option_1.textbutton_3.text"))->active)
 						  {
 							  PREV_STATE = MENU_STATE;
 							  MENU_STATE = E_M_LOADING;
 						  }
-						  else if (FetchTB(nameScript.get<std::string>("main_selection.option_1.button_4.text"))->active)
+						  else if (FetchTB(nameScript.get<std::string>("main_selection.option_1.textbutton_4.text"))->active)
 						  {
 							  PREV_STATE = MENU_STATE;
 							  MENU_STATE = E_M_LOADING;
@@ -674,14 +673,14 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 
 	case E_M_OPTIONS:
 	{
-						static bool isEscPressed = false;
-						if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
+						static bool mRButtonPressed = false;
+						if (Application::IsKeyPressed(VK_RBUTTON) && !mRButtonPressed)
 						{
-							isEscPressed = true;
+							mRButtonPressed = true;
 						}
-						else if (!Application::IsKeyPressed(VK_ESCAPE) && isEscPressed)
+						else if (!Application::IsKeyPressed(VK_RBUTTON) && mRButtonPressed)
 						{
-							isEscPressed = false;
+							mRButtonPressed = false;
 							if (CUR_MENU == MT_PAUSE_MENU)
 							{
 								assignsave(true);
@@ -705,17 +704,18 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 						if (mLButtonPressed && !Application::IsKeyPressed(VK_LBUTTON))
 						{
 							mLButtonPressed = false;
+
 							LuaScript nameScript("button");
 
-							if (FetchTB(nameScript.get<std::string>("option.option_1.button_1.text"))->active)
+							if (FetchTB(nameScript.get<std::string>("option.option_1.textbutton_1.text"))->active)
 							{
 								std::cout << "Easy" << std::endl;
 							}
-							else if (FetchTB(nameScript.get<std::string>("option.option_1.button_2.text"))->active)
+							else if (FetchTB(nameScript.get<std::string>("option.option_1.textbutton_2.text"))->active)
 							{
 								std::cout << "Medium" << std::endl;
 							}
-							else if (FetchTB(nameScript.get<std::string>("option.option_1.button_3.text"))->active)
+							else if (FetchTB(nameScript.get<std::string>("option.option_1.textbutton_3.text"))->active)
 							{
 								std::cout << "Hard" << std::endl;
 							}
@@ -750,14 +750,15 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 	}
 	case E_M_OPTIONS_CONTROLS:
 	{
-								 static bool isEscPressed = false;
-								 if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
+								 static bool mRButtonPressed = false;
+								 if (Application::IsKeyPressed(VK_RBUTTON) && !mRButtonPressed)
 								 {
-									 isEscPressed = true;
+									 mRButtonPressed = true;
 								 }
-								 else if (!Application::IsKeyPressed(VK_ESCAPE) && isEscPressed)
+								 else if (!Application::IsKeyPressed(VK_RBUTTON) && mRButtonPressed)
 								 {
-									 isEscPressed = false;
+									 mRButtonPressed = false;
+
 									 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
 									 PREV_STATE = MENU_STATE;
 									 MENU_STATE = E_M_OPTIONS;
