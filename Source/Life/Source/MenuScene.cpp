@@ -261,8 +261,8 @@ void MenuScene::InitMenu(void)
 {
 	TextButton* S_MB;
 	Button *m_B;
-	UIColor.Set(0.0f, 0.0f, 0.0f);
-	UIColorPressed.Set(0.6511f, 0.0611f, 0.5778f);
+	UIColor.Set(0.4f, 0.4f, 0.4f);
+	UIColorPressed.Set(0.9f, 0.9f, 0.9f);
 
 	v3_Menupos[E_M_SPLASH].Set(0, 0, 0);
 	v3_Menupos[E_M_MAIN].Set(0, 0, 0);

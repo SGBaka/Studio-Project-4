@@ -1,10 +1,10 @@
 background = {
-    background_main = "UI//Sonar_background.tga",
-    background_option = "UI//Sonar_background.tga",
-    background_credit = "UI//Sonar_background.tga",
-    background_tutorial = "UI//Sonar_background.tga",
-    background_end = "UI//Sonar_background.tga",
-    splash = "UI//Logo.tga",
+    background_main = "UI//Sonar_background_v2.tga",
+    background_option = "UI//Sonar_background_v2.tga",
+    background_credit = "UI//Sonar_background_v2.tga",
+    background_tutorial = "UI//Sonar_background_v2.tga",
+    background_end = "UI//Sonar_background_v2.tga",
+    splash = "UI//Splash.tga",
     load = "UI//Loading.tga",
     button = "UI//Button.tga"
 }
