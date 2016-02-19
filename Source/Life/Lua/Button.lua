@@ -29,7 +29,7 @@ main = {
 
 	--[[Button_3 = Map Editor]]--
 	textbutton_3 = {
-		text = "Tools",
+		text = "Map Editor",
 		scale = 30.0,
 		posX = 15.0,
 		posY = -220.0
