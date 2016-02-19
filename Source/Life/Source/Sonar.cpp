@@ -26,9 +26,10 @@ void Sonar::GenerateSonar(Vector3 position)
 {
 	this->position = position;
 
-	vector<Vector3> vertexStorage;
-	rotationCounter = 0;	
+	vector<Vector3> vertexStorage;		// Vector list to store vertexes
+	rotationCounter = 0;				// Variable to keep track of rotation value
 
+	// Plot regular n-sided polygon vertexes
 	for (int i = 0; i < numSides; ++i)
 	{
 		Vector3 temp;
@@ -37,32 +38,47 @@ void Sonar::GenerateSonar(Vector3 position)
 		vertexStorage.push_back(temp);
 	}
 
+	// Get length of each side for scaling
 	float lengthOfSide = 2 * radius * tan(Math::PI / numSides);
+
+	// Get interior angle of polygon
 	double interiorAngle = (numSides - 2) * 180 / numSides;
 
+	// Draw polygon using lines based on vertexes
 	for (int i = 0; i < vertexStorage.size(); ++i)
 	{
 		if (i == 0)
-			rotationCounter = 90;
+			rotationCounter = 90;					// Set default rotation to 90 degrees
 		else
-			rotationCounter -= interiorAngle;
+			rotationCounter -= interiorAngle;		// Increment rotation amount by interior angle for each line
 
-		if (rotationCounter <= -360)
+		cout << interiorAngle << endl;
+
+		if (rotationCounter <= -360)				// Make sure rotation value doesn't fall below -360 degrees
 			rotationCounter += 360;
 		
+		// Create the line object
 		RingSegments *RS;
 		RS = new RingSegments();
-		RS->Init(Vector3(vertexStorage[i].x, vertexStorage[i].y, 0));
-		RS->scale.Set(lengthOfSide / 2, 1, 1);
-		RS->rotation = rotationCounter;
+		RS->Init(Vector3(vertexStorage[i].x, vertexStorage[i].y, 0));		// Set line position to vertex position
+		RS->scale.Set(lengthOfSide / 2, 1, 1);								// Set the length of the line by scaling X with lengthOfSide
+		RS->rotation = rotationCounter;										// Set rotation value for the line
 
-		RS->posStart = RS->position + (lengthOfSide / 2);
+
+		// Find the 2 points that makes up the line (start and end point)
+		// Needed for Line-BoundingBox collision detection
+		RS->posStart = RS->position + (lengthOfSide / 2);					
 		RS->posEnd = RS->position - (lengthOfSide / 2);
+
+		// Determine translation value from both points to
+		// the center (used for rotating the points around
+		// the center when line rotates)
 		RS->startTrans = RS->posStart - RS->position;
 		RS->endTrans = RS->posEnd - RS->position;
 
 		double angle = Math::DegreeToRadian(RS->rotation);
 
+		// Rotate around the center 
 		double oldStartX = RS->startTrans.x;
 		RS->startTrans.x = RS->startTrans.x * cos(angle) - RS->startTrans.y * sin(angle);
 		RS->startTrans.y = oldStartX * sin(angle) + RS->startTrans.y * cos(angle);
@@ -71,10 +87,13 @@ void Sonar::GenerateSonar(Vector3 position)
 		RS->endTrans.x = RS->endTrans.x * cos(angle) - RS->endTrans.y * sin(angle);
 		RS->endTrans.y = oldEndX * sin(angle) + RS->endTrans.y * cos(angle);
 
+		// Translate the points back
 		RS->posStart = RS->startTrans + RS->position;
 		RS->posEnd = RS->endTrans + RS->position;
 
+		// Set mesh to render the line
 		RS->mesh = MainScene::GetInstance()->P_meshArray[MainScene::E_GEO_LINE];
+
 		segmentList.push_back(RS);
 	}
 
