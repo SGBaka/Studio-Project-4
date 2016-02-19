@@ -104,20 +104,7 @@ void cEnemy::Update(double dt)
 				patrolPath.WayPointTileList[patrolPath.location].y);
 
 		}
-		if (!MainScene::GetInstance()->player_ptr->sonarList.empty())
-		{
-			for (int i = 0; i < MainScene::GetInstance()->player_ptr->sonarList.size(); i++)
-			{
-				if (MainScene::GetInstance()->player_ptr->sonarList[i] != NULL)
-				{
-					if (GetDistance(MainScene::GetInstance()->player_ptr->position.x, MainScene::GetInstance()->player_ptr->position.y, position.x, position.y) < MainScene::GetInstance()->player_ptr->sonarList[i]->GetSonarRadius())
-					{
-						gotochase = true;
-						cout << "detected!" << endl;
-					}
-				}
-			}
-		}
+	
 		executePath(dt, route, routeCounter);
 
 		if (gotochase && routeCounter == 0)
@@ -401,8 +388,20 @@ bool cEnemy::executePath(double dt, string& route, float& routeCounter)
 					this->position.x -= this->direction.x * routeCounter;
 					this->position.y -= -this->direction.y * routeCounter;
 
+					this->topLeft.x -= this->direction.x * routeCounter;
+					this->topLeft.y -= -this->direction.y * routeCounter;
+
+					this->bottomRight.x -= this->direction.x * routeCounter;
+					this->bottomRight.y -= -this->direction.y * routeCounter;
+
 					this->position.x += this->direction.x * (MainScene::GetInstance()->ML_map.worldSize * 2);
 					this->position.y += -this->direction.y * (MainScene::GetInstance()->ML_map.worldSize * 2);
+
+					this->topLeft.x += this->direction.x * (MainScene::GetInstance()->ML_map.worldSize * 2);
+					this->topLeft.y += -this->direction.y * (MainScene::GetInstance()->ML_map.worldSize * 2);
+
+					this->bottomRight.x += this->direction.x * (MainScene::GetInstance()->ML_map.worldSize * 2);
+					this->bottomRight.y += -this->direction.y * (MainScene::GetInstance()->ML_map.worldSize * 2);
 
 					route[i] = '4';
 					routeCounter = 0;

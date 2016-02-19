@@ -42,6 +42,8 @@ public:
 	std::string getState(void);
 
 	float GetDistance(float x1, float y1, float x2, float y2);
+
+	bool gotoServe, gotoNavi, gotoRoam, gotochase;
 private:
 
 	string route, route2, route3;
@@ -58,8 +60,6 @@ private:
 	int n, m;
 
 	bool hasSetDest, hasSetDest2;
-
-	bool gotoServe, gotoNavi, gotoRoam,gotochase;
 	Sonar sonar;
 };
 

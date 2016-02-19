@@ -631,12 +631,39 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			{
 				for (int k = 0; k < GO_List.size(); ++k)
 				{
-					if ((GO_List[k]->name == "WALL" || GO_List[k]->name == "ENEMY") &&
-						checkForCollision(player_ptr->sonarList[i]->segmentList[j]->posStart,
+					CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[k]);
+
+					Vector3 topLeft, botRight;
+					int tempType = 0;
+
+					if (GO_List[k]->name == "WALL")
+					{
+						topLeft = GO_List[k]->topLeft;
+						botRight = GO_List[k]->bottomRight;
+						tempType = 1;
+					}
+
+					else if (CO != NULL)
+					{
+						if (CO->name == "ENEMY")
+						{
+							topLeft = CO->topLeft;
+							botRight = CO->bottomRight;
+							tempType = 2;
+						}
+					}
+
+					if (checkForCollision(player_ptr->sonarList[i]->segmentList[j]->posStart,
 									      player_ptr->sonarList[i]->segmentList[j]->posEnd,
-										  GO_List[k]->topLeft, GO_List[k]->bottomRight))
+										  topLeft, botRight))
 					{
 						player_ptr->sonarList[i]->segmentList[j]->active = false;
+
+						if (tempType == 2)
+						{
+							cEnemy *EO = dynamic_cast<cEnemy*>(CO);
+							EO->gotochase = true;
+						}
 					}
 				}
 			}
@@ -1244,6 +1271,18 @@ void MainScene::RenderGO()
 				modelStack.Scale(CO->scale);
 				RenderMeshOnScreen(CO->mesh);
 				modelStack.PopMatrix();
+
+				//modelStack.PushMatrix();
+				//modelStack.Translate(CO->topLeft);
+				//modelStack.Scale(1, 1, 1);
+				//RenderMeshOnScreen(P_meshArray[E_GEO_LINE], 100, Color(1, 0, 0));
+				//modelStack.PopMatrix();
+
+				//modelStack.PushMatrix();
+				//modelStack.Translate(CO->bottomRight);
+				//modelStack.Scale(1, 1, 1);
+				//RenderMeshOnScreen(P_meshArray[E_GEO_LINE], 100, Color(1, 0, 0));
+				//modelStack.PopMatrix();
 
 				if (CO->Holding != NULL)
 				{
