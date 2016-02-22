@@ -82,6 +82,8 @@ void MainScene::Init()
 	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
 
+	onDanger = onExit = false;
+
 	LEVEL = 1;
 	InitSimulation();
 }
@@ -296,6 +298,20 @@ bool MainScene::InitLevel(int level)
 				GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
 				GO->enableCollision = false;
 				GO->mesh = P_meshArray[E_GEO_FLOOR_1];
+
+				if (ML_map.map_data[y][x] == "2")
+				{
+					GO->name = "DANGER";
+					GO->topLeft = GO->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
+					GO->bottomRight = GO->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
+				}
+
+				else if(ML_map.map_data[y][x] == "3")
+				{
+					GO->name = "EXIT";
+					GO->topLeft = GO->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
+					GO->bottomRight = GO->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
+				}
 
 				GO_List.push_back(GO);
 
@@ -623,6 +639,11 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	//	v3_2DCam.x += static_cast<float>(dt) * f_camSpeed;
 	//}
 
+	if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "2")
+		onDanger = true;
+	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "3")
+		onExit = true;
+
 	string sideHit = "";
 
 	for (int i = 0; i < player_ptr->sonarList.size(); ++i)
@@ -645,13 +666,27 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 						tempType = 1;
 					}
 
+					else if (GO_List[k]->name == "DANGER")
+					{
+						topLeft = GO_List[k]->topLeft;
+						botRight = GO_List[k]->bottomRight;
+						tempType = 2;
+					}
+
+					else if (GO_List[k]->name == "EXIT")
+					{
+						topLeft = GO_List[k]->topLeft;
+						botRight = GO_List[k]->bottomRight;
+						tempType = 3;
+					}
+
 					else if (CO != NULL)
 					{
 						if (CO->name == "ENEMY")
 						{
 							topLeft = CO->topLeft;
 							botRight = CO->bottomRight;
-							tempType = 2;
+							tempType = 4;
 						}
 					}
 
@@ -659,23 +694,42 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 									      player_ptr->sonarList[i]->segmentList[j]->posEnd,
 										  topLeft, botRight, &sideHit))
 					{
-						player_ptr->sonarList[i]->segmentList[j]->active = false;
-
-						if (!player_ptr->sonarList[i]->segmentList[j]->special)
+						if (tempType == 1)
 						{
-							player_ptr->sonarList[i]->segmentList[j]->attached = true;
-							player_ptr->sonarList[i]->segmentList[j]->lifeTime = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad) * 2;
-							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = 0;
-							player_ptr->sonarList[i]->segmentList[j]->scale.y *= 1.2;
-							//player_ptr->sonarList[i]->segmentList[j]->scale.x *= 1.2;
+							player_ptr->sonarList[i]->segmentList[j]->active = false;
 
-							if (sideHit == "Top" || sideHit == "Bottom")
-								player_ptr->sonarList[i]->segmentList[j]->rotation = 0;
-							else
-								player_ptr->sonarList[i]->segmentList[j]->rotation = 90;
+							if (!player_ptr->sonarList[i]->segmentList[j]->special)
+							{
+								player_ptr->sonarList[i]->segmentList[j]->attached = true;
+								player_ptr->sonarList[i]->segmentList[j]->lifeTime = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad) * 2;
+								player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = 0;
+								player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad);
+								player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad);
+								player_ptr->sonarList[i]->segmentList[j]->scale.y *= 1.2;
+								//player_ptr->sonarList[i]->segmentList[j]->scale.x *= 1.2;
+
+								if (sideHit == "Top" || sideHit == "Bottom")
+									player_ptr->sonarList[i]->segmentList[j]->rotation = 0;
+								else
+									player_ptr->sonarList[i]->segmentList[j]->rotation = 90;
+							}
 						}
 
-						if (tempType == 2)
+						else if (tempType == 2 && !player_ptr->sonarList[i]->segmentList[j]->special)
+						{
+							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r *= 2;
+							player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = 0;
+							player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = 0;
+						}
+
+						else if (tempType == 3 && !player_ptr->sonarList[i]->segmentList[j]->special)
+						{
+							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = 0;
+							player_ptr->sonarList[i]->segmentList[j]->segmentColor.g *= 2;
+							player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = 0;
+						}
+
+						else if (tempType == 4)
 						{
 							cEnemy *EO = dynamic_cast<cEnemy*>(CO);
 							EO->gotochase = true;

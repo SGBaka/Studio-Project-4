@@ -162,6 +162,8 @@ public:
 	Vector3 calWorldPos(Vector3 Tilepos);
 	Player *player_ptr;
 
+	bool onDanger, onExit;
+
 private:
 	
 
