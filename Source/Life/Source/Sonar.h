@@ -21,6 +21,8 @@ public:
 	float GetSonarRadius();
 	vector<RingSegments*> segmentList;
 	float radius, maxRad;
+	int type;
+	Color colorStore;
 
 private:
 	int numSides;
