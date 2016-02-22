@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player() 
-: moveSpeed(3)
+: moveSpeed(4)
 , sonarCooldown(1)
 , sonarTimer(sonarCooldown)
 , specialCooldown(2)
@@ -50,7 +50,7 @@ void Player::Update(double dt)
 			checkMovement(3, dt);
 		else if (Application::IsKeyPressed('D') && !checkCollision(1))
 			checkMovement(1, dt);
-		if (Application::IsKeyPressed('F') && sonarTimer >= sonarCooldown)
+		if (Application::IsKeyPressed(VK_LBUTTON) && sonarTimer >= sonarCooldown)
 		{
 			LuaScript playerScript("character");
 			sonarTimer = 0;
@@ -60,7 +60,7 @@ void Player::Update(double dt)
 			SNR->GenerateSonar(position, false);
 			sonarList.push_back(SNR);
 		}
-		else if (Application::IsKeyPressed('G') && specialTimer >= specialCooldown && !isSpecial)
+		else if (Application::IsKeyPressed(VK_RBUTTON) && specialTimer >= specialCooldown && !isSpecial)
 		{
 			specialPos = position;
 			specialTimer = 0;
@@ -204,16 +204,16 @@ void Player::movePlayer(int mode, double dt)
 	switch (mode)
 	{
 	case 0:
-		position.x -= roundUp(moveSpeed, 18);
+		position.x -= moveSpeed;
 		break;
 	case 1:
-		position.x += roundUp(moveSpeed, 18);
+		position.x += moveSpeed;
 		break;
 	case 2:
-		position.y += roundUp(moveSpeed, 18);
+		position.y += moveSpeed;
 		break;
 	case 3:
-		position.y -= roundUp(moveSpeed, 18);
+		position.y -= moveSpeed;
 		break;
 	}
 }

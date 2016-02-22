@@ -6,6 +6,7 @@ Sonar::Sonar()
 , rotationCounter(0)
 , maxRad(0)
 , speed(1.5)
+, type(1)
 {
 
 }
@@ -20,6 +21,9 @@ void Sonar::Init(float radius, int numSides, float speed)
 	this->maxRad = radius;
 	this->numSides = numSides;
 	this->speed = speed;
+
+	LuaScript playerScript("character");
+	type = playerScript.get<int>("player.sonar_type");
 }
 
 void Sonar::GenerateSonar(Vector3 position, bool special)
@@ -108,18 +112,47 @@ void Sonar::Update(double dt)
 	{
 		if (segmentList[i]->active)
 		{
-			if (!segmentList[i]->special)
+			if (type == 1)
 			{
-				segmentList[i]->segmentColor.r = (1 - (radius / maxRad));
-				segmentList[i]->segmentColor.g = (1 - (radius / maxRad));
-				segmentList[i]->segmentColor.b = (1 - (radius / maxRad));
-			}
+				if (!segmentList[i]->special)
+				{
+					segmentList[i]->segmentColor.r = (1 - (radius / maxRad));
+					segmentList[i]->segmentColor.g = (1 - (radius / maxRad));
+					segmentList[i]->segmentColor.b = (1 - (radius / maxRad));
+				}
 
+				else
+				{
+					segmentList[i]->segmentColor.r = (1 - (radius / maxRad));
+					segmentList[i]->segmentColor.g = (1 - (radius / maxRad)) / 2;
+					segmentList[i]->segmentColor.b = 0;
+				}
+			}
 			else
 			{
-				segmentList[i]->segmentColor.r = (1 - (radius / maxRad));
-				segmentList[i]->segmentColor.g = (1 - (radius / maxRad)) / 2;
-				segmentList[i]->segmentColor.b = 0;
+				if ((radius / maxRad) <= 0.4)
+				{
+					segmentList[i]->segmentColor.r = (1 - (radius * 2.5 / maxRad));
+					segmentList[i]->segmentColor.g = (radius * 2.5 / maxRad);
+					segmentList[i]->segmentColor.b = 0;
+					colorStore = segmentList[i]->segmentColor;
+				}
+
+				else if ((radius / maxRad) <= 0.8)
+				{
+					segmentList[i]->segmentColor.r = 0;
+					segmentList[i]->segmentColor.g = 1 - ((radius - (maxRad / 2.5)) * 2.5 / maxRad);
+					segmentList[i]->segmentColor.b = ((radius - (maxRad / 2.5)) * 2.5 / maxRad) - 0.2;
+					colorStore = segmentList[i]->segmentColor;
+				}
+
+				else
+				{
+					segmentList[i]->segmentColor.r = 0;
+					segmentList[i]->segmentColor.g = 0;
+					segmentList[i]->segmentColor.b = 1 - radius / maxRad;
+					colorStore = segmentList[i]->segmentColor;
+				}
 			}
 
 			segmentList[i]->position.x = radius * cos(2 * Math::PI * i / numSides) + position.x;

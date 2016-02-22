@@ -33,7 +33,7 @@ public:
 
 	vector<Sonar*> sonarList;
 
-	int sonarCooldown, specialCooldown;
+	float sonarCooldown, specialCooldown;
 	float sonarTimer, specialTimer;
 
 	float specialDuration, specialROF, specialTimer2, specialCounter;

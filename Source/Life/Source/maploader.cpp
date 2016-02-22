@@ -60,6 +60,7 @@ loads the map from a file into a 2D vector
 the file location to load map from
 !*/
 /****************************************************************************/
+
 bool MapLoader::loadMap(std::string file)
 {
 	if (!fileExists(file))
@@ -119,7 +120,7 @@ bool MapLoader::saveMap(std::string file)
 	{
 		std::fstream filecreate;
 		filecreate.open(file, std::fstream::out);
-		filecreate.close();
+		filecreate.close(); 
 	}
 
 	std::fstream mapFile;

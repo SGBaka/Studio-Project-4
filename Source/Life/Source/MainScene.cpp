@@ -707,9 +707,17 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 							{
 								player_ptr->sonarList[i]->segmentList[j]->attached = true;
 								player_ptr->sonarList[i]->segmentList[j]->lifeTime = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad) * 2;
-								player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = 0;
-								player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad);
-								player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad);
+
+								if (player_ptr->sonarList[i]->type == 1)
+								{
+									player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = 0;
+									player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad);
+									player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad);
+								}
+
+								else
+									player_ptr->sonarList[i]->segmentList[j]->segmentColor = player_ptr->sonarList[i]->colorStore;
+						
 								player_ptr->sonarList[i]->segmentList[j]->scale.y *= 1.2;
 								//player_ptr->sonarList[i]->segmentList[j]->scale.x *= 1.2;
 
@@ -720,18 +728,18 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 							}
 						}
 
-						else if (tempType == 2 && !player_ptr->sonarList[i]->segmentList[j]->special)
+						else if (tempType == 2 && !player_ptr->sonarList[i]->segmentList[j]->special && !player_ptr->sonarList[i]->segmentList[j]->attached)
 						{
-							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r *= 2;
+							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad)) * 2;
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = 0;
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = 0;
 						}
 
-						else if (tempType == 3 && !player_ptr->sonarList[i]->segmentList[j]->special)
+						else if (tempType == 3 && !player_ptr->sonarList[i]->segmentList[j]->special && !player_ptr->sonarList[i]->segmentList[j]->attached)
 						{
-							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = 0;
-							player_ptr->sonarList[i]->segmentList[j]->segmentColor.g *= 2;
-							player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = 0;
+							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad)) * 2;
+							player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = 0;
+							player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = (1 - (player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad)) * 2;
 						}
 
 						else if (tempType == 4)
@@ -1463,7 +1471,7 @@ bool  MainScene::LineIntersectsLine(Vector3 l1p1, Vector3 l1p2, Vector3 l2p1, Ve
 	q = (l1p1.y - l2p1.y) * (l1p2.x - l1p1.x) - (l1p1.x - l2p1.x) * (l1p2.y - l1p1.y);
 	float s = q / d;
 
-	if (r < 0 || r > 1 || s < 0 || s > 1)
+	if (r <= 0 || r >= 1 || s <= 0 || s >= 1)
 	{
 		return false;
 	}

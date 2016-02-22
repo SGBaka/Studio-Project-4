@@ -19,9 +19,6 @@
     <Filter Include="Source Files\Camera">
       <UniqueIdentifier>{3461ff79-0072-4afa-94e8-11851b1357ab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Save/Load">
-      <UniqueIdentifier>{d3086d86-eae5-4046-8f08-f8f87f9d7090}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Save/Load">
       <UniqueIdentifier>{19437899-3363-40c7-9ed9-42c75c239848}</UniqueIdentifier>
     </Filter>
@@ -103,6 +100,9 @@
     <Filter Include="Source Files\Lua">
       <UniqueIdentifier>{9bcbdd42-091a-4a5c-ae94-2b20eaafaabf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Player\Save/Load">
+      <UniqueIdentifier>{d3086d86-eae5-4046-8f08-f8f87f9d7090}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -160,13 +160,13 @@
       <Filter>Source Files\Visuals</Filter>
     </ClCompile>
     <ClCompile Include="Source\maploader.cpp">
-      <Filter>Source Files\Save/Load</Filter>
+      <Filter>Source Files\Player\Save/Load</Filter>
     </ClCompile>
     <ClCompile Include="Source\SaveHandler.cpp">
-      <Filter>Source Files\Save/Load</Filter>
+      <Filter>Source Files\Player\Save/Load</Filter>
     </ClCompile>
     <ClCompile Include="Source\LoadHmap.cpp">
-      <Filter>Source Files\Save/Load</Filter>
+      <Filter>Source Files\Player\Save/Load</Filter>
     </ClCompile>
     <ClCompile Include="Source\Button.cpp">
       <Filter>Source Files\Buttons</Filter>

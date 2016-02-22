@@ -254,7 +254,6 @@ int Application::GetWindowWidth()
 /*!
 \brief
 Return the current Height of the window
-
 \return int with the current Height of the window
 */
 /******************************************************************************/
@@ -436,28 +435,6 @@ void Application::Run()
 		b_quitProgram = true;
 		}*/
 
-		static bool t1 = false;
-		static bool t2 = false;
-		if (IsKeyPressed(VK_F1) && !t1)
-		{
-			t1 = true;
-
-		}
-		else if (t1 && !IsKeyPressed(VK_F1))
-		{
-			t1 = false;
-			S_MANAGER->push(SceneManager::S_MAIN_MENU);
-		}
-
-		if (IsKeyPressed(VK_F2) && !t2)
-		{
-			t2 = true;
-		}
-		else if (t2 && !IsKeyPressed(VK_F2))
-		{
-			t2 = false;
-			S_MANAGER->pop();
-		}
 
 		if (togglefullscreen || IsKeyPressed(VK_F11))
 		{
