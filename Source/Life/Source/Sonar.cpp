@@ -22,7 +22,7 @@ void Sonar::Init(float radius, int numSides, float speed)
 	this->speed = speed;
 }
 
-void Sonar::GenerateSonar(Vector3 position)
+void Sonar::GenerateSonar(Vector3 position, bool special)
 {
 	this->position = position;
 
@@ -42,7 +42,7 @@ void Sonar::GenerateSonar(Vector3 position)
 	float lengthOfSide = 2 * radius * tan(Math::PI / numSides);
 
 	// Get interior angle of polygon
-	double interiorAngle = (numSides - 2) * 180 / numSides;
+	double interiorAngle = (double)((numSides - 2) * 180) / numSides;
 
 	// Draw polygon using lines based on vertexes
 	for (int i = 0; i < vertexStorage.size(); ++i)
@@ -51,8 +51,6 @@ void Sonar::GenerateSonar(Vector3 position)
 			rotationCounter = 90;					// Set default rotation to 90 degrees
 		else
 			rotationCounter -= interiorAngle;		// Increment rotation amount by interior angle for each line
-
-		cout << interiorAngle << endl;
 
 		if (rotationCounter <= -360)				// Make sure rotation value doesn't fall below -360 degrees
 			rotationCounter += 360;
@@ -94,6 +92,9 @@ void Sonar::GenerateSonar(Vector3 position)
 		// Set mesh to render the line
 		RS->mesh = MainScene::GetInstance()->P_meshArray[MainScene::E_GEO_LINE];
 
+		if (special)
+			RS->special = true;
+			
 		segmentList.push_back(RS);
 	}
 
@@ -101,18 +102,25 @@ void Sonar::GenerateSonar(Vector3 position)
 
 void Sonar::Update(double dt)
 {
-	if (radius >= maxRad)
-		segmentList.clear();
-
 	radius += speed;
 
 	for (int i = 0; i < segmentList.size(); ++i)
 	{
 		if (segmentList[i]->active)
 		{
-			segmentList[i]->segmentColor.r = (1 - (radius / maxRad));
-			segmentList[i]->segmentColor.g = (1 - (radius / maxRad));
-			segmentList[i]->segmentColor.b = (1 - (radius / maxRad));
+			if (!segmentList[i]->special)
+			{
+				segmentList[i]->segmentColor.r = (1 - (radius / maxRad));
+				segmentList[i]->segmentColor.g = (1 - (radius / maxRad));
+				segmentList[i]->segmentColor.b = (1 - (radius / maxRad));
+			}
+
+			else
+			{
+				segmentList[i]->segmentColor.r = (1 - (radius / maxRad));
+				segmentList[i]->segmentColor.g = (1 - (radius / maxRad)) / 2;
+				segmentList[i]->segmentColor.b = 0;
+			}
 
 			segmentList[i]->position.x = radius * cos(2 * Math::PI * i / numSides) + position.x;
 			segmentList[i]->position.y = radius * sin(2 * Math::PI * i / numSides) + position.y;
@@ -139,6 +147,26 @@ void Sonar::Update(double dt)
 		}
 	}
 
+	for (int i = 0; i < segmentList.size(); ++i)
+	{
+		if (radius >= maxRad && segmentList[i]->attached == false)
+		{
+			delete segmentList[i];
+			segmentList.erase(segmentList.begin() + i);
+			continue;
+		}
+
+		if (segmentList[i]->attached)
+		{
+			segmentList[i]->lifeTime -= dt/1.2;
+
+			if (segmentList[i]->lifeTime <= 0)
+			{
+				delete segmentList[i];
+				segmentList.erase(segmentList.begin() + i);
+			}
+		}
+	}
 }
 
 float Sonar::GetSonarRadius()

@@ -20,6 +20,12 @@ public:
 
 	Color segmentColor;
 
+	bool attached;
+
+	float lifeTime;
+
+	bool special;
+
 private:
 
 };

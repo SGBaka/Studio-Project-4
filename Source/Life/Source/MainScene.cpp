@@ -623,6 +623,8 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	//	v3_2DCam.x += static_cast<float>(dt) * f_camSpeed;
 	//}
 
+	string sideHit = "";
+
 	for (int i = 0; i < player_ptr->sonarList.size(); ++i)
 	{
 		for (int j = 0; j < player_ptr->sonarList[i]->segmentList.size(); ++j)
@@ -655,9 +657,23 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 					if (checkForCollision(player_ptr->sonarList[i]->segmentList[j]->posStart,
 									      player_ptr->sonarList[i]->segmentList[j]->posEnd,
-										  topLeft, botRight))
+										  topLeft, botRight, &sideHit))
 					{
 						player_ptr->sonarList[i]->segmentList[j]->active = false;
+
+						if (!player_ptr->sonarList[i]->segmentList[j]->special)
+						{
+							player_ptr->sonarList[i]->segmentList[j]->attached = true;
+							player_ptr->sonarList[i]->segmentList[j]->lifeTime = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad) * 2;
+							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = 0;
+							player_ptr->sonarList[i]->segmentList[j]->scale.y *= 1.2;
+							//player_ptr->sonarList[i]->segmentList[j]->scale.x *= 1.2;
+
+							if (sideHit == "Top" || sideHit == "Bottom")
+								player_ptr->sonarList[i]->segmentList[j]->rotation = 0;
+							else
+								player_ptr->sonarList[i]->segmentList[j]->rotation = 90;
+						}
 
 						if (tempType == 2)
 						{
@@ -1206,14 +1222,13 @@ Renders the all gameobjects
 void MainScene::RenderGO()
 {
 	//Temporary bandaid solution (render CO last)
-
 	for (unsigned i = 0; i < GO_List.size(); i++)
 	{
 		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[i]);
 
 		if (GO_List[i]->active)
 		{
-			if (CO == NULL)
+			if (CO == NULL && GO_List[i]->name != "WALL")
 			{
 				modelStack.PushMatrix();
 				modelStack.Translate(GO_List[i]->position);
@@ -1229,13 +1244,31 @@ void MainScene::RenderGO()
 	{
 		for (int j = 0; j < player_ptr->sonarList[i]->segmentList.size(); ++j)
 		{
-			if (player_ptr->sonarList[i]->segmentList[j]->active)
+			if (player_ptr->sonarList[i]->segmentList[j]->active || player_ptr->sonarList[i]->segmentList[j]->attached)
 			{
 				modelStack.PushMatrix();
 				modelStack.Translate(player_ptr->sonarList[i]->segmentList[j]->position);
 				modelStack.Rotate(player_ptr->sonarList[i]->segmentList[j]->rotation, 0, 0, 1);
 				modelStack.Scale(player_ptr->sonarList[i]->segmentList[j]->scale);
 				RenderMeshOnScreen(player_ptr->sonarList[i]->segmentList[j]->mesh, 13, player_ptr->sonarList[i]->segmentList[j]->segmentColor);
+				modelStack.PopMatrix();
+			}
+		}
+	}
+
+	for (unsigned i = 0; i < GO_List.size(); i++)
+	{
+		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[i]);
+
+		if (GO_List[i]->active)
+		{
+			if (CO == NULL && GO_List[i]->name == "WALL")
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(GO_List[i]->position);
+				modelStack.Rotate(GO_List[i]->rotation, 0, 0, 1);
+				modelStack.Scale(GO_List[i]->scale);
+				RenderMeshOnScreen(GO_List[i]->mesh);
 				modelStack.PopMatrix();
 			}
 		}
@@ -1304,11 +1337,17 @@ void MainScene::CO_drop(CharacterObject *CO)
 	CO->Holding = NULL;
 }
 
-bool MainScene::checkForCollision(Vector3 position_start, Vector3 position_end, Vector3 top_left, Vector3 bottom_right, Vector3 &Hit)
+bool MainScene::checkForCollision(Vector3 position_start, Vector3 position_end, Vector3 top_left, Vector3 bottom_right, string *side, Vector3 &Hit)
 {
 	Vector3 ObjectTopLeft = top_left;
 	Vector3 ObjectBottomRight = bottom_right;
 	
+	Vector3 botLeft = Vector3(ObjectBottomRight.x - ML_map.worldSize * 2, ObjectBottomRight.y);
+	Vector3 topRight = Vector3(ObjectBottomRight.x, ObjectBottomRight.y + ML_map.worldSize * 2);
+
+	if (LineIntersectsRect(position_start, position_end, ObjectTopLeft, ObjectBottomRight, topRight, botLeft, side))
+		return true;
+
 	if ((position_start.x <= ObjectBottomRight.x && position_start.x >= ObjectTopLeft.x &&
 		position_start.y >= ObjectBottomRight.y && position_start.y <= ObjectTopLeft.y) ||
 		(position_end.x <= ObjectBottomRight.x && position_end.x >= ObjectTopLeft.x &&
@@ -1317,22 +1356,37 @@ bool MainScene::checkForCollision(Vector3 position_start, Vector3 position_end, 
 		Hit = position_start;
 		return true;
 	}
-
-	Vector3 botLeft = Vector3(ObjectBottomRight.x - ML_map.worldSize * 2, ObjectBottomRight.y);
-	Vector3 topRight = Vector3(ObjectBottomRight.x, ObjectBottomRight.y + ML_map.worldSize * 2);
-
-	if (LineIntersectsRect(position_start, position_end, ObjectTopLeft, ObjectBottomRight, topRight, botLeft))
-		return true;
 		
 	return false;
 }
 
-bool  MainScene::LineIntersectsRect(Vector3 p1, Vector3 p2, Vector3 topLeft, Vector3 botRight, Vector3 topRight, Vector3 botLeft)
+bool  MainScene::LineIntersectsRect(Vector3 p1, Vector3 p2, Vector3 topLeft, Vector3 botRight, Vector3 topRight, Vector3 botLeft, string *side)
 {
-	return LineIntersectsLine(p1, p2, botLeft, botRight) ||
-		LineIntersectsLine(p1, p2, botRight, topRight) ||
-		LineIntersectsLine(p1, p2, topRight, topLeft) ||
-		LineIntersectsLine(p1, p2, topLeft, botLeft);
+	if (LineIntersectsLine(p1, p2, botLeft, botRight))
+	{
+		*side = "Bottom";
+		return true;
+	}
+
+	else if (LineIntersectsLine(p1, p2, botRight, topRight))
+	{
+		*side = "Right";
+		return true;
+	}
+
+	else if (LineIntersectsLine(p1, p2, topRight, topLeft))
+	{
+		*side = "Top";
+		return true;
+	}
+
+	else if (LineIntersectsLine(p1, p2, topLeft, botLeft))
+	{
+		*side = "Left";
+		return true;
+	}
+
+	return false;
 }
 
 bool  MainScene::LineIntersectsLine(Vector3 l1p1, Vector3 l1p2, Vector3 l2p1, Vector3 l2p2)

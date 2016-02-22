@@ -1,13 +1,13 @@
 #include "Player.h"
 
 Player::Player() 
-: moveSpeed(5)
+: moveSpeed(3)
 , sonarCooldown(1)
 , sonarTimer(sonarCooldown)
 , specialCooldown(2)
 , specialTimer(specialCooldown)
 , specialDuration(0.2)
-, specialROF(0.001)
+, specialROF(0.01)
 , specialTimer2(specialROF)
 , specialCounter(0)
 , isSpecial(false)
@@ -57,7 +57,7 @@ void Player::Update(double dt)
 			Sonar *SNR;
 			SNR = new Sonar();
 			SNR->Init(playerScript.get<float>("player.sonar_radius"), playerScript.get<int>("player.sonar_sides"), playerScript.get<float>("player.sonar_speed"));
-			SNR->GenerateSonar(position);
+			SNR->GenerateSonar(position, false);
 			sonarList.push_back(SNR);
 		}
 		else if (Application::IsKeyPressed('G') && specialTimer >= specialCooldown && !isSpecial)
@@ -76,7 +76,7 @@ void Player::Update(double dt)
 			Sonar *SNR;
 			SNR = new Sonar();
 			SNR->Init(playerScript.get<float>("player.special_radius"), playerScript.get<int>("player.special_sides"), playerScript.get<float>("player.special_speed"));
-			SNR->GenerateSonar(specialPos);
+			SNR->GenerateSonar(specialPos, true);
 			sonarList.push_back(SNR);
 		}
 	}
@@ -204,16 +204,16 @@ void Player::movePlayer(int mode, double dt)
 	switch (mode)
 	{
 	case 0:
-		position.x -= roundUp(moveSpeed, 20);
+		position.x -= roundUp(moveSpeed, 18);
 		break;
 	case 1:
-		position.x += roundUp(moveSpeed, 20);
+		position.x += roundUp(moveSpeed, 18);
 		break;
 	case 2:
-		position.y += roundUp(moveSpeed, 20);
+		position.y += roundUp(moveSpeed, 18);
 		break;
 	case 3:
-		position.y -= roundUp(moveSpeed, 20);
+		position.y -= roundUp(moveSpeed, 18);
 		break;
 	}
 }

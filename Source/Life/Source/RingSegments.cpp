@@ -6,6 +6,9 @@ RingSegments::RingSegments()
 , endTrans(0,0,0)
 , startTrans(0,0,0)
 , segmentColor(1,1,1)
+, attached(false)
+, lifeTime(1.f)
+, special(false)
 {
 
 }
