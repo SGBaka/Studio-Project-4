@@ -564,6 +564,11 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		}
 	}
 
+	if (onExit == true)
+	{
+		SceneManager::Instance()->replace(SceneManager::S_END_MENU);
+		return;
+	}
 
 	static bool isEscPressed = false;
 	if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
@@ -574,7 +579,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	else if (!Application::IsKeyPressed(VK_ESCAPE) && isEscPressed)
 	{
 		isEscPressed = false;
-		SceneManager::Instance()->replace(SceneManager::S_END_MENU);
+		SceneManager::Instance()->replace(SceneManager::S_MAIN_MENU);
 		return;
 	}
 
