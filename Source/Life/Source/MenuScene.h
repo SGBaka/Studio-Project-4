@@ -21,7 +21,6 @@ Main menu for the openGL framework
 #include "Button.h"
 #include "GabrielDLC.h"
 #include "SoundEngine.h"
-#include "Sonar.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -98,6 +97,7 @@ class MenuScene : public Scene
 		E_GEO_BUTTON_BACK,
 		E_GEO_BUTTON_LEFT,
 		E_GEO_BUTTON_RIGHT,
+		// -----------------------
 
 		E_GEO_TOTAL,
 	};
@@ -158,6 +158,7 @@ class MenuScene : public Scene
 		E_M_MAIN,
 		E_M_SELECTION,
 		E_M_LEVEL,
+		E_M_END,
 		E_M_OPTIONS,
 		E_M_OPTIONS_CONTROLS,
 		E_M_OPTIONS_CONTROLS_SETCONTROL,
@@ -204,6 +205,7 @@ public:
 		MT_MAIN_MENU_SPLASH,
 		MT_MAIN_MENU_SELECTION,
 		MT_MAIN_MENU_LEVEL,
+		MT_END_MENU,
 		MT_MAIN_MENU_OPTION,
 		MT_PAUSE_MENU,
 	};

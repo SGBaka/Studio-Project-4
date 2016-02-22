@@ -27,6 +27,7 @@ public:
 		S_MAIN_MENU_SPLASH,
 		S_MAIN_MENU,
 		S_PAUSE_MENU,
+		S_END_MENU,
 		S_GAME,
 		S_EDITOR,
 	};

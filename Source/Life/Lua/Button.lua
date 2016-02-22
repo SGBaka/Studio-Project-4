@@ -1,15 +1,3 @@
-sonar = {
-	left_mouse = {
-		sonar_radius = 150.0,
-		sonar_sides = 120
-	},
-
-	right_mouse = {
-		sonar_radius = 300.0,
-		sonar_sides = 120
-	}
-}
-
 main = {
 	--[[Button_1 = Start Button]]--
 	textbutton_1 = {
@@ -52,56 +40,15 @@ main_selection = {
 		text = "New Game",
 		scale = 35.0,
 		posX = 420.0,
-		posY = -120.0,
-		
-		title = {
-			text = "Level Selection",
-			scale = 40.0,
-			posX = 420.0,
-			posY = -120.0
-		},
-
-		--[[Button_1 = Level 1]]--
-		textbutton_1 = {
-			text = "Level 1",
-			scale = 30.0,
-			posX = 435.0,
-			posY = -160.0
-		},
-
-		--[[Button_2 = Level 2]]--
-		textbutton_2 = {
-			text = "Level 2",
-			scale = 30.0,
-			posX = 450.0,
-			posY = -200.0
-		},
-
-		--[[Button_3 = Level 3]]--
-		textbutton_3 = {
-			text = "Level 3",
-			scale = 30.0,
-			posX = 465.0,
-			posY = -240.0
-		},
-
-		--[[Button_4 = Test Level]]--
-		textbutton_4 = {
-			text = "Test Your Level",
-			scale = 30.0,
-			posX = 480.0,
-			posY = -280.0
-		},
-
-		total_button = 4
+		posY = -120.0
 	},
 
 	--[[option_2 = Load Game]]--
 	option_2 = {
-		text = "Load Game",
+		text = "Continue Game",
 		scale = 35.0,
 		posX = 420.0,
-		posY = -170.0,
+		posY = -170.0
 	},
 
 	total_option = 2
@@ -143,4 +90,32 @@ option = {
 	},
 
 	total_option = 1		
+}
+
+end_screen = {
+	--[[Button_1 = Back]]--
+	textbutton_1 = {
+		text = "Back",
+		scale = 30.0,
+		posX = 250.0,
+		posY = -240.0
+	},
+
+	--[[Button_2 = Retry]]--
+	textbutton_2 = {
+		text = "Retry",
+		scale = 30.0,
+		posX = 425.0,
+		posY = -240.0
+	},
+
+	--[[Button_3 = Next Level]]--
+	textbutton_3 = {
+		text = "Next Level",
+		scale = 30.0,
+		posX = 650.0,
+		posY = -240.0
+	},
+
+	total_button = 3
 }

@@ -574,7 +574,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	else if (!Application::IsKeyPressed(VK_ESCAPE) && isEscPressed)
 	{
 		isEscPressed = false;
-		SceneManager::Instance()->replace(SceneManager::S_MAIN_MENU);
+		SceneManager::Instance()->replace(SceneManager::S_END_MENU);
 		return;
 	}
 
