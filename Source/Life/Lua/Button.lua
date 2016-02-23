@@ -92,6 +92,26 @@ option = {
 	total_option = 1		
 }
 
+map_screen = {
+	--[[Button_1 = New Map]]--
+	textbutton_1 = {
+		text = "New Map",
+		scale = 35.0,
+		posX = 420.0,
+		posY = -120.0
+	},
+
+	--[[Button_2 = Edit Map]]--
+	textbutton_2 = {
+		text = "Edit Map",
+		scale = 35.0,
+		posX = 420.0,
+		posY = -170.0
+	},
+
+	total_button = 2
+}
+
 end_screen = {
 	--[[Button_1 = Back]]--
 	textbutton_1 = {
