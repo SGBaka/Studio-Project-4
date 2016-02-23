@@ -316,13 +316,6 @@ the level to load
 /******************************************************************************/
 bool MapScene::InitLevel(int level)
 {
-	std::cout << "New Map: ";
-	std::cin >> newMapName;
-
-	std::fstream filecreate;
-	filecreate.open(newMapName, std::fstream::out);
-	filecreate.close();
-
 	ML_map.map_width = 34;
 	ML_map.map_height = 21;
 	std::cout << ML_map.map_width << ", " << ML_map.map_height << "\n";
@@ -364,7 +357,7 @@ bool MapScene::InitLevel(int level)
 	ML_map.map_data[0][0] = "18";
 
 	std::stringstream ss;
-	ss << "GameData//Maps//" << newMapName << ".csv";
+	ss << "GameData//Maps//temp_file.csv";
 	ML_map.saveMap(ss.str());
 	ML_map.loadMap(ss.str());
 	for (unsigned y = ML_map.map_height - 1; y > 0; --y)
@@ -599,6 +592,9 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 
 	if (Application::IsKeyPressed('P'))
 	{
+		std::cout << "Map Name: ";
+		std::cin >> newMapName;
+
 		std::stringstream ss;
 		ss << "GameData//Maps//" << newMapName << ".csv";
 		ML_map.saveMap(ss.str());
@@ -651,6 +647,10 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 	{
 		isEscPressed = false;
 		SceneManager::Instance()->replace(SceneManager::S_MAIN_MENU);
+		if (remove("GameData//Maps//temp_file.csv") != 0)
+		{
+			std::cout << "Unable to remove" << std::endl;
+		}
 		return;
 	}
 
@@ -664,6 +664,10 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 		if (FetchBUTTON(BI_BACK)->active)
 		{
 			SceneManager::Instance()->replace(SceneManager::S_MAIN_MENU);
+			if (remove("GameData//Maps//temp_file.csv") != 0)
+			{
+				std::cout << "Unable to remove" << std::endl;
+			}
 			return;
 		}
 		else if (FetchBUTTON(BI_REFRESH)->active)
