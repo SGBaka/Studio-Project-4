@@ -745,7 +745,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 						else if (tempType == 4)
 						{
 							cEnemy *EO = dynamic_cast<cEnemy*>(CO);
-							EO->gotochase = true;
+							EO->gotoChase = true;
 						}
 					}
 				}

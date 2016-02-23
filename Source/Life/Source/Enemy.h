@@ -43,7 +43,7 @@ public:
 
 	float GetDistance(float x1, float y1, float x2, float y2);
 
-	bool gotoServe, gotoNavi, gotoRoam, gotochase;
+	bool gotoServe, gotoNavi, gotoRoam, gotoChase;
 private:
 
 	string route, route2, route3;
@@ -56,7 +56,7 @@ private:
 	float angle;
 	bool rotating;
 	float rotCounter;
-
+	float timer;
 	int n, m;
 
 	bool hasSetDest, hasSetDest2;

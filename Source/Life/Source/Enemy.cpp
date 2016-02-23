@@ -17,7 +17,8 @@ cEnemy::cEnemy()
 , gotoServe(false)
 , gotoNavi(false)
 , gotoRoam(false)
-, gotochase(false)
+
+, gotoChase(false)
 , hasSetDest2(false)
 {
 	name = "Enemy";
@@ -82,7 +83,7 @@ void cEnemy::Update(double dt)
 			AI_STATE = AS_ROAM;
 		}
 	}
-
+	cout << AI_STATE << endl;
 	switch (AI_STATE)
 	{
 
@@ -107,13 +108,42 @@ void cEnemy::Update(double dt)
 	
 		executePath(dt, route, routeCounter);
 
-		if (gotochase && routeCounter == 0)
+		if (gotoChase && routeCounter == 0)
 		{
 			AI_STATE = AS_CHASE;
 			route2 = "";
 			routeCounter2 = 0;
 			hasSetDest = false;
 		}
+		break;
+	case cEnemy::AS_CHASE:
+		timer += dt;
+		gotoChase = false;
+		if (!MainScene::GetInstance()->player_ptr->sonarList.empty())
+		{
+			//	cout << "hit" << endl;
+			for (int i = 0; i < MainScene::GetInstance()->player_ptr->sonarList.size(); i++)
+			{
+				if (MainScene::GetInstance()->player_ptr->sonarList[i] != NULL)
+				{
+					if (timer < 3 && routeCounter2 == 0)
+					{
+						route2 = pathFind(currTile.x, currTile.y, MainScene::GetInstance()->player_ptr->currTile.x, MainScene::GetInstance()->player_ptr->currTile.y);
+
+					}
+					else
+					{
+						timer = 0;
+					}
+				}
+			}
+		}
+		executePath(dt, route2, routeCounter2);
+		/*
+		if (gotoReturn && routeCounter == 0)
+		{
+			AI_STATE = AS_RETURN;
+		}*/
 		break;
 	default:
 		break;
