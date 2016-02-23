@@ -520,7 +520,6 @@ Button* MapScene::FetchBUTTON(int ID)
 			}
 		}
 	}
-
 	return NULL;
 }
 
@@ -769,12 +768,12 @@ void MapScene::placeTile(int selectedTile)
 			ML_map.map_data[selTilePos.y][selTilePos.x] = "P";
 			break;
 		case 3:
-			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_ENEMY_BORDER];
+			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_WIN_BORDER];
 			ML_map.map_data[selTilePos.y][selTilePos.x] = "3";
 			break;
 		case 4:
 			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_DANGER_BORDER];
-			ML_map.map_data[selTilePos.y][selTilePos.x] = "4";
+			ML_map.map_data[selTilePos.y][selTilePos.x] = "2";
 			break;
 		case 5:
 			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_ENEMY_BORDER];
@@ -1295,39 +1294,48 @@ void MapScene::RenderUI()
 	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), UIColor);
 	modelStack.PopMatrix();
 
-	switch (selectedTile)
+	if (selectedTile == 0)
 	{
-	case 0:
 		modelStack.PushMatrix();
 		modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 50.f, 0);
 		modelStack.Scale(18, 18, 18);
 		RenderMeshOnScreen(P_meshArray[E_GEO_FLOOR_BORDER], 0, 0);
 		modelStack.PopMatrix();
-	case 1:
+	}
+	else if (selectedTile == 1)
+	{
 		modelStack.PushMatrix();
 		modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 50.f, 0);
 		modelStack.Scale(18, 18, 18);
 		RenderMeshOnScreen(P_meshArray[E_GEO_WALL_BORDER], 0, 0);
 		modelStack.PopMatrix();
-	case 2:
+	}
+	else if (selectedTile == 2)
+	{
 		modelStack.PushMatrix();
 		modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 50.f, 0);
 		modelStack.Scale(18, 18, 18);
 		RenderMeshOnScreen(P_meshArray[E_GEO_PLAYER_BORDER], 0, 0);
 		modelStack.PopMatrix();
-	case 3:
+	}
+	else if (selectedTile == 3)
+	{
 		modelStack.PushMatrix();
 		modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 50.f, 0);
 		modelStack.Scale(18, 18, 18);
 		RenderMeshOnScreen(P_meshArray[E_GEO_WIN_BORDER], 0, 0);
 		modelStack.PopMatrix();
-	case 4:
+	}
+	else if (selectedTile == 4)
+	{
 		modelStack.PushMatrix();
 		modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 50.f, 0);
 		modelStack.Scale(18, 18, 18);
 		RenderMeshOnScreen(P_meshArray[E_GEO_DANGER_BORDER], 0, 0);
 		modelStack.PopMatrix();
-	case 5:
+	}
+	else if (selectedTile == 5)
+	{
 		modelStack.PushMatrix();
 		modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 50.f, 0);
 		modelStack.Scale(18, 18, 18);

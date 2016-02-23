@@ -20,7 +20,7 @@ button = {
     Servant_Border = "UI//Button//Servant_Border.tga",
     Wall_1_Border = "UI//Button//Wall_1_Border.tga",
     Save = "UI//Button//Save.tga",
-    Win = "UI//Button//Win_Border.tga"
+    Win_Border = "UI//Button//Win_Border.tga"
 }
 
 font = {
