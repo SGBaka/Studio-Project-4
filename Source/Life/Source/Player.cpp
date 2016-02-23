@@ -57,7 +57,7 @@ void Player::Update(double dt)
 			Sonar *SNR;
 			SNR = new Sonar();
 			SNR->Init(playerScript.get<float>("player.sonar_radius"), playerScript.get<int>("player.sonar_sides"), playerScript.get<float>("player.sonar_speed"));
-			SNR->GenerateSonar(position, false);
+			SNR->GenerateSonar(position, 1);
 			sonarList.push_back(SNR);
 		}
 		else if (Application::IsKeyPressed(VK_RBUTTON) && specialTimer >= specialCooldown && !isSpecial)
@@ -76,7 +76,7 @@ void Player::Update(double dt)
 			Sonar *SNR;
 			SNR = new Sonar();
 			SNR->Init(playerScript.get<float>("player.special_radius"), playerScript.get<int>("player.special_sides"), playerScript.get<float>("player.special_speed"));
-			SNR->GenerateSonar(specialPos, true);
+			SNR->GenerateSonar(specialPos, 2);
 			sonarList.push_back(SNR);
 		}
 	}

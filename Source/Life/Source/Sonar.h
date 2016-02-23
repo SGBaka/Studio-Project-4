@@ -15,7 +15,7 @@ public:
 	Sonar();
 	~Sonar();
 
-	void GenerateSonar(Vector3 position, bool special);
+	void GenerateSonar(Vector3 position, int type);
 	void Init(float radius, int numSides, float speed = 2);
 	void Update(double dt);
 	float GetSonarRadius();

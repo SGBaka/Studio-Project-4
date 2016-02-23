@@ -24,7 +24,7 @@ public:
 
 	float lifeTime;
 
-	bool special;
+	int type;
 
 private:
 

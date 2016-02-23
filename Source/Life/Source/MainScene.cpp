@@ -704,7 +704,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 						{
 							player_ptr->sonarList[i]->segmentList[j]->active = false;
 
-							if (!player_ptr->sonarList[i]->segmentList[j]->special)
+							if (player_ptr->sonarList[i]->segmentList[j]->type == 1)
 							{
 								player_ptr->sonarList[i]->segmentList[j]->attached = true;
 								player_ptr->sonarList[i]->segmentList[j]->lifeTime = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad) * 2;
@@ -729,14 +729,14 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 							}
 						}
 
-						else if (tempType == 2 && !player_ptr->sonarList[i]->segmentList[j]->special && !player_ptr->sonarList[i]->segmentList[j]->attached)
+						else if (tempType == 2 && player_ptr->sonarList[i]->segmentList[j]->type == 1 && !player_ptr->sonarList[i]->segmentList[j]->attached)
 						{
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad)) * 2;
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = 0;
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = 0;
 						}
 
-						else if (tempType == 3 && !player_ptr->sonarList[i]->segmentList[j]->special && !player_ptr->sonarList[i]->segmentList[j]->attached)
+						else if (tempType == 3 && player_ptr->sonarList[i]->segmentList[j]->type == 1 && !player_ptr->sonarList[i]->segmentList[j]->attached)
 						{
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad)) * 2;
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = 0;
@@ -1342,13 +1342,42 @@ void MainScene::RenderGO()
 		}
 	}
 
+	for (unsigned k = 0; k < GO_List.size(); k++)
+	{
+		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[k]);
+
+		if (CO != NULL && CO->name == "ENEMY")
+		{
+			cEnemy *EO = dynamic_cast<cEnemy*>(CO);
+
+			if (/*EO->isVisible*/true)
+			{
+				for (int i = 0; i < EO->sonarList.size(); ++i)
+				{
+					for (int j = 0; j < EO->sonarList[i]->segmentList.size(); ++j)
+					{
+						if (EO->sonarList[i]->segmentList[j]->active)
+						{
+							modelStack.PushMatrix();
+							modelStack.Translate(EO->sonarList[i]->segmentList[j]->position);
+							modelStack.Rotate(EO->sonarList[i]->segmentList[j]->rotation, 0, 0, 1);
+							modelStack.Scale(EO->sonarList[i]->segmentList[j]->scale);
+							RenderMeshOnScreen(EO->sonarList[i]->segmentList[j]->mesh, 13, EO->sonarList[i]->segmentList[j]->segmentColor);
+							modelStack.PopMatrix();
+						}
+					}
+				}
+			}
+		}
+	}
+
 	for (unsigned i = 0; i < GO_List.size(); i++)
 	{
 		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[i]);
 
 		if (GO_List[i]->active)
 		{
-			if (CO != NULL)
+			if (CO != NULL && CO->name != "ENEMY")
 			{
 				modelStack.PushMatrix();
 				modelStack.Translate(CO->position);
@@ -1356,18 +1385,6 @@ void MainScene::RenderGO()
 				modelStack.Scale(CO->scale);
 				RenderMeshOnScreen(CO->mesh);
 				modelStack.PopMatrix();
-
-				//modelStack.PushMatrix();
-				//modelStack.Translate(CO->topLeft);
-				//modelStack.Scale(1, 1, 1);
-				//RenderMeshOnScreen(P_meshArray[E_GEO_LINE], 100, Color(1, 0, 0));
-				//modelStack.PopMatrix();
-
-				//modelStack.PushMatrix();
-				//modelStack.Translate(CO->bottomRight);
-				//modelStack.Scale(1, 1, 1);
-				//RenderMeshOnScreen(P_meshArray[E_GEO_LINE], 100, Color(1, 0, 0));
-				//modelStack.PopMatrix();
 
 				if (CO->Holding != NULL)
 				{
@@ -1380,14 +1397,6 @@ void MainScene::RenderGO()
 					modelStack.PopMatrix();
 				}
 			}
-		}
-		else if (CO != NULL)
-		{
-			modelStack.PushMatrix();
-			modelStack.Translate(Application::GetWindowWidth() * 0.025f, Application::GetWindowHeight() * 0.975f - 20.f, 0);
-			modelStack.Scale(20, 20, 20);
-			RenderTextOnScreen(P_meshArray[E_GEO_TEXT], CO->getState(), UIColor);
-			modelStack.PopMatrix();
 		}
 	}
 }

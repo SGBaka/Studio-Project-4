@@ -44,6 +44,11 @@ public:
 	float GetDistance(float x1, float y1, float x2, float y2);
 
 	bool gotoServe, gotoNavi, gotoRoam, gotoChase;
+
+	vector<Sonar*> sonarList;
+	float sonarCooldown, sonarTimer;
+
+	bool isVisible;
 private:
 
 	string route, route2, route3;

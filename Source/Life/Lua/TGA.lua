@@ -32,7 +32,7 @@ font = {
 }
 
 tile = {
-    floor = "Tile//Floor_.tga",
+    floor = "Tile//Floor_1.tga",
     floor_2 = "Tile//Floor_2.tga",
     wall = "Tile//Wall_1.tga",
     enemy = "Tile//CoPilot.tga",

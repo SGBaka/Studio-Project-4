@@ -8,7 +8,7 @@ RingSegments::RingSegments()
 , segmentColor(1,1,1)
 , attached(false)
 , lifeTime(1.f)
-, special(false)
+, type(1)
 {
 
 }

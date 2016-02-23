@@ -18,8 +18,11 @@ cEnemy::cEnemy()
 , gotoNavi(false)
 , gotoRoam(false)
 , timer(0)
+, sonarCooldown(1)
+, sonarTimer(sonarCooldown)
 , gotoChase(false)
 , hasSetDest2(false)
+, isVisible(false)
 {
 	name = "Enemy";
 
@@ -57,6 +60,31 @@ float cEnemy::GetDistance(float x1, float y1, float x2, float y2)
 }
 void cEnemy::Update(double dt)
 {
+	if (sonarTimer < sonarCooldown)
+		sonarTimer += dt;
+
+	if (sonarTimer >= sonarCooldown)
+	{
+		sonarTimer = 0;
+
+		Sonar *SNR;
+		SNR = new Sonar();
+		SNR->Init(70, 40, 1);
+		SNR->GenerateSonar(position, 3);
+		sonarList.push_back(SNR);
+	}
+
+	for (int i = 0; i < sonarList.size(); ++i)
+	{
+		sonarList[i]->Update(dt);
+
+		if (sonarList[i]->segmentList.empty())
+		{
+			delete sonarList[i];
+			sonarList.erase(sonarList.begin() + i);
+		}
+
+	}
 
 	if (route.empty())
 	{

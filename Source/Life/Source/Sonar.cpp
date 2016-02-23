@@ -26,7 +26,7 @@ void Sonar::Init(float radius, int numSides, float speed)
 	type = playerScript.get<int>("player.sonar_type");
 }
 
-void Sonar::GenerateSonar(Vector3 position, bool special)
+void Sonar::GenerateSonar(Vector3 position, int type)
 {
 	this->position = position;
 
@@ -64,7 +64,7 @@ void Sonar::GenerateSonar(Vector3 position, bool special)
 		RS = new RingSegments();
 		RS->Init(Vector3(vertexStorage[i].x, vertexStorage[i].y, 0));		// Set line position to vertex position
 									
-		if (!RS->special)													// Set the length of the line by scaling X with lengthOfSide
+		if (RS->type != 2)													// Set the length of the line by scaling X with lengthOfSide
 			RS->scale.Set(lengthOfSide / 2, 1, 1);
 		else
 			RS->scale.Set(lengthOfSide / 2, 4, 1);
@@ -101,8 +101,7 @@ void Sonar::GenerateSonar(Vector3 position, bool special)
 		// Set mesh to render the line
 		RS->mesh = MainScene::GetInstance()->P_meshArray[MainScene::E_GEO_LINE];
 
-		if (special)
-			RS->special = true;
+		RS->type = type;
 			
 		segmentList.push_back(RS);
 	}
@@ -111,6 +110,7 @@ void Sonar::GenerateSonar(Vector3 position, bool special)
 
 void Sonar::Update(double dt)
 {
+
 	radius += speed * 60 * dt;
 
 	for (int i = 0; i < segmentList.size(); ++i)
@@ -119,14 +119,14 @@ void Sonar::Update(double dt)
 		{
 			if (type == 1)
 			{
-				if (!segmentList[i]->special)
+				if (segmentList[i]->type == 1)
 				{
 					segmentList[i]->segmentColor.r = (1 - (radius / maxRad));
 					segmentList[i]->segmentColor.g = (1 - (radius / maxRad));
 					segmentList[i]->segmentColor.b = (1 - (radius / maxRad));
 				}
 
-				else
+				else if (segmentList[i]->type == 2)
 				{
 					segmentList[i]->segmentColor.r = (1 - (radius / maxRad));
 					segmentList[i]->segmentColor.g = (1 - (radius / maxRad)) / 2;
@@ -135,28 +135,37 @@ void Sonar::Update(double dt)
 			}
 			else
 			{
-				if ((radius / maxRad) <= 0.4)
+				if (segmentList[i]->type != 3)
 				{
-					segmentList[i]->segmentColor.r = (1 - (radius * 2.5 / maxRad));
-					segmentList[i]->segmentColor.g = (radius * 2.5 / maxRad);
-					segmentList[i]->segmentColor.b = 0;
-					colorStore = segmentList[i]->segmentColor;
-				}
+					if ((radius / maxRad) <= 0.4)
+					{
+						segmentList[i]->segmentColor.r = (1 - (radius * 2.5 / maxRad));
+						segmentList[i]->segmentColor.g = (radius * 2.5 / maxRad);
+						segmentList[i]->segmentColor.b = 0;
+						colorStore = segmentList[i]->segmentColor;
+					}
 
-				else if ((radius / maxRad) <= 0.8)
-				{
-					segmentList[i]->segmentColor.r = 0;
-					segmentList[i]->segmentColor.g = 1 - ((radius - (maxRad / 2.5)) * 2.5 / maxRad);
-					segmentList[i]->segmentColor.b = ((radius - (maxRad / 2.5)) * 2.5 / maxRad) - 0.2;
-					colorStore = segmentList[i]->segmentColor;
-				}
+					else if ((radius / maxRad) <= 0.8)
+					{
+						segmentList[i]->segmentColor.r = 0;
+						segmentList[i]->segmentColor.g = 1 - ((radius - (maxRad / 2.5)) * 2.5 / maxRad);
+						segmentList[i]->segmentColor.b = ((radius - (maxRad / 2.5)) * 2.5 / maxRad) - 0.2;
+						colorStore = segmentList[i]->segmentColor;
+					}
 
+					else
+					{
+						segmentList[i]->segmentColor.r = 0;
+						segmentList[i]->segmentColor.g = 0;
+						segmentList[i]->segmentColor.b = 1 - radius / maxRad;
+						colorStore = segmentList[i]->segmentColor;
+					}
+				}
 				else
 				{
-					segmentList[i]->segmentColor.r = 0;
+					segmentList[i]->segmentColor.r = (1 - (radius / maxRad)) * 2;
 					segmentList[i]->segmentColor.g = 0;
-					segmentList[i]->segmentColor.b = 1 - radius / maxRad;
-					colorStore = segmentList[i]->segmentColor;
+					segmentList[i]->segmentColor.b = 0;
 				}
 			}
 
@@ -164,7 +173,7 @@ void Sonar::Update(double dt)
 			segmentList[i]->position.y = radius * sin(2 * Math::PI * i / numSides) + position.y;
 			float lengthOfSide = 2 * radius * tan(Math::PI / numSides);
 
-			if (!segmentList[i]->special)
+			if (segmentList[i]->type != 2)
 				segmentList[i]->scale.Set(lengthOfSide / 2, 1, 1);
 			else
 				segmentList[i]->scale.Set(lengthOfSide / 2, 4, 1);
