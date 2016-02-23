@@ -23,6 +23,7 @@ public:
 	float radius, maxRad;
 	int type;
 	Color colorStore;
+	bool alert;
 
 private:
 	int numSides;

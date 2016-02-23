@@ -205,15 +205,23 @@ void Player::movePlayer(int mode, double dt)
 	{
 	case 0:
 		position.x -= moveSpeed;
+		topLeft.x -= moveSpeed;
+		bottomRight.x -= moveSpeed;
 		break;
 	case 1:
 		position.x += moveSpeed;
+		topLeft.x += moveSpeed;
+		bottomRight.x += moveSpeed;
 		break;
 	case 2:
 		position.y += moveSpeed;
+		topLeft.y += moveSpeed;
+		bottomRight.y += moveSpeed;
 		break;
 	case 3:
 		position.y -= moveSpeed;
+		topLeft.y -= moveSpeed;
+		bottomRight.y -= moveSpeed;
 		break;
 	}
 }

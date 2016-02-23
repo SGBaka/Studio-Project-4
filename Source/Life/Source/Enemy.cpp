@@ -60,6 +60,14 @@ float cEnemy::GetDistance(float x1, float y1, float x2, float y2)
 }
 void cEnemy::Update(double dt)
 {
+	if (AI_STATE == AS_CHASE)
+	{
+		sonarCooldown = 0.5;
+	}
+
+	else
+		sonarCooldown = 1;
+
 	if (sonarTimer < sonarCooldown)
 		sonarTimer += dt;
 
@@ -77,6 +85,11 @@ void cEnemy::Update(double dt)
 	for (int i = 0; i < sonarList.size(); ++i)
 	{
 		sonarList[i]->Update(dt);
+
+		if (AI_STATE == AS_ROAM)
+			sonarList[i]->alert = false;
+		else
+			sonarList[i]->alert = true;
 
 		if (sonarList[i]->segmentList.empty())
 		{
@@ -144,13 +157,14 @@ void cEnemy::Update(double dt)
 	case cEnemy::AS_CHASE:
 		timer += dt;
 		gotoChase = false;
+		isVisible = true;
 
-		if (timer <= 6 && routeCounter2 == 0)
+		if (timer <= 4 && routeCounter2 == 0)
 		{
 			route2 = pathFind(currTile.x, currTile.y, MainScene::GetInstance()->player_ptr->currTile.x, MainScene::GetInstance()->player_ptr->currTile.y);
 
 		}
-		else if (timer > 6)
+		else if (timer > 4)
 		{
 			timer = 0;
 			setWaypoints();
@@ -413,15 +427,15 @@ bool cEnemy::executePath(double dt, string& route, float& routeCounter)
 
 				float speed = 100;
 
-				//if (AI_STATE == AS_CHASE)
-				//{
-				//	speed = 220;
-				//}
+				if (AI_STATE == AS_CHASE)
+				{
+					speed = 250;
+				}
 
-				//else if (AI_STATE == AS_SUSP)
-				//{
-				//	speed = 120;
-				//}
+				else if (AI_STATE == AS_ROAM)
+				{
+					speed = 100;
+				}
 
 				this->position.x += this->direction.x * dt * speed;
 				this->position.y += -this->direction.y * dt * speed;

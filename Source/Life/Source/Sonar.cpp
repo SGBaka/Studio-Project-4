@@ -7,6 +7,7 @@ Sonar::Sonar()
 , maxRad(0)
 , speed(1.5)
 , type(1)
+, alert(false)
 {
 
 }
@@ -163,9 +164,20 @@ void Sonar::Update(double dt)
 				}
 				else
 				{
-					segmentList[i]->segmentColor.r = (1 - (radius / maxRad)) * 2;
-					segmentList[i]->segmentColor.g = 0;
-					segmentList[i]->segmentColor.b = 0;
+					if (!alert)
+					{
+						segmentList[i]->segmentColor.r = (1 - (radius / maxRad)) * 2;
+						segmentList[i]->segmentColor.g = (1 - (radius / maxRad)) * 2;
+						segmentList[i]->segmentColor.b = (1 - (radius / maxRad)) * 2;
+					}
+
+					else
+					{
+						segmentList[i]->segmentColor.r = (1 - (radius / maxRad)) * 2;
+						segmentList[i]->segmentColor.g = 0;
+						segmentList[i]->segmentColor.b = 0;
+					}
+					
 				}
 			}
 

@@ -323,6 +323,8 @@ bool MainScene::InitLevel(int level)
 					player->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
 					player->mesh = P_meshArray[E_GEO_PLAYER];
 					player->currTile.Set(x, y);
+					player->topLeft = player->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
+					player->bottomRight = player->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
 
 					player_ptr = player;
 					GO_List.push_back(player);
@@ -649,6 +651,70 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		onDanger = true;
 	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "3")
 		onExit = true;
+
+	if (onDanger)
+	{
+		onDanger = false;
+		InitSimulation();
+	}
+		
+
+	for (int k = 0; k < GO_List.size(); ++k)
+	{
+		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[k]);
+
+		if (CO != NULL)
+		{
+			if (CO->name == "ENEMY")
+			{
+				cEnemy *EO = dynamic_cast<cEnemy*>(CO);
+				EO->isVisible = true;
+
+				if (EO->currTile == player_ptr->currTile)
+				{
+					InitSimulation();
+					break;
+				}
+
+				for (int i = 0; i < EO->sonarList.size(); ++i)
+				{
+					for (int j = 0; j < EO->sonarList[i]->segmentList.size(); ++j)
+					{
+						if (EO->sonarList[i]->segmentList[j]->active)
+						{
+							if (checkForCollision(EO->sonarList[i]->segmentList[j]->posStart,
+								EO->sonarList[i]->segmentList[j]->posEnd, player_ptr->topLeft, player_ptr->bottomRight))
+								EO->gotoChase = true;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < GO_List.size(); ++i)
+	{
+		if (GO_List[i]->name == "WALL")
+		{
+			for (int j = 0; j < GO_List.size(); ++j)
+			{
+				CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[j]);
+
+				if (CO != NULL)
+				{
+					if (CO->name == "ENEMY")
+					{
+						cEnemy *EO = dynamic_cast<cEnemy*>(CO);
+
+						if (checkForCollision(EO->position, player_ptr->position, GO_List[i]->topLeft, GO_List[i]->bottomRight) && EO->AI_STATE != cEnemy::AS_CHASE)
+						{
+							EO->isVisible = false;
+						}
+					}
+				}
+			}
+		}
+	}
 
 	string sideHit = "";
 
@@ -1350,7 +1416,7 @@ void MainScene::RenderGO()
 		{
 			cEnemy *EO = dynamic_cast<cEnemy*>(CO);
 
-			if (/*EO->isVisible*/true)
+			if (EO->isVisible)
 			{
 				for (int i = 0; i < EO->sonarList.size(); ++i)
 				{
@@ -1463,6 +1529,8 @@ bool  MainScene::LineIntersectsRect(Vector3 p1, Vector3 p2, Vector3 topLeft, Vec
 		return true;
 	}
 
+
+
 	return false;
 }
 
@@ -1481,7 +1549,7 @@ bool  MainScene::LineIntersectsLine(Vector3 l1p1, Vector3 l1p2, Vector3 l2p1, Ve
 	q = (l1p1.y - l2p1.y) * (l1p2.x - l1p1.x) - (l1p1.x - l2p1.x) * (l1p2.y - l1p1.y);
 	float s = q / d;
 
-	if (r <= 0 || r >= 1 || s <= 0 || s >= 1)
+	if (r < 0 || r > 1 || s < 0 || s > 1)
 	{
 		return false;
 	}

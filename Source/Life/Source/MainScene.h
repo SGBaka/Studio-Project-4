@@ -291,7 +291,7 @@ private:
 	void RenderGO();
 
 	//Collision
-	bool checkForCollision(Vector3 position_start, Vector3 position_end, Vector3 top_left, Vector3 bottom_right, string *side, Vector3 &Hit = Vector3(0, 0, 0));
+	bool checkForCollision(Vector3 position_start, Vector3 position_end, Vector3 top_left, Vector3 bottom_right, string *side = &std::string(), Vector3 &Hit = Vector3(0, 0, 0));
 	bool LineIntersectsRect(Vector3 p1, Vector3 p2, Vector3 topLeft, Vector3 botRight, Vector3 topRight, Vector3 botLeft, string *side);
 	bool LineIntersectsLine(Vector3 l1p1, Vector3 l1p2, Vector3 l2p1, Vector3 l2p2);
 
