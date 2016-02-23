@@ -187,6 +187,8 @@ public:
 	Vector3 selWorldPos;
 	int enemyID;
 
+	int WorldMouseX, WorldMouseY;
+
 private:
 
 	// Static Constants

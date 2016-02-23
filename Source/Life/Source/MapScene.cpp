@@ -323,8 +323,9 @@ the level to load
 /******************************************************************************/
 bool MapScene::InitLevel(int level)
 {
-	ML_map.map_width = 34;
-	ML_map.map_height = 21;
+	ML_map.map_width = 30;
+	ML_map.map_height = 22;
+
 	std::cout << ML_map.map_width << ", " << ML_map.map_height << "\n";
 
 	/*std::cout << "\nLoading map...\n";
@@ -344,24 +345,21 @@ bool MapScene::InitLevel(int level)
 		}
 		GO_List.pop_back();
 	}
+
+	ML_map.map_data.clear();
 	
 	for (unsigned y = ML_map.map_height - 1; y > 0; --y)
 	{
 		for (unsigned x = 0; x < ML_map.map_width; ++x)
 		{
-			GameObject *GO;
-			GO = new GameObject();
-			GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
-			GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
-			GO->mesh = P_meshArray[E_GEO_FLOOR_BORDER];
-			MapScene::GetInstance()->GO_List.push_back(GO);
-
 			mapArray.push_back("0");
 		}
+
 		ML_map.map_data.push_back(mapArray);
 		mapArray.clear();
 	}
-	ML_map.map_data[0][0] = "18";
+
+	ML_map.map_data[0][0] = "20";
 
 	std::stringstream ss;
 	ss << "GameData//Maps//temp_file.csv";
@@ -687,7 +685,6 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 			ss << "GameData//Maps//" << newMapName << ".csv";
 			ML_map.saveMap(ss.str());
 		}
-		placeTile(selectedTile);
 		//else if (FetchBUTTON(BI_PREV_MAP)->active)
 		//{
 		//	if (i_SimulationSpeed > 1)
@@ -703,6 +700,9 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 		//	}
 		//}
 	}
+
+	if (bLButtonState)
+		placeTile(selectedTile);
 
 	//float f_camSpeed = 10.f;
 
@@ -744,13 +744,15 @@ void MapScene::placeTile(int selectedTile)
 {
 	GameObject *GO;
 	GO = new GameObject();
-	selTilePos = (calTilePos(Vector3(MousePosX, MousePosY)));//StopGap Hardcode: Vector3(MousePosX - 252, MousePosY + 36)
-	selWorldPos = (calWorldPos(selTilePos));
+	selTilePos = calTilePos(Vector3(MousePosX, MousePosY));
+	selTilePos.x -= 8;
+	selTilePos.y += 2;
+	
 	//cout << selTilePos << endl;
 	//cout << selWorldPos << endl;
 	if (selTilePos.x < ML_map.map_width && selTilePos.x > -1 && selTilePos.y < ML_map.map_height && selTilePos.y > -1)
 	{
-		GO->Init(selWorldPos);
+		GO->Init(Vector3(selTilePos.x*ML_map.worldSize*2.f, (ML_map.map_height - selTilePos.y)*ML_map.worldSize*2.f, -0.5f));
 		GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
 
 		switch (selectedTile)
