@@ -334,10 +334,11 @@ bool MainScene::InitLevel(int level)
 						cEnemy *enemy;
 						enemy = new cEnemy;
 						enemy->ID = stoi(ML_map.map_data[y][x]);
+						enemy->currTile.Set(x, y);
 						enemy->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0));
 						enemy->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
 						enemy->mesh = P_meshArray[E_GEO_ENEMY];
-						enemy->currTile.Set(x, y);
+						
 						enemy->name = "ENEMY";
 						enemy->topLeft = enemy->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
 						enemy->bottomRight = enemy->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);

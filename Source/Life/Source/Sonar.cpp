@@ -63,7 +63,12 @@ void Sonar::GenerateSonar(Vector3 position, bool special)
 		RingSegments *RS;
 		RS = new RingSegments();
 		RS->Init(Vector3(vertexStorage[i].x, vertexStorage[i].y, 0));		// Set line position to vertex position
-		RS->scale.Set(lengthOfSide / 2, 1, 1);								// Set the length of the line by scaling X with lengthOfSide
+									
+		if (!RS->special)													// Set the length of the line by scaling X with lengthOfSide
+			RS->scale.Set(lengthOfSide / 2, 1, 1);
+		else
+			RS->scale.Set(lengthOfSide / 2, 4, 1);
+
 		RS->rotation = rotationCounter;										// Set rotation value for the line
 
 
@@ -158,7 +163,11 @@ void Sonar::Update(double dt)
 			segmentList[i]->position.x = radius * cos(2 * Math::PI * i / numSides) + position.x;
 			segmentList[i]->position.y = radius * sin(2 * Math::PI * i / numSides) + position.y;
 			float lengthOfSide = 2 * radius * tan(Math::PI / numSides);
-			segmentList[i]->scale.Set(lengthOfSide / 2, 1, 1);
+
+			if (!segmentList[i]->special)
+				segmentList[i]->scale.Set(lengthOfSide / 2, 1, 1);
+			else
+				segmentList[i]->scale.Set(lengthOfSide / 2, 4, 1);
 
 			segmentList[i]->posStart = segmentList[i]->position + (lengthOfSide / 2);
 			segmentList[i]->posEnd = segmentList[i]->position - (lengthOfSide / 2);

@@ -32,11 +32,11 @@ font = {
 }
 
 tile = {
-    floor = "Tile//Floor_2.tga",
+    floor = "Tile//Floor_.tga",
     floor_2 = "Tile//Floor_2.tga",
     wall = "Tile//Wall_1.tga",
-    enemy = "Tile//Servant.tga",
-    player = "Tile//CoPilot.tga",
+    enemy = "Tile//CoPilot.tga",
+    player = "Tile//Pilot.tga",
     copilot = "Tile//CoPilot.tga",
     item_1 = "Tile//obj.tga",
     border = "Tile//border.tga"

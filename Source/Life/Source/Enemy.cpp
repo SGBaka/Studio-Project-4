@@ -17,7 +17,7 @@ cEnemy::cEnemy()
 , gotoServe(false)
 , gotoNavi(false)
 , gotoRoam(false)
-
+, timer(0)
 , gotoChase(false)
 , hasSetDest2(false)
 {
@@ -83,7 +83,6 @@ void cEnemy::Update(double dt)
 			AI_STATE = AS_ROAM;
 		}
 	}
-	//cout << AI_STATE << endl;
 	switch (AI_STATE)
 	{
 
@@ -111,39 +110,33 @@ void cEnemy::Update(double dt)
 		if (gotoChase && routeCounter == 0)
 		{
 			AI_STATE = AS_CHASE;
-			route2 = "";
-			routeCounter2 = 0;
-			hasSetDest = false;
+			route = "";
 		}
 		break;
 	case cEnemy::AS_CHASE:
 		timer += dt;
 		gotoChase = false;
-		if (!MainScene::GetInstance()->player_ptr->sonarList.empty())
-		{
-			//	cout << "hit" << endl;
-			for (int i = 0; i < MainScene::GetInstance()->player_ptr->sonarList.size(); i++)
-			{
-				if (MainScene::GetInstance()->player_ptr->sonarList[i] != NULL)
-				{
-					if (timer < 3 && routeCounter2 == 0)
-					{
-						route2 = pathFind(currTile.x, currTile.y, MainScene::GetInstance()->player_ptr->currTile.x, MainScene::GetInstance()->player_ptr->currTile.y);
 
-					}
-					else
-					{
-						timer = 0;
-					}
-				}
-			}
-		}
-		executePath(dt, route2, routeCounter2);
-		/*
-		if (gotoReturn && routeCounter == 0)
+		if (timer <= 6 && routeCounter2 == 0)
 		{
-			AI_STATE = AS_RETURN;
-		}*/
+			route2 = pathFind(currTile.x, currTile.y, MainScene::GetInstance()->player_ptr->currTile.x, MainScene::GetInstance()->player_ptr->currTile.y);
+
+		}
+		else if (timer > 6)
+		{
+			timer = 0;
+			setWaypoints();
+			gotoRoam = true;
+			patrolPath.location = 0;
+		}
+
+		executePath(dt, route2, routeCounter2);
+
+		if (gotoRoam && routeCounter2 == 0)
+		{
+			route2 = "";
+			AI_STATE = AS_ROAM;
+		}
 		break;
 	default:
 		break;
@@ -453,6 +446,7 @@ bool cEnemy::executePath(double dt, string& route, float& routeCounter)
 
 void cEnemy::setWaypoints(void)
 {
+	/*
 	switch (ID)
 	{
 	case 50:
@@ -463,7 +457,74 @@ void cEnemy::setWaypoints(void)
 		break;
 	default:
 		break;
-	}	
+	}*/
+	patrolPath.WayPointTileList.clear();
+	
+	Vector3 tile_topleft = currTile, tile_topright = currTile, tile_bottomleft = currTile, tile_bottomright = currTile, temp = currTile;
+	for (int i = 0; i < 3; i++)
+	{
+		temp.x += 1;
+		if (MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "0")
+			tile_topright.x = temp.x;
+		else
+			temp.x--;
+
+		temp.y -= 1;
+		if (MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "0")
+			tile_topright.y -= 1;
+		else
+			temp.y++;
+	}
+	patrolPath.WayPointTileList.push_back(tile_topright);
+	temp = currTile;
+	for (int i = 0; i < 3; i++)
+	{
+		temp.x -= 1;
+		if (MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "0")
+			tile_topleft.x -= 1;
+		else
+			temp.x++;
+		temp.y -= 1;
+		if (MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "0")
+			tile_topleft.y -= 1;
+		else
+			temp.y++;
+	}
+	patrolPath.WayPointTileList.push_back(tile_topleft);
+	temp = currTile;
+	for (int i = 0; i < 3; i++)
+	{
+		temp.x -= 1;
+		if (MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "0")
+			tile_bottomleft.x -= 1;
+		else
+			temp.x++;
+		temp.y += 1;
+		if (MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "0")
+			tile_bottomleft.y += 1;
+		else
+			temp.y--;
+	}
+	patrolPath.WayPointTileList.push_back(tile_bottomleft);
+	temp = currTile;
+	for (int i = 0; i < 3; i++)
+	{
+		temp.x += 1;
+		if (MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "0")
+			tile_bottomright.x += 1;
+		else
+			temp.x--;
+		temp.y += 1;
+		if (MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "0")
+			tile_bottomright.y += 1;
+		else
+			temp.y--;
+	}
+	patrolPath.WayPointTileList.push_back(tile_bottomright);
+
+	if (patrolPath.WayPointTileList.size() == 1)
+		patrolPath.WayPointTileList.push_back(currTile);
+
 }
 
 std::string cEnemy::getState(void)
