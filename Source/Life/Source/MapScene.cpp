@@ -740,32 +740,36 @@ void MapScene::placeTile(int selectedTile)
 	selWorldPos = (calWorldPos(selTilePos));
 	//cout << selTilePos << endl;
 	//cout << selWorldPos << endl;
-	GO->Init(selWorldPos);
-	GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
-	switch (selectedTile)
+	if (selTilePos.x < ML_map.map_width && selTilePos.x > -1 && selTilePos.y < ML_map.map_height && selTilePos.y > -1)
 	{
-	case 0:
-		GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_FLOOR_BORDER];
-		ML_map.map_data[selTilePos.y][selTilePos.x] = "0";
-		break;
-	case 1:
-		GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_WALL_BORDER];
-		ML_map.map_data[selTilePos.y][selTilePos.x] = "1";
-		break;
-	case 2:
-		GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_PLAYER_BORDER];
-		ML_map.map_data[selTilePos.y][selTilePos.x] = "2";
-		break;
-	case 3:
-		GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_ENEMY_BORDER];
-		ML_map.map_data[selTilePos.y][selTilePos.x] = "3";
-		break;
-	case 4:
-		GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_DANGER_BORDER];
-		ML_map.map_data[selTilePos.y][selTilePos.x] = "4";
-		break;
+		GO->Init(selWorldPos);
+		GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+
+		switch (selectedTile)
+		{
+		case 0:
+			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_FLOOR_BORDER];
+			ML_map.map_data[selTilePos.y][selTilePos.x] = "0";
+			break;
+		case 1:
+			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_WALL_BORDER];
+			ML_map.map_data[selTilePos.y][selTilePos.x] = "1";
+			break;
+		case 2:
+			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_PLAYER_BORDER];
+			ML_map.map_data[selTilePos.y][selTilePos.x] = "2";
+			break;
+		case 3:
+			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_ENEMY_BORDER];
+			ML_map.map_data[selTilePos.y][selTilePos.x] = "3";
+			break;
+		case 4:
+			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_DANGER_BORDER];
+			ML_map.map_data[selTilePos.y][selTilePos.x] = "4";
+			break;
+		}
+		MapScene::GetInstance()->GO_List.push_back(GO);
 	}
-	MapScene::GetInstance()->GO_List.push_back(GO);
 }
 
 /******************************************************************************/
