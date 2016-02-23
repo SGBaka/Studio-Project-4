@@ -83,7 +83,7 @@ void cEnemy::Update(double dt)
 			AI_STATE = AS_ROAM;
 		}
 	}
-	cout << AI_STATE << endl;
+	//cout << AI_STATE << endl;
 	switch (AI_STATE)
 	{
 
