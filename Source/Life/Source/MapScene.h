@@ -31,7 +31,6 @@ Main menu for the openGL framework
 #include <fstream>
 
 class CharacterObject;
-class EditAvatar;
 
 /******************************************************************************/
 /*!
@@ -57,11 +56,16 @@ public:
 		E_GEO_BUTTON_RIGHT,
 		E_GEO_BUTTON_REFRESH,
 
-		//Select Border
-		E_GEO_BORDER,
+		//Tile Selecteion (Bordered)
+		E_GEO_WALL_BORDER,
+		E_GEO_FLOOR_BORDER,
+		E_GEO_PLAYER_BORDER,
+		E_GEO_ENEMY_BORDER,
+		E_GEO_DANGER_BORDER,
 
 		//World
 		E_GEO_FLOOR_1,
+		E_GEO_FLOOR_2,
 		E_GEO_WALL_1,
 		E_GEO_PLAYER,
 		E_GEO_ENEMY,
@@ -131,6 +135,11 @@ private:
 		BI_PREV_MAP,
 		BI_NEXT_MAP,
 		BI_REFRESH,
+		BI_WALL,
+		BI_FLOOR,
+		BI_PLAYER,
+		BI_ENEMY,
+		BI_DANGER,
 	};
 
 public:
@@ -157,8 +166,11 @@ public:
 	float f_timer;
 	int i_SimulationSpeed;
 
+	std::string newMapName;
+
 	//Objectstuff
 	std::vector<GameObject*> GO_List;
+	std::vector<std::string>  mapArray;
 	MapLoader ML_map;
 
 	void CO_attach(CharacterObject *CO, GameObject *GO);
@@ -167,8 +179,12 @@ public:
 	Vector3 calTilePos(Vector3 Worldpos);
 	Vector3 calWorldPos(Vector3 Tilepos);
 
+	//Tile Placing
+	int selectedTile;
+	Vector3 selTilePos;
+	Vector3 selWorldPos;
+
 private:
-	EditAvatar *avatar_ptr;
 
 	// Static Constants
 	/******************************************************************************/
@@ -267,7 +283,6 @@ private:
 	void UpdateButtons(void);
 	void RenderButtons(void);
 
-
 	// Init Functions
 	void InitMeshList(void);
 	void InitShadersAndLights(void);
@@ -295,6 +310,8 @@ private:
 
 	//Other
 	Vector3 v3_2DCam;
+	void placeTile(int selectedTile);
+	void saveMap(int selectedTile);
 
 	/******************************************************************************/
 	/*!

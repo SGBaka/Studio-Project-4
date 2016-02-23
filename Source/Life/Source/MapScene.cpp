@@ -25,7 +25,6 @@ Main menu for the openGL framework
 #include <sstream>
 #include "Pathfinding.h"
 #include "Enemy.h"
-#include "EditAvatar.h"
 //#include <vld.h>
 
 MapScene* MapScene::Instance = NULL;
@@ -64,6 +63,9 @@ void MapScene::Init()
 	SE_Engine.Init();
 	f_fov = 0.f;
 	f_mouseSensitivity = 0.f;
+
+	selectedTile = 0;
+	selTilePos = (0, 0, 0);
 
 	InitMeshList();
 	//Starting position of translations and initialize physics
@@ -153,13 +155,28 @@ void MapScene::InitMeshList()
 	P_meshArray[E_GEO_BUTTON_REFRESH] = MeshBuilder::GenerateQuad("Button Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_BUTTON_REFRESH]->textureID[0] = LoadTGA(script.getGameData("image.button.refresh").c_str(), true);
 
-	//Select Border
-	P_meshArray[E_GEO_BORDER] = MeshBuilder::GenerateQuad("Tile Selector Border", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_BORDER]->textureID[0] = LoadTGA(script.getGameData("image.tile.border").c_str(), true);
+	//Tile Selecteion (Bordered)
+	P_meshArray[E_GEO_WALL_BORDER] = MeshBuilder::GenerateQuad("Wall (Border)", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_WALL_BORDER]->textureID[0] = LoadTGA(script.getGameData("image.button.Wall_1_Border").c_str(), true);
+
+	P_meshArray[E_GEO_FLOOR_BORDER] = MeshBuilder::GenerateQuad("Floor (Border)", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_FLOOR_BORDER]->textureID[0] = LoadTGA(script.getGameData("image.button.Floor_1_Border").c_str(), true);
+
+	P_meshArray[E_GEO_PLAYER_BORDER] = MeshBuilder::GenerateQuad("Player (Border)", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_PLAYER_BORDER]->textureID[0] = LoadTGA(script.getGameData("image.button.Pilot_Border").c_str(), true);
+
+	P_meshArray[E_GEO_ENEMY_BORDER] = MeshBuilder::GenerateQuad("Enemy (Border)", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_ENEMY_BORDER]->textureID[0] = LoadTGA(script.getGameData("image.button.Servant_Border").c_str(), true);
+
+	P_meshArray[E_GEO_DANGER_BORDER] = MeshBuilder::GenerateQuad("Danger (Border)", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_DANGER_BORDER]->textureID[0] = LoadTGA(script.getGameData("image.button.Danger_Border").c_str(), true);
 
 	//World
 	P_meshArray[E_GEO_FLOOR_1] = MeshBuilder::GenerateQuad("Floor Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_FLOOR_1]->textureID[0] = LoadTGA(script.getGameData("image.tile.floor").c_str(), true);
+
+	P_meshArray[E_GEO_FLOOR_2] = MeshBuilder::GenerateQuad("Floor Texture_White", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_FLOOR_2]->textureID[0] = LoadTGA(script.getGameData("image.tile.floor_2").c_str(), true);
 
 	P_meshArray[E_GEO_WALL_1] = MeshBuilder::GenerateQuad("Wall Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_WALL_1]->textureID[0] = LoadTGA(script.getGameData("image.tile.wall").c_str(), true);
@@ -194,41 +211,80 @@ void MapScene::InitMenu(void)
 
 	Button *m_B;
 	m_B = new Button;
-	m_B->Position.Set(Application::GetWindowWidth()*0.03f, Application::GetWindowHeight()*0.05f, 0.1f);
-	m_B->Scale.Set(20, 20, 20);
+	m_B->Position.Set(Application::GetWindowWidth()* 0.98f, Application::GetWindowHeight()*0.05f, 0.1f);
+	m_B->Scale.Set(18, 18, 18);
 	m_B->mesh = P_meshArray[E_GEO_BUTTON_LEFT];
 	m_B->ID = BI_BACK;
 	m_B->labeltype = Button::LT_NONE;
 	m_B->gamestate = 1;
 	v_buttonList.push_back(m_B);
 
+	//m_B = new Button;
+	//m_B->Position.Set(Application::GetWindowWidth()*0.97f - 50.f, Application::GetWindowHeight()*0.95f, 0.1f);
+	//m_B->Scale.Set(20, 20, 20);
+	//m_B->mesh = P_meshArray[E_GEO_BUTTON_LEFT];
+	//m_B->ID = BI_PREV_MAP;
+	//m_B->labeltype = Button::LT_NONE;
+	//m_B->gamestate = 1;
+	//v_buttonList.push_back(m_B);
+	//m_B = new Button;
+	//m_B->Position.Set(Application::GetWindowWidth()*0.97f, Application::GetWindowHeight()*0.95f, 0.1f);
+	//m_B->Scale.Set(20, 20, 20);
+	//m_B->mesh = P_meshArray[E_GEO_BUTTON_RIGHT];
+	//m_B->ID = BI_NEXT_MAP;
+	//m_B->labeltype = Button::LT_NONE;
+	//m_B->gamestate = 1;
+	//v_buttonList.push_back(m_B);
 
 	m_B = new Button;
-	m_B->Position.Set(Application::GetWindowWidth()*0.97f - 50.f, Application::GetWindowHeight()*0.95f, 0.1f);
-	m_B->Scale.Set(20, 20, 20);
-	m_B->mesh = P_meshArray[E_GEO_BUTTON_LEFT];
-	m_B->ID = BI_PREV_MAP;
-	m_B->labeltype = Button::LT_NONE;
-	m_B->gamestate = 1;
-	v_buttonList.push_back(m_B);
-
-	m_B = new Button;
-	m_B->Position.Set(Application::GetWindowWidth()*0.97f, Application::GetWindowHeight()*0.95f, 0.1f);
-	m_B->Scale.Set(20, 20, 20);
-	m_B->mesh = P_meshArray[E_GEO_BUTTON_RIGHT];
-	m_B->ID = BI_NEXT_MAP;
-	m_B->labeltype = Button::LT_NONE;
-	m_B->gamestate = 1;
-	v_buttonList.push_back(m_B);
-
-	m_B = new Button;
-	m_B->Position.Set(Application::GetWindowWidth()*0.03f + 50.f, Application::GetWindowHeight()*0.05f, 0.1f);
+	m_B->Position.Set(Application::GetWindowWidth()*0.98f, Application::GetWindowHeight()*0.05f + 40, 0.1f);
 	m_B->Scale.Set(20, 20, 20);
 	m_B->mesh = P_meshArray[E_GEO_BUTTON_REFRESH];
 	m_B->ID = BI_REFRESH;
 	m_B->labeltype = Button::LT_NONE;
 	m_B->gamestate = 1;
 	v_buttonList.push_back(m_B);
+
+	//m_B = new Button;
+	//m_B->Position.Set(Application::GetWindowWidth()*0.03f + 30.f, Application::GetWindowHeight()*0.85f, 0.1f);
+	//m_B->Scale.Set(30, 30, 30);
+	//m_B->mesh = P_meshArray[E_GEO_FLOOR_BORDER];
+	//m_B->ID = BI_FLOOR;
+	//m_B->labeltype = Button::LT_NONE;
+	//m_B->gamestate = 1;
+	//v_buttonList.push_back(m_B);
+	//m_B = new Button;
+	//m_B->Position.Set(Application::GetWindowWidth()*0.03f + 30.f, Application::GetWindowHeight()*0.70f, 0.1f);
+	//m_B->Scale.Set(30, 30, 30);
+	//m_B->mesh = P_meshArray[E_GEO_WALL_BORDER];
+	//m_B->ID = BI_WALL;
+	//m_B->labeltype = Button::LT_NONE;
+	//m_B->gamestate = 1;
+	//v_buttonList.push_back(m_B);
+	//m_B = new Button;
+	//m_B->Position.Set(Application::GetWindowWidth()*0.03f + 30.f, Application::GetWindowHeight()*0.55f, 0.1f);
+	//m_B->Scale.Set(30, 30, 30);
+	//m_B->mesh = P_meshArray[E_GEO_PLAYER_BORDER];
+	//m_B->ID = BI_PLAYER;
+	//m_B->labeltype = Button::LT_NONE;
+	//m_B->gamestate = 1;
+	//v_buttonList.push_back(m_B);
+	//m_B = new Button;
+	//m_B->Position.Set(Application::GetWindowWidth()*0.03f + 30.f, Application::GetWindowHeight()*0.40f, 0.1f);
+	//m_B->Scale.Set(30, 30, 30);
+	//m_B->mesh = P_meshArray[E_GEO_ENEMY_BORDER];
+	//m_B->ID = BI_ENEMY;
+	//m_B->labeltype = Button::LT_NONE;
+	//m_B->gamestate = 1;
+	//v_buttonList.push_back(m_B);
+	//m_B = new Button;
+	//m_B->Position.Set(Application::GetWindowWidth()*0.03f + 30.f, Application::GetWindowHeight()*0.25f, 0.1f);
+	//m_B->Scale.Set(30, 30, 30);
+	//m_B->mesh = P_meshArray[E_GEO_DANGER_BORDER];
+	//m_B->ID = BI_DANGER;
+	//m_B->labeltype = Button::LT_NONE;
+	//m_B->gamestate = 1;
+	//v_buttonList.push_back(m_B);
 }
 
 /******************************************************************************/
@@ -260,18 +316,22 @@ the level to load
 /******************************************************************************/
 bool MapScene::InitLevel(int level)
 {
-	std::cout << "\nLoading map...\n";
-	LuaScript scriptlevel("maps");
-	std::string luaName = "map.map.level_" + std::to_string(static_cast<unsigned long long>(level));
-	if (!ML_map.loadMap(scriptlevel.getGameData(luaName.c_str())))
-	{
-		std::cout << "!!!ERROR!!! Unable to load map\n";
-		return false;
-	}
+	std::cout << "New Map: ";
+	std::cin >> newMapName;
+
+	std::fstream filecreate;
+	filecreate.open(newMapName, std::fstream::out);
+	filecreate.close();
+
+	ML_map.map_width = 34;
+	ML_map.map_height = 21;
+	std::cout << ML_map.map_width << ", " << ML_map.map_height << "\n";
+
+	/*std::cout << "\nLoading map...\n";
+	
 
 	std::cout << "Map Size: ";
-	std::cin >> ML_map.map_width >> ML_map.map_height;
-	std::cout << ML_map.map_width << ", " << ML_map.map_height << "\n";
+	std::cout << ML_map.map_width << ", " << ML_map.map_height << "\n";*/
 
 	//Deletes everything from the world
 	while (GO_List.size() > 0)
@@ -284,67 +344,93 @@ bool MapScene::InitLevel(int level)
 		}
 		GO_List.pop_back();
 	}
-
+	
 	for (unsigned y = ML_map.map_height - 1; y > 0; --y)
 	{
 		for (unsigned x = 0; x < ML_map.map_width; ++x)
 		{
-			if (ML_map.map_data[y][x] != "1")
+			GameObject *GO;
+			GO = new GameObject();
+			GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+			GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+			GO->mesh = P_meshArray[E_GEO_FLOOR_BORDER];
+			MapScene::GetInstance()->GO_List.push_back(GO);
+
+			mapArray.push_back("0");
+		}
+		ML_map.map_data.push_back(mapArray);
+		mapArray.clear();
+	}
+	ML_map.map_data[0][0] = "18";
+
+	std::stringstream ss;
+	ss << "GameData//Maps//" << newMapName << ".csv";
+	ML_map.saveMap(ss.str());
+	ML_map.loadMap(ss.str());
+	for (unsigned y = ML_map.map_height - 1; y > 0; --y)
+	{
+		for (unsigned x = 0; x < ML_map.map_width; ++x)
+		{
+			if (ML_map.map_data[y][x] == "0")
 			{
 				GameObject *GO;
 				GO = new GameObject();
 				GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
 				GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
 				GO->enableCollision = false;
-				GO->mesh = P_meshArray[E_GEO_FLOOR_1];
-
-				GO_List.push_back(GO);
-
-				if (ML_map.map_data[y][x] == "B")
-				{
-					EditAvatar *avatar;
-					avatar = new EditAvatar;
-					avatar->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0));
-					avatar->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
-					avatar->mesh = P_meshArray[E_GEO_BORDER];
-					avatar->currTile.Set(x, y);
-
-					avatar_ptr = avatar;
-					GO_List.push_back(avatar);
-				}
-				if (ML_map.map_data[y][x] == "P")
-				{
-					GameObject *GO;
-					GO = new GameObject();
-					GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
-					GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
-					GO->enableCollision = false;
-					GO->mesh = P_meshArray[E_GEO_PLAYER];
-					GO_List.push_back(GO);
-				}
-
-				continue;
-			}
-
-			else
-			{
-				GameObject *GO;
-				GO = new GameObject();
-				GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
-				GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
-				GO->enableCollision = false;
-				GO->mesh = P_meshArray[E_GEO_WALL_1];
+				GO->mesh = P_meshArray[E_GEO_FLOOR_BORDER];
 				GO_List.push_back(GO);
 			}
 		}
 	}
+
+	LuaScript buttonScript("button");
+
+	//for (unsigned y = ML_map.map_height - 1; y > 0; --y)
+	//{
+	//	for (unsigned x = 0; x < ML_map.map_width; ++x)
+	//	{
+	//		if (ML_map.map_data[y][x] != "1")
+	//		{
+	//			GameObject *GO;
+	//			GO = new GameObject();
+	//			GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+	//			GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+	//			GO->enableCollision = false;
+	//			GO->mesh = P_meshArray[E_GEO_FLOOR_2];
+	//			GO_List.push_back(GO);
+
+	//			if (ML_map.map_data[y][x] == "P")
+	//			{
+	//				GameObject *GO;
+	//				GO = new GameObject();
+	//				GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+	//				GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+	//				GO->enableCollision = false;
+	//				GO->mesh = P_meshArray[E_GEO_PLAYER];
+	//				GO_List.push_back(GO);
+	//			}
+	//			continue;
+	//		}
+
+	//		else
+	//		{
+	//			GameObject *GO;
+	//			GO = new GameObject();
+	//			GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+	//			GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+	//			GO->enableCollision = false;
+	//			GO->mesh = P_meshArray[E_GEO_WALL_1];
+	//			GO_List.push_back(GO);
+	//		}
+	//	}
+	//}
 
 	v3_2DCam.x = -static_cast<float>(Application::GetWindowWidth()) * 0.5f;
 	v3_2DCam.y = -static_cast<float>(Application::GetWindowHeight()) * 0.5f;
 
 	v3_2DCam.x += ML_map.map_width*ML_map.worldSize;
 	v3_2DCam.y += ML_map.map_height*ML_map.worldSize;
-
 	return true;
 }
 
@@ -511,6 +597,24 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 	UpdateTextButtons();
 	UpdateButtons();
 
+	if (Application::IsKeyPressed('P'))
+	{
+		std::stringstream ss;
+		ss << "GameData//Maps//" << newMapName << ".csv";
+		ML_map.saveMap(ss.str());
+	}
+	//select Tiles
+	if (Application::IsKeyPressed('1'))
+		selectedTile = 0;
+	if (Application::IsKeyPressed('2'))
+		selectedTile = 1;
+	if (Application::IsKeyPressed('3'))
+		selectedTile = 2;
+	if (Application::IsKeyPressed('4'))
+		selectedTile = 3;
+	if (Application::IsKeyPressed('5'))
+		selectedTile = 4;
+
 	if (f_fov != f_fov_target)
 	{
 		float diff = f_fov_target - f_fov;
@@ -527,8 +631,6 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 		editFOV(f_fov);
 	}
 
-	//-----------------------------------------------------------------------------
-
 	for (unsigned i = 0; i < GO_List.size(); ++i)
 	{
 		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[i]);
@@ -538,7 +640,6 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 			CO->Update(dt);
 		}
 	}
-
 
 	static bool isEscPressed = false;
 	if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
@@ -569,50 +670,98 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 		{
 			InitSimulation();
 		}
-		else if (FetchBUTTON(BI_PREV_MAP)->active)
-		{
-			if (i_SimulationSpeed > 1)
-			{
-				--i_SimulationSpeed;
-			}
-		}
-		else if (FetchBUTTON(BI_NEXT_MAP)->active)
-		{
-			if (i_SimulationSpeed < 5)
-			{
-				++i_SimulationSpeed;
-			}
-		}
+		/*//Prevent from pressing outside map borders
+		if ((MousePosX <= 720) &&
+			(MousePosX >= 0) &&
+			(MousePosY <= 720) &&
+			(MousePosY >= 0))*/
+		placeTile(selectedTile);
+		//else if (FetchBUTTON(BI_PREV_MAP)->active)
+		//{
+		//	if (i_SimulationSpeed > 1)
+		//	{
+		//		--i_SimulationSpeed;
+		//	}
+		//}
+		//else if (FetchBUTTON(BI_NEXT_MAP)->active)
+		//{
+		//	if (i_SimulationSpeed < 5)
+		//	{
+		//		++i_SimulationSpeed;
+		//	}
+		//}
 	}
 
-	float f_camSpeed = 10.f;
+	//float f_camSpeed = 10.f;
 
-	if (Application::IsKeyPressed(VK_CONTROL))
-	{
-		f_camSpeed *= 0.5f;
-	}
+	//if (Application::IsKeyPressed(VK_CONTROL))
+	//{
+	//	f_camSpeed *= 0.5f;
+	//}
+	//if (Application::IsKeyPressed(VK_SHIFT))
+	//{
+	//	f_camSpeed *= 2.f;
+	//}
+	//if (Application::IsKeyPressed('W'))
+	//{
+	//	v3_2DCam.y += f_camSpeed;//static_cast<float>(dt) * f_camSpeed;
+	//}
+	//if (Application::IsKeyPressed('S'))
+	//{
+	//	v3_2DCam.y -= f_camSpeed;//static_cast<float>(dt) * f_camSpeed;
+	//}
+	//if (Application::IsKeyPressed('A'))
+	//{
+	//	v3_2DCam.x -= f_camSpeed;//static_cast<float>(dt) * f_camSpeed;
+	//}
+	//if (Application::IsKeyPressed('D'))
+	//{
+	//	v3_2DCam.x += f_camSpeed;//static_cast<float>(dt) * f_camSpeed;
+	//}
+}
 
-	if (Application::IsKeyPressed(VK_SHIFT))
+/******************************************************************************/
+/*!
+\brief
+places a tile
+\param selectedTile
+ID of tile to be placed
+*/
+/******************************************************************************/
+void MapScene::placeTile(int selectedTile)
+{
+	GameObject *GO;
+	GO = new GameObject();
+	selTilePos = (calTilePos(Vector3(MousePosX, MousePosY)));//StopGap Hardcode: Vector3(MousePosX - 252, MousePosY + 36)
+	selWorldPos = (calWorldPos(selTilePos));
+	//cout << selTilePos << endl;
+	//cout << selWorldPos << endl;
+	GO->Init(selWorldPos);
+	GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+	switch (selectedTile)
 	{
-		f_camSpeed *= 2.f;
+	case 0:
+		GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_FLOOR_BORDER];
+		ML_map.map_data[selTilePos.y][selTilePos.x] = "0";
+		break;
+	case 1:
+		GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_WALL_BORDER];
+		ML_map.map_data[selTilePos.y][selTilePos.x] = "1";
+		break;
+	case 2:
+		GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_PLAYER_BORDER];
+		ML_map.map_data[selTilePos.y][selTilePos.x] = "2";
+		break;
+	case 3:
+		GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_ENEMY_BORDER];
+		ML_map.map_data[selTilePos.y][selTilePos.x] = "3";
+		break;
+	case 4:
+		GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_DANGER_BORDER];
+		ML_map.map_data[selTilePos.y][selTilePos.x] = "4";
+		break;
 	}
-
-	if (Application::IsKeyPressed('W'))
-	{
-		v3_2DCam.y += f_camSpeed;//static_cast<float>(dt) * f_camSpeed;
-	}
-	if (Application::IsKeyPressed('S'))
-	{
-		v3_2DCam.y -= f_camSpeed;//static_cast<float>(dt) * f_camSpeed;
-	}
-	if (Application::IsKeyPressed('A'))
-	{
-		v3_2DCam.x -= f_camSpeed;//static_cast<float>(dt) * f_camSpeed;
-	}
-	if (Application::IsKeyPressed('D'))
-	{
-		v3_2DCam.x += f_camSpeed;//static_cast<float>(dt) * f_camSpeed;
-	}
+	MapScene::GetInstance()->GO_List.push_back(GO);
 }
 
 /******************************************************************************/
@@ -1033,7 +1182,7 @@ void MapScene::RenderButtons(void)
 			modelStack.PushMatrix();
 			modelStack.Translate(m_B->Position);
 			modelStack.Scale(m_B->Scale);
-			RenderMeshOnScreen(m_B->mesh, 10.f, m_B->color);
+			RenderMeshOnScreen(m_B->mesh);
 
 			if (m_B->labeltype == Button::LT_BUTTON)
 			{
@@ -1091,7 +1240,6 @@ void MapScene::Render()
 
 	modelStack.LoadIdentity();
 
-
 	modelStack.PushMatrix();
 	modelStack.Translate(-v3_2DCam);
 	RenderGO();
@@ -1112,23 +1260,81 @@ void MapScene::RenderUI()
 {
 	std::stringstream ss;
 	ss << "RunTime " << f_timer;
-
 	modelStack.PushMatrix();
-	modelStack.Translate(Application::GetWindowWidth() * 0.025f, Application::GetWindowHeight() * 0.975f, 0);
-	modelStack.Scale(20, 20, 20);
+	modelStack.Translate(Application::GetWindowWidth() * 0.025f, Application::GetWindowHeight() * 0.9815f, 0);
+	modelStack.Scale(15, 15, 15);
 	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 	modelStack.PopMatrix();
 
 	std::stringstream ss2;
-	ss2 << "Simulation Speed " << i_SimulationSpeed << "X";
-
+	ss2 << "1";
 	modelStack.PushMatrix();
-	modelStack.Translate(Application::GetWindowWidth() * 0.025f, Application::GetWindowHeight() * 0.975f - 20.f, 0);
+	modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 130.f, 0);
 	modelStack.Scale(20, 20, 20);
 	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), UIColor);
 	modelStack.PopMatrix();
 
+	std::stringstream ss3;
+	ss3 << "2";
+	modelStack.PushMatrix();
+	modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 240.f, 0);
+	modelStack.Scale(20, 20, 20);
+	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss3.str(), UIColor);
+	modelStack.PopMatrix();
 
+	std::stringstream ss4;
+	ss4 << "3";
+	modelStack.PushMatrix();
+	modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 350.f, 0);
+	modelStack.Scale(20, 20, 20);
+	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss4.str(), UIColor);
+	modelStack.PopMatrix();
+
+	std::stringstream ss5;
+	ss5 << "4";
+	modelStack.PushMatrix();
+	modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 460.f, 0);
+	modelStack.Scale(20, 20, 20);
+	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss5.str(), UIColor);
+	modelStack.PopMatrix();
+
+	std::stringstream ss6;
+	ss6 << "5";
+	modelStack.PushMatrix();
+	modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 570.f, 0);
+	modelStack.Scale(20, 20, 20);
+	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss6.str(), UIColor);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 100.f, 0);
+	modelStack.Scale(18, 18, 18);
+	RenderMeshOnScreen(P_meshArray[E_GEO_FLOOR_BORDER], 0, 0);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 210.f, 0);
+	modelStack.Scale(18, 18, 18);
+	RenderMeshOnScreen(P_meshArray[E_GEO_WALL_BORDER], 0, 0);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 320.f, 0);
+	modelStack.Scale(18, 18, 18);
+	RenderMeshOnScreen(P_meshArray[E_GEO_PLAYER_BORDER], 0, 0);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 430.f, 0);
+	modelStack.Scale(18, 18, 18);
+	RenderMeshOnScreen(P_meshArray[E_GEO_ENEMY_BORDER], 0, 0);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 540.f, 0);
+	modelStack.Scale(18, 18, 18);
+	RenderMeshOnScreen(P_meshArray[E_GEO_DANGER_BORDER], 0, 0);
+	modelStack.PopMatrix();
 
 	//AI Status
 	for (unsigned i = 0; i < GO_List.size(); ++i)
@@ -1302,4 +1508,5 @@ void MapScene::Destroy()
 		delete MapScene::Instance;
 		MapScene::Instance = NULL;
 	}
+	//std::remove(newMapName);
 }

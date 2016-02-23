@@ -13,7 +13,12 @@ button = {
     back = "UI//Button//back.tga",
     left = "UI//Button//left.tga",
     right = "UI//Button//right.tga",
-    refresh = "UI//Button//refresh.tga"
+    refresh = "UI//Button//refresh.tga",
+    Danger_Border = "UI//Button//Danger_Border.tga",
+    Floor_1_Border = "UI//Button//Floor_1_Border.tga",
+    Pilot_Border = "UI//Button//Pilot_Border.tga",
+    Servant_Border = "UI//Button//Servant_Border.tga",
+    Wall_1_Border = "UI//Button//Wall_1_Border.tga"
 }
 
 font = {
