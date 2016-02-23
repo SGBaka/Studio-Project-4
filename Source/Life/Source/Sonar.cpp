@@ -111,7 +111,7 @@ void Sonar::GenerateSonar(Vector3 position, bool special)
 
 void Sonar::Update(double dt)
 {
-	radius += speed;
+	radius += speed * 60 * dt;
 
 	for (int i = 0; i < segmentList.size(); ++i)
 	{
