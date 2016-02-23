@@ -62,6 +62,8 @@ public:
 		E_GEO_PLAYER_BORDER,
 		E_GEO_ENEMY_BORDER,
 		E_GEO_DANGER_BORDER,
+		E_GEO_WIN_BORDER,
+		E_GEO_SAVE,
 
 		//World
 		E_GEO_FLOOR_1,
@@ -134,7 +136,7 @@ private:
 		BI_BACK,
 		BI_PREV_MAP,
 		BI_NEXT_MAP,
-		BI_REFRESH,
+		BI_SAVE,
 		BI_WALL,
 		BI_FLOOR,
 		BI_PLAYER,
@@ -183,6 +185,7 @@ public:
 	int selectedTile;
 	Vector3 selTilePos;
 	Vector3 selWorldPos;
+	int enemyID;
 
 private:
 

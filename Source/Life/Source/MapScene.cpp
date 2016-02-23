@@ -76,6 +76,7 @@ void MapScene::Init()
 	MousePosX = 0.f;
 	MousePosY = 0.f;
 	InitMenu();
+	enemyID = 50;
 
 	f_fov_target = f_fov;
 
@@ -171,6 +172,12 @@ void MapScene::InitMeshList()
 	P_meshArray[E_GEO_DANGER_BORDER] = MeshBuilder::GenerateQuad("Danger (Border)", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_DANGER_BORDER]->textureID[0] = LoadTGA(script.getGameData("image.button.Danger_Border").c_str(), true);
 
+	P_meshArray[E_GEO_WIN_BORDER] = MeshBuilder::GenerateQuad("Win (Border)", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_WIN_BORDER]->textureID[0] = LoadTGA(script.getGameData("image.button.Win_Border").c_str(), true);
+
+	P_meshArray[E_GEO_SAVE] = MeshBuilder::GenerateQuad("Save button", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_SAVE]->textureID[0] = LoadTGA(script.getGameData("image.button.Save").c_str(), true);
+
 	//World
 	P_meshArray[E_GEO_FLOOR_1] = MeshBuilder::GenerateQuad("Floor Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_FLOOR_1]->textureID[0] = LoadTGA(script.getGameData("image.tile.floor").c_str(), true);
@@ -239,8 +246,8 @@ void MapScene::InitMenu(void)
 	m_B = new Button;
 	m_B->Position.Set(Application::GetWindowWidth()*0.98f, Application::GetWindowHeight()*0.05f + 40, 0.1f);
 	m_B->Scale.Set(20, 20, 20);
-	m_B->mesh = P_meshArray[E_GEO_BUTTON_REFRESH];
-	m_B->ID = BI_REFRESH;
+	m_B->mesh = P_meshArray[E_GEO_SAVE];
+	m_B->ID = BI_SAVE;
 	m_B->labeltype = Button::LT_NONE;
 	m_B->gamestate = 1;
 	v_buttonList.push_back(m_B);
@@ -610,6 +617,8 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 		selectedTile = 3;
 	if (Application::IsKeyPressed('5'))
 		selectedTile = 4;
+	if (Application::IsKeyPressed('6'))
+		selectedTile = 5;
 
 	if (f_fov != f_fov_target)
 	{
@@ -670,15 +679,15 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 			}
 			return;
 		}
-		else if (FetchBUTTON(BI_REFRESH)->active)
+		else if (FetchBUTTON(BI_SAVE)->active)
 		{
-			InitSimulation();
+			cout << "New Map: " << endl;
+			cin >> newMapName;
+
+			std::stringstream ss;
+			ss << "GameData//Maps//" << newMapName << ".csv";
+			ML_map.saveMap(ss.str());
 		}
-		/*//Prevent from pressing outside map borders
-		if ((MousePosX <= 720) &&
-			(MousePosX >= 0) &&
-			(MousePosY <= 720) &&
-			(MousePosY >= 0))*/
 		placeTile(selectedTile);
 		//else if (FetchBUTTON(BI_PREV_MAP)->active)
 		//{
@@ -757,7 +766,7 @@ void MapScene::placeTile(int selectedTile)
 			break;
 		case 2:
 			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_PLAYER_BORDER];
-			ML_map.map_data[selTilePos.y][selTilePos.x] = "2";
+			ML_map.map_data[selTilePos.y][selTilePos.x] = "P";
 			break;
 		case 3:
 			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_ENEMY_BORDER];
@@ -767,6 +776,10 @@ void MapScene::placeTile(int selectedTile)
 			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_DANGER_BORDER];
 			ML_map.map_data[selTilePos.y][selTilePos.x] = "4";
 			break;
+		case 5:
+			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_ENEMY_BORDER];
+			ML_map.map_data[selTilePos.y][selTilePos.x] = std::to_string(enemyID);
+			enemyID++;
 		}
 		MapScene::GetInstance()->GO_List.push_back(GO);
 	}
@@ -1275,14 +1288,54 @@ void MapScene::RenderUI()
 	modelStack.PopMatrix();
 
 	std::stringstream ss2;
-	ss2 << "1";
+	ss2 << "Tile:";
 	modelStack.PushMatrix();
-	modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 130.f, 0);
-	modelStack.Scale(20, 20, 20);
+	modelStack.Translate(Application::GetWindowWidth() * 0.96f, Application::GetWindowHeight() * 0.975f - 80.f, 0);
+	modelStack.Scale(10, 10, 10);
 	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), UIColor);
 	modelStack.PopMatrix();
 
-	std::stringstream ss3;
+	switch (selectedTile)
+	{
+	case 0:
+		modelStack.PushMatrix();
+		modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 50.f, 0);
+		modelStack.Scale(18, 18, 18);
+		RenderMeshOnScreen(P_meshArray[E_GEO_FLOOR_BORDER], 0, 0);
+		modelStack.PopMatrix();
+	case 1:
+		modelStack.PushMatrix();
+		modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 50.f, 0);
+		modelStack.Scale(18, 18, 18);
+		RenderMeshOnScreen(P_meshArray[E_GEO_WALL_BORDER], 0, 0);
+		modelStack.PopMatrix();
+	case 2:
+		modelStack.PushMatrix();
+		modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 50.f, 0);
+		modelStack.Scale(18, 18, 18);
+		RenderMeshOnScreen(P_meshArray[E_GEO_PLAYER_BORDER], 0, 0);
+		modelStack.PopMatrix();
+	case 3:
+		modelStack.PushMatrix();
+		modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 50.f, 0);
+		modelStack.Scale(18, 18, 18);
+		RenderMeshOnScreen(P_meshArray[E_GEO_WIN_BORDER], 0, 0);
+		modelStack.PopMatrix();
+	case 4:
+		modelStack.PushMatrix();
+		modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 50.f, 0);
+		modelStack.Scale(18, 18, 18);
+		RenderMeshOnScreen(P_meshArray[E_GEO_DANGER_BORDER], 0, 0);
+		modelStack.PopMatrix();
+	case 5:
+		modelStack.PushMatrix();
+		modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 50.f, 0);
+		modelStack.Scale(18, 18, 18);
+		RenderMeshOnScreen(P_meshArray[E_GEO_ENEMY_BORDER], 0, 0);
+		modelStack.PopMatrix();
+	}
+
+	/*std::stringstream ss3;
 	ss3 << "2";
 	modelStack.PushMatrix();
 	modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 240.f, 0);
@@ -1342,7 +1395,7 @@ void MapScene::RenderUI()
 	modelStack.Translate(Application::GetWindowWidth() * 0.98f, Application::GetWindowHeight() * 0.975f - 540.f, 0);
 	modelStack.Scale(18, 18, 18);
 	RenderMeshOnScreen(P_meshArray[E_GEO_DANGER_BORDER], 0, 0);
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();*/
 
 	//AI Status
 	for (unsigned i = 0; i < GO_List.size(); ++i)
