@@ -1,0 +1,27 @@
+4 ai 2 smart 2 stupid
+idle with timer
+enemy
+sonar
+-extra radius
+local lulti
+-sonar diff
+-gren and yellow
+lua 
+-percentage values
+-defualt values
+map editor
+- buttons
+-maque
+-reset
+-eraser
+-create file even not
+-limst 4 e and 1 p
+-virtual key 
+art
+-splash
+level des
+-pac
+-level random
+-3
+3
+3
