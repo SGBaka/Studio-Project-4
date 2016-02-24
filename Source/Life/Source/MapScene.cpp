@@ -64,7 +64,7 @@ void MapScene::Init()
 	SE_Engine.Init();
 	f_fov = 0.f;
 	f_mouseSensitivity = 0.f;
-	CUR_STATE = ST_CREATE;
+	//CUR_STATE = S_CREATE;
 
 	selectedTile = 0;
 	selTilePos = (0, 0, 0);
@@ -82,12 +82,39 @@ void MapScene::Init()
 
 	f_fov_target = f_fov;
 
+	switch (CUR_STATE)
+	{
+	case MapScene::S_CREATE:
+		MENU_STATE = S_CREATE;
+		break;
+	case MapScene::S_NEW:
+		MENU_STATE = S_NEW;
+		break;
+	case MapScene::S_REPLACE:
+		MENU_STATE = S_REPLACE;
+		break;
+	default:
+		break;
+	}
+
 	LuaScript sound("Sound");
 	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
 
 	LEVEL = 2;
 	InitSimulation();
+}
+
+
+/******************************************************************************/
+/*!
+\brief
+Sets the state type
+*/
+/******************************************************************************/
+void MapScene::setState(STATE_TYPE S)
+{
+	CUR_STATE = S;
 }
 
 /******************************************************************************/
@@ -212,8 +239,6 @@ void MapScene::InitMenu(void)
 	UIColorEnemy.Set(0.0f, 0.8f, 0.4f);
 	//TextButton* S_MB;
 
-	MENU_STATE = ST_CREATE;
-
 	/*S_MB = new TextButton;
 	S_MB->pos.Set(Application::GetWindowWidth()*0.08f, Application::GetWindowHeight()*0.05f, 0.1f);
 	S_MB->scale.Set(22, 22, 22);
@@ -228,7 +253,7 @@ void MapScene::InitMenu(void)
 	m_B->mesh = P_meshArray[E_GEO_BUTTON_LEFT];
 	m_B->ID = BI_BACK;
 	m_B->labeltype = Button::LT_NONE;
-	m_B->gamestate = ST_CREATE;
+	m_B->gamestate = S_CREATE;
 	v_buttonList.push_back(m_B);
 
 	//m_B = new Button;
@@ -254,7 +279,7 @@ void MapScene::InitMenu(void)
 	m_B->mesh = P_meshArray[E_GEO_SAVE];
 	m_B->ID = BI_SAVE;
 	m_B->labeltype = Button::LT_NONE;
-	m_B->gamestate = ST_CREATE;
+	m_B->gamestate = S_CREATE;
 	v_buttonList.push_back(m_B);
 
 	//m_B = new Button;
@@ -311,7 +336,7 @@ void MapScene::InitMenu(void)
 		S_MB->pos.Set(Application::GetWindowWidth()*0.5f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
-		S_MB->gamestate = ST_REPLACE;
+		S_MB->gamestate = S_REPLACE;
 		v_textButtonList.push_back(S_MB);
 	}
 }
@@ -646,7 +671,7 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 
 	switch (MENU_STATE)
 	{
-	case ST_CREATE:
+	case S_CREATE:
 	{
 					  //select Tiles
 					  if (Application::IsKeyPressed('1'))
@@ -710,12 +735,12 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 							  {
 								  if (newMapName != "")
 								  {
-									  MENU_STATE = ST_REPLACE;
+									  MENU_STATE = S_REPLACE;
 								  }
 								  else
 								  {
 									  newMapName = ML_map.newFile();
-									  MENU_STATE = ST_NEW;
+									  MENU_STATE = S_NEW;
 								  }
 							  }
 						  }
@@ -739,31 +764,31 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 						  {
 							  if (newMapName != "")
 							  {
-								  MENU_STATE = ST_REPLACE;
+								  MENU_STATE = S_REPLACE;
 							  }
 							  else
 							  {
 								  newMapName = ML_map.newFile();
-								  MENU_STATE = ST_NEW;
+								  MENU_STATE = S_NEW;
 							  }
 						  }
 					  }
 	}
 		break;
 
-	case ST_NEW:
+	case S_NEW:
 	{
 				   msg_timer += static_cast<float>(dt);
 				   if (msg_timer > 2.f || Application::IsKeyPressed(VK_LBUTTON))
 				   {
 					   msg_timer = 0;
-					   MENU_STATE = ST_CREATE;
+					   MENU_STATE = S_CREATE;
 				   }
 				   break;
 	}
 		break;
 
-	case ST_REPLACE:
+	case S_REPLACE:
 	{
 					   if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
 					   {
@@ -780,12 +805,12 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 							   std::stringstream ss;
 							   ss << "GameData//Maps//" << newMapName << ".csv";
 							   ML_map.saveMap(ss.str());
-							   MENU_STATE = ST_NEW;
+							   MENU_STATE = S_NEW;
 						   }
 						   else if (FetchTB(nameScript.get<std::string>("editor_replace.textbutton_2.text"))->active)
 						   {
 							   newMapName = ML_map.newFile();
-							   MENU_STATE = ST_NEW;
+							   MENU_STATE = S_NEW;
 						   }
 					   }
 	}
@@ -1497,7 +1522,7 @@ void MapScene::RenderUI()
 
 	switch (MENU_STATE)
 	{
-	case ST_NEW:
+	case S_NEW:
 	{
 				   modelStack.PushMatrix();
 				   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
@@ -1515,7 +1540,7 @@ void MapScene::RenderUI()
 	}
 		break;
 
-	case ST_REPLACE:
+	case S_REPLACE:
 	{
 					   modelStack.PushMatrix();
 					   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);

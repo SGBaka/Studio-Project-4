@@ -130,8 +130,12 @@ void SceneManager::push(SCENES newScene)
 		scene = MainScene::GetInstance();
 		break;
 	case SceneManager::S_EDITOR:
+	{
 		scene = MapScene::GetInstance();
+		MapScene *ms_tmp = dynamic_cast<MapScene*>(scene);
+		ms_tmp->setState(MapScene::S_NEW);
 		break;
+	}
 	case SceneManager::S_PAUSE_MENU:
 	{
 		scene = new MenuScene();
@@ -148,9 +152,9 @@ void SceneManager::push(SCENES newScene)
 	}
 	case SceneManager::S_EDITOR_MENU_REPLACE:
 	{
-		scene = new MenuScene();
-		MenuScene *ms_tmp = dynamic_cast<MenuScene*>(scene);
-		ms_tmp->setMenu(MenuScene::MT_EDITOR_REPLACE);
+		scene = MapScene::GetInstance();
+		MapScene *ms_tmp = dynamic_cast<MapScene*>(scene);
+		ms_tmp->setState(MapScene::S_REPLACE);
 		break;
 	}
 	default:

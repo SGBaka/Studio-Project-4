@@ -704,7 +704,7 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 						}
 						else if (FetchTB(nameScript.get<std::string>("map_screen.textbutton_2.text"))->active)
 						{
-							//std::cout << "Medium" << std::endl;
+							SceneManager::Instance()->replace(SceneManager::S_EDITOR_MENU_REPLACE);
 						}
 					}
 					break;
