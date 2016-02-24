@@ -838,7 +838,7 @@ void MapScene::placeTile(int selectedTile)
 
 	//cout << selTilePos << endl;
 	//cout << selWorldPos << endl;
-	if (selTilePos.x < ML_map.map_width && selTilePos.x > -1 && selTilePos.y < ML_map.map_height && selTilePos.y > -1)
+	if (selTilePos.x < ML_map.map_width && selTilePos.x > -1 && selTilePos.y < ML_map.map_height && selTilePos.y > 0)
 	{
 		GO->Init(Vector3(selTilePos.x*ML_map.worldSize*2.f, (ML_map.map_height - selTilePos.y)*ML_map.worldSize*2.f, -0.5f));
 		GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
