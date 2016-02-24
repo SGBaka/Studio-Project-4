@@ -163,12 +163,12 @@ void cEnemy::Update(double dt)
 		gotoChase = false;
 		isVisible = true;
 
-		if (timer <= 4 && routeCounter2 == 0)
+		if (timer <= 3 && routeCounter2 == 0)
 		{
 			route2 = pathFind(currTile.x, currTile.y, MainScene::GetInstance()->player_ptr->currTile.x, MainScene::GetInstance()->player_ptr->currTile.y);
 
 		}
-		else if (timer > 4)
+		else if (timer > 3)
 		{
 			timer = 0;
 			setWaypoints();
