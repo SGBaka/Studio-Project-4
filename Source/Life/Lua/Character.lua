@@ -5,7 +5,7 @@ player = {
 	sonar_cooldown = 0.65,
 	sonar_type = 2,
 	special_radius = 320.0,
-	special_speed = 2,
+	special_speed = 4,
 	special_sides = 40,
 	special_cooldown = 2
 }

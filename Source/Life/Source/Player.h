@@ -11,8 +11,14 @@ using namespace::std;
 
 class Player : public CharacterObject
 {
-
 public:
+
+	enum SOUND_TYPE
+	{
+		ST_FOOTSTEPS,
+		ST_TOTAL
+	};
+
 	Player();
 	~Player();
 
@@ -43,6 +49,9 @@ public:
 
 private:
 	int mapWidth, mapHeight;
+
+	SoundEngine SE_Engine;
+	ISoundSource *SoundList[ST_TOTAL];
 };
 
 

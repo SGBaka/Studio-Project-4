@@ -4,6 +4,8 @@ backgroundW = "Ambience//background.wav";
 dead = "Effects//death.mp3";
 heartbeat = "Effects//heartbeat.mp3";
 
+footsteps = "Other//step1.wav";
+
 alarm = "Other//Alarm.mp3";
 alert = "Other//alert.wav";
 

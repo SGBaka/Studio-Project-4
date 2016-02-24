@@ -7,7 +7,7 @@ Player::Player()
 , specialCooldown(2)
 , specialTimer(specialCooldown)
 , specialDuration(0.2)
-, specialROF(0.05)
+, specialROF(0.04)
 , specialTimer2(specialROF)
 , specialCounter(0)
 , isSpecial(false)
@@ -28,6 +28,8 @@ Player::~Player()
 
 void Player::Init(Vector3 position)
 {
+	SE_Engine.Init();
+
 	this->position = position;
 
 	LuaScript playerScript("character");
@@ -35,6 +37,9 @@ void Player::Init(Vector3 position)
 	sonarTimer = sonarCooldown;
 	specialCooldown = playerScript.get<float>("player.special_cooldown");
 	specialTimer = specialCooldown;
+
+	LuaScript sound("Sound");
+	SoundList[ST_FOOTSTEPS] = SE_Engine.preloadSound(sound.getGameData("sound.footsteps").c_str());
 }
 
 
@@ -50,6 +55,17 @@ void Player::Update(double dt)
 			checkMovement(3, dt);
 		else if (Application::IsKeyPressed('D') && !checkCollision(1))
 			checkMovement(1, dt);
+
+		if (Application::IsKeyPressed('W') ||
+			Application::IsKeyPressed('A') ||
+			Application::IsKeyPressed('S') ||
+			Application::IsKeyPressed('D'))
+		{
+			if (!SE_Engine.isSoundPlaying(SoundList[ST_FOOTSTEPS]))
+				SE_Engine.playSound2D(SoundList[ST_FOOTSTEPS]);
+		}
+
+
 		if (Application::IsKeyPressed(VK_LBUTTON) && sonarTimer >= sonarCooldown)
 		{
 			LuaScript playerScript("character");

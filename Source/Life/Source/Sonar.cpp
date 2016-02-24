@@ -68,7 +68,7 @@ void Sonar::GenerateSonar(Vector3 position, int type)
 		if (RS->type != 2)													// Set the length of the line by scaling X with lengthOfSide
 			RS->scale.Set(lengthOfSide / 2, 1, 1);
 		else
-			RS->scale.Set(lengthOfSide / 2, 4, 1);
+			RS->scale.Set(lengthOfSide / 2, 6, 1);
 
 		RS->rotation = rotationCounter;										// Set rotation value for the line
 
@@ -188,7 +188,7 @@ void Sonar::Update(double dt)
 			if (segmentList[i]->type != 2)
 				segmentList[i]->scale.Set(lengthOfSide / 2, 1, 1);
 			else
-				segmentList[i]->scale.Set(lengthOfSide / 2, 4, 1);
+				segmentList[i]->scale.Set(lengthOfSide / 2, 6, 1);
 
 			segmentList[i]->posStart = segmentList[i]->position + (lengthOfSide / 2);
 			segmentList[i]->posEnd = segmentList[i]->position - (lengthOfSide / 2);
