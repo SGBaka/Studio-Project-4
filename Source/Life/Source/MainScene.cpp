@@ -680,12 +680,24 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 				{
 					for (int j = 0; j < EO->sonarList[i]->segmentList.size(); ++j)
 					{
-						if (EO->sonarList[i]->segmentList[j]->active)
+						if (EO->sonarList[i]->segmentList[j]->active && (EO->sonarList[i]->radius / EO->sonarList[i]->maxRad) <= 0.9 &&
+							!EO->sonarList[i]->segmentList[j]->hitWall)
 						{
 							if (checkForCollision(EO->sonarList[i]->segmentList[j]->posStart,
 								EO->sonarList[i]->segmentList[j]->posEnd, player_ptr->topLeft, player_ptr->bottomRight))
 								EO->gotoChase = true;
 						}
+
+						for (int a = 0; a < GO_List.size(); ++a)
+						{
+							if (GO_List[a]->name == "WALL")
+							{
+								if (checkForCollision(EO->sonarList[i]->segmentList[j]->posStart,
+									EO->sonarList[i]->segmentList[j]->posEnd, GO_List[a]->topLeft, GO_List[a]->bottomRight))
+									EO->sonarList[i]->segmentList[j]->hitWall = true;
+							}
+						}
+
 					}
 				}
 			}
@@ -1355,6 +1367,19 @@ Renders the all gameobjects
 /******************************************************************************/
 void MainScene::RenderGO()
 {
+	//modelStack.PushMatrix();
+	//modelStack.Translate(player_ptr->topLeft);
+	//modelStack.Scale(1,1,1);
+	//RenderMeshOnScreen(P_meshArray[E_GEO_LINE],100,Color(1,0,0));
+	//modelStack.PopMatrix();
+
+	//modelStack.PushMatrix();
+	//modelStack.Translate(player_ptr->bottomRight);
+	//modelStack.Scale(1, 1, 1);
+	//RenderMeshOnScreen(P_meshArray[E_GEO_LINE], 100, Color(1, 0, 0));
+	//modelStack.PopMatrix();
+
+
 	//Temporary bandaid solution (render CO last)
 	for (unsigned i = 0; i < GO_List.size(); i++)
 	{

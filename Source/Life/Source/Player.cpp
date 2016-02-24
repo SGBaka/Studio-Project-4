@@ -111,7 +111,6 @@ void Player::Update(double dt)
 			delete sonarList[i];
 			sonarList.erase(sonarList.begin() + i);
 		}
-
 	}
 
 	for (int i = 0; i < moveToDir.size(); ++i)

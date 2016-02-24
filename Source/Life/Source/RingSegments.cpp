@@ -9,6 +9,7 @@ RingSegments::RingSegments()
 , attached(false)
 , lifeTime(1.f)
 , type(1)
+, hitWall(false)
 {
 
 }

@@ -26,6 +26,8 @@ public:
 
 	int type;
 
+	bool hitWall;
+
 private:
 
 };

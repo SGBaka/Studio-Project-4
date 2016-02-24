@@ -91,10 +91,14 @@ void cEnemy::Update(double dt)
 		else
 			sonarList[i]->alert = true;
 
-		if (sonarList[i]->segmentList.empty())
+
+		for (int j = 0; j < sonarList[i]->segmentList.size(); ++j)
 		{
-			delete sonarList[i];
-			sonarList.erase(sonarList.begin() + i);
+			if (sonarList[i]->segmentList[j]->attached == false && sonarList[i]->radius >= sonarList[i]->maxRad)
+			{
+				delete sonarList[i];
+				sonarList.erase(sonarList.begin() + i);
+			}
 		}
 
 	}
