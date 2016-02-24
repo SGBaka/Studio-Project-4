@@ -331,7 +331,7 @@ bool MainScene::InitLevel(int level)
 				}
 				if (isdigit(ML_map.map_data[y][x][0]))
 				{
-					if (stoi(ML_map.map_data[y][x]) >= 50 && stoi(ML_map.map_data[y][x]) < 100)
+					if (stoi(ML_map.map_data[y][x]) >= 50)
 					{
 						cEnemy *enemy;
 						enemy = new cEnemy;

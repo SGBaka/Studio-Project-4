@@ -28,7 +28,7 @@ Main menu for the openGL framework
 //#include <vld.h>
 
 MapScene* MapScene::Instance = NULL;
-static bool Auto_MapName = false;
+static bool Auto_MapName = true;
 
 const unsigned int MapScene::ui_NUM_LIGHT_PARAMS = MapScene::E_UNI_LIGHT0_EXPONENT - (MapScene::E_UNI_LIGHT0_POSITION - 1/*Minus the enum before this*/);
 /******************************************************************************/
