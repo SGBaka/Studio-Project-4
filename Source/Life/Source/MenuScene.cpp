@@ -150,6 +150,8 @@ void MenuScene::Init()
 	LuaScript sound("Sound");
 	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
+
+	cout << MainScene::GetInstance()->onExit << endl;
 }
 
 /******************************************************************************/

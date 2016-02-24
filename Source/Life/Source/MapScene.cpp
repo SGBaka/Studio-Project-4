@@ -28,7 +28,7 @@ Main menu for the openGL framework
 //#include <vld.h>
 
 MapScene* MapScene::Instance = NULL;
-static bool Auto_MapName = true;
+static bool Auto_MapName = false;
 
 const unsigned int MapScene::ui_NUM_LIGHT_PARAMS = MapScene::E_UNI_LIGHT0_EXPONENT - (MapScene::E_UNI_LIGHT0_POSITION - 1/*Minus the enum before this*/);
 /******************************************************************************/
@@ -370,66 +370,148 @@ the level to load
 /******************************************************************************/
 bool MapScene::InitLevel(int level)
 {
-	newMapName = "";
+	//if (S_CREATE)
+	//{
+		newMapName = "";
 
-	ML_map.map_width = 30;
-	ML_map.map_height = 22;
+		ML_map.map_width = 30;
+		ML_map.map_height = 22;
 
-	std::cout << ML_map.map_width << ", " << ML_map.map_height << "\n";
+		std::cout << ML_map.map_width << ", " << ML_map.map_height << "\n";
 
-	/*std::cout << "\nLoading map...\n";
+		/*std::cout << "\nLoading map...\n";
 
 
-	std::cout << "Map Size: ";
-	std::cout << ML_map.map_width << ", " << ML_map.map_height << "\n";*/
+		std::cout << "Map Size: ";
+		std::cout << ML_map.map_width << ", " << ML_map.map_height << "\n";*/
 
-	//Deletes everything from the world
-	while (GO_List.size() > 0)
-	{
-		GameObject *GO = GO_List.back();
-		if (GO != NULL)
+		//Deletes everything from the world
+		while (GO_List.size() > 0)
 		{
-			delete GO;
-			GO = NULL;
-		}
-		GO_List.pop_back();
-	}
-
-	ML_map.map_data.clear();
-
-	for (unsigned y = ML_map.map_height - 1; y > 0; --y)
-	{
-		for (unsigned x = 0; x < ML_map.map_width; ++x)
-		{
-			mapArray.push_back("0");
-		}
-
-		ML_map.map_data.push_back(mapArray);
-		mapArray.clear();
-	}
-
-	ML_map.map_data[0][0] = "20";
-
-	std::stringstream ss;
-	ss << "GameData//Maps//temp_file.csv";
-	ML_map.saveMap(ss.str());
-	ML_map.loadMap(ss.str());
-	for (unsigned y = ML_map.map_height - 1; y > 0; --y)
-	{
-		for (unsigned x = 0; x < ML_map.map_width; ++x)
-		{
-			if (ML_map.map_data[y][x] == "0")
+			GameObject *GO = GO_List.back();
+			if (GO != NULL)
 			{
-				GameObject *GO;
-				GO = new GameObject();
-				GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
-				GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
-				GO->enableCollision = false;
-				GO->mesh = P_meshArray[E_GEO_FLOOR_BORDER];
-				GO_List.push_back(GO);
+				delete GO;
+				GO = NULL;
+			}
+			GO_List.pop_back();
+		}
+
+		ML_map.map_data.clear();
+
+		for (unsigned y = ML_map.map_height - 1; y > 0; --y)
+		{
+			for (unsigned x = 0; x < ML_map.map_width; ++x)
+			{
+				mapArray.push_back("0");
+			}
+
+			ML_map.map_data.push_back(mapArray);
+			mapArray.clear();
+		}
+
+		ML_map.map_data[0][0] = "20";
+
+		std::stringstream ss;
+		ss << "GameData//Maps//temp_file.csv";
+		ML_map.saveMap(ss.str());
+		ML_map.loadMap(ss.str());
+		for (unsigned y = ML_map.map_height - 1; y > 0; --y)
+		{
+			for (unsigned x = 0; x < ML_map.map_width; ++x)
+			{
+				if (ML_map.map_data[y][x] == "0")
+				{
+					GameObject *GO;
+					GO = new GameObject();
+					GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+					GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+					GO->enableCollision = false;
+					GO->mesh = P_meshArray[E_GEO_FLOOR_BORDER];
+					GO_List.push_back(GO);
+				}
 			}
 		}
-	}
+
+	//}
+	/*if (S_REPLACE)
+	{
+		std::stringstream ss;
+		ss << "GameData//Maps//6.csv";
+		ML_map.loadMap(ss.str());
+
+		for (unsigned y = ML_map.map_height - 1; y > 0; --y)
+		{
+			for (unsigned x = 0; x < ML_map.map_width; ++x)
+			{
+				if (ML_map.map_data[y][x] == "0")
+				{
+					GameObject *GO;
+					GO = new GameObject();
+					GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+					GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+					GO->enableCollision = false;
+					GO->mesh = P_meshArray[E_GEO_FLOOR_BORDER];
+					GO_List.push_back(GO);
+				}
+
+				if (ML_map.map_data[y][x] == "P")
+				{
+					GameObject *GO;
+					GO = new GameObject();
+					GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+					GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+					GO->enableCollision = false;
+					GO->mesh = P_meshArray[E_GEO_PLAYER_BORDER];
+					GO_List.push_back(GO);
+				}
+				if (ML_map.map_data[y][x] == "1")
+				{
+					GameObject *GO;
+					GO = new GameObject();
+					GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+					GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+					GO->enableCollision = false;
+					GO->mesh = P_meshArray[E_GEO_WALL_BORDER];
+					GO_List.push_back(GO);
+				}
+				if (ML_map.map_data[y][x] == "2")
+				{
+					GameObject *GO;
+					GO = new GameObject();
+					GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+					GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+					GO->enableCollision = false;
+					GO->mesh = P_meshArray[E_GEO_DANGER_BORDER];
+					GO_List.push_back(GO);
+				}
+				if (ML_map.map_data[y][x] == "3")
+				{
+					GameObject *GO;
+					GO = new GameObject();
+					GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+					GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+					GO->enableCollision = false;
+					GO->mesh = P_meshArray[E_GEO_WIN_BORDER];
+					GO_List.push_back(GO);
+				}
+				if (ML_map.map_data[y][x] == std::to_string(enemyID))
+				{
+					GameObject *GO;
+					GO = new GameObject();
+					GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+					GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+					GO->enableCollision = false;
+					GO->mesh = P_meshArray[E_GEO_ENEMY_BORDER];
+					GO_List.push_back(GO);
+				}
+			}
+		}
+
+	}*/
+		
+		
+	
 
 	LuaScript buttonScript("button");
 
@@ -802,9 +884,12 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 
 						   if (FetchTB(nameScript.get<std::string>("editor_replace.textbutton_1.text"))->active)
 						   {
+							   cout << "Enter Map Name: " << endl;
+							   cin >> newMapName;
+
 							   std::stringstream ss;
 							   ss << "GameData//Maps//" << newMapName << ".csv";
-							   ML_map.saveMap(ss.str());
+							   ML_map.loadMap(ss.str());
 							   MENU_STATE = S_NEW;
 						   }
 						   else if (FetchTB(nameScript.get<std::string>("editor_replace.textbutton_2.text"))->active)
