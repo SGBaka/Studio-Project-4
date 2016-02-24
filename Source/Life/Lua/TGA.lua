@@ -4,6 +4,7 @@ background = {
     background_credit = "UI//Sonar_background_v2.tga",
     background_tutorial = "UI//Sonar_background_v2.tga",
     background_end = "UI//Sonar_background_v2.tga",
+    popup = "UI//PopUps.tga",
     splash = "UI//Splash.tga",
     load = "UI//Loading.tga",
     button = "UI//Button.tga"

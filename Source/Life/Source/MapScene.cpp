@@ -28,6 +28,7 @@ Main menu for the openGL framework
 //#include <vld.h>
 
 MapScene* MapScene::Instance = NULL;
+static bool Auto_MapName = false;
 
 const unsigned int MapScene::ui_NUM_LIGHT_PARAMS = MapScene::E_UNI_LIGHT0_EXPONENT - (MapScene::E_UNI_LIGHT0_POSITION - 1/*Minus the enum before this*/);
 /******************************************************************************/
@@ -63,6 +64,7 @@ void MapScene::Init()
 	SE_Engine.Init();
 	f_fov = 0.f;
 	f_mouseSensitivity = 0.f;
+	CUR_STATE = ST_CREATE;
 
 	selectedTile = 0;
 	selTilePos = (0, 0, 0);
@@ -191,6 +193,9 @@ void MapScene::InitMeshList()
 	P_meshArray[E_GEO_PLAYER] = MeshBuilder::GenerateQuad("AI enemy", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_PLAYER]->textureID[0] = LoadTGA(script.getGameData("image.tile.enemy").c_str(), true);
 
+	P_meshArray[E_GEO_POPUP] = MeshBuilder::GenerateQuad("Pop Up Background", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_POPUP]->textureID[0] = LoadTGA(script.getGameData("image.background.popup").c_str(), true);
+
 	P_meshArray[E_GEO_LINE] = MeshBuilder::GenerateQuad("Ring Segment", Color(1.f, 0.f, 0.f), 1, 1);
 }
 
@@ -207,7 +212,7 @@ void MapScene::InitMenu(void)
 	UIColorEnemy.Set(0.0f, 0.8f, 0.4f);
 	//TextButton* S_MB;
 
-	MENU_STATE = 1;
+	MENU_STATE = ST_CREATE;
 
 	/*S_MB = new TextButton;
 	S_MB->pos.Set(Application::GetWindowWidth()*0.08f, Application::GetWindowHeight()*0.05f, 0.1f);
@@ -223,7 +228,7 @@ void MapScene::InitMenu(void)
 	m_B->mesh = P_meshArray[E_GEO_BUTTON_LEFT];
 	m_B->ID = BI_BACK;
 	m_B->labeltype = Button::LT_NONE;
-	m_B->gamestate = 1;
+	m_B->gamestate = ST_CREATE;
 	v_buttonList.push_back(m_B);
 
 	//m_B = new Button;
@@ -249,7 +254,7 @@ void MapScene::InitMenu(void)
 	m_B->mesh = P_meshArray[E_GEO_SAVE];
 	m_B->ID = BI_SAVE;
 	m_B->labeltype = Button::LT_NONE;
-	m_B->gamestate = 1;
+	m_B->gamestate = ST_CREATE;
 	v_buttonList.push_back(m_B);
 
 	//m_B = new Button;
@@ -292,6 +297,23 @@ void MapScene::InitMenu(void)
 	//m_B->labeltype = Button::LT_NONE;
 	//m_B->gamestate = 1;
 	//v_buttonList.push_back(m_B);
+
+	TextButton* S_MB;
+	LuaScript buttonScript("button");
+
+	// Map Menu (New Map / Edit Map)
+	int total_button = buttonScript.get<int>("editor_replace.total_button");
+	for (int i = 1; i <= total_button; i++)
+	{
+		std::string buttonName = "editor_replace.textbutton_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
+
+		S_MB = new TextButton;
+		S_MB->pos.Set(Application::GetWindowWidth()*0.5f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
+		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
+		S_MB->gamestate = ST_REPLACE;
+		v_textButtonList.push_back(S_MB);
+	}
 }
 
 /******************************************************************************/
@@ -323,13 +345,15 @@ the level to load
 /******************************************************************************/
 bool MapScene::InitLevel(int level)
 {
+	newMapName = "";
+
 	ML_map.map_width = 30;
 	ML_map.map_height = 22;
 
 	std::cout << ML_map.map_width << ", " << ML_map.map_height << "\n";
 
 	/*std::cout << "\nLoading map...\n";
-	
+
 
 	std::cout << "Map Size: ";
 	std::cout << ML_map.map_width << ", " << ML_map.map_height << "\n";*/
@@ -347,7 +371,7 @@ bool MapScene::InitLevel(int level)
 	}
 
 	ML_map.map_data.clear();
-	
+
 	for (unsigned y = ML_map.map_height - 1; y > 0; --y)
 	{
 		for (unsigned x = 0; x < ML_map.map_width; ++x)
@@ -594,29 +618,6 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 	UpdateTextButtons();
 	UpdateButtons();
 
-	if (Application::IsKeyPressed('P'))
-	{
-		std::cout << "Map Name: ";
-		std::cin >> newMapName;
-
-		std::stringstream ss;
-		ss << "GameData//Maps//" << newMapName << ".csv";
-		ML_map.saveMap(ss.str());
-	}
-	//select Tiles
-	if (Application::IsKeyPressed('1'))
-		selectedTile = 0;
-	if (Application::IsKeyPressed('2'))
-		selectedTile = 1;
-	if (Application::IsKeyPressed('3'))
-		selectedTile = 2;
-	if (Application::IsKeyPressed('4'))
-		selectedTile = 3;
-	if (Application::IsKeyPressed('5'))
-		selectedTile = 4;
-	if (Application::IsKeyPressed('6'))
-		selectedTile = 5;
-
 	if (f_fov != f_fov_target)
 	{
 		float diff = f_fov_target - f_fov;
@@ -643,66 +644,153 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 		}
 	}
 
-	static bool isEscPressed = false;
-	if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
+	switch (MENU_STATE)
 	{
-		isEscPressed = true;
-
-	}
-	else if (!Application::IsKeyPressed(VK_ESCAPE) && isEscPressed)
+	case ST_CREATE:
 	{
-		isEscPressed = false;
-		SceneManager::Instance()->replace(SceneManager::S_MAIN_MENU);
-		if (remove("GameData//Maps//temp_file.csv") != 0)
-		{
-			std::cout << "Unable to remove" << std::endl;
-		}
-		return;
-	}
+					  //select Tiles
+					  if (Application::IsKeyPressed('1'))
+						  selectedTile = 0;
+					  if (Application::IsKeyPressed('2'))
+						  selectedTile = 1;
+					  if (Application::IsKeyPressed('3'))
+						  selectedTile = 2;
+					  if (Application::IsKeyPressed('4'))
+						  selectedTile = 3;
+					  if (Application::IsKeyPressed('5'))
+						  selectedTile = 4;
+					  if (Application::IsKeyPressed('6'))
+						  selectedTile = 5;
 
-	if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
+					  static bool isEscPressed = false;
+					  if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
+					  {
+						  isEscPressed = true;
+
+					  }
+					  else if (!Application::IsKeyPressed(VK_ESCAPE) && isEscPressed)
+					  {
+						  isEscPressed = false;
+						  SceneManager::Instance()->replace(SceneManager::S_MAIN_MENU);
+						  if (remove("GameData//Maps//temp_file.csv") != 0)
+						  {
+							  std::cout << "Unable to remove" << std::endl;
+						  }
+						  return;
+					  }
+
+					  if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
+					  {
+						  bLButtonState = true;
+					  }
+					  if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
+					  {
+						  bLButtonState = false;
+						  if (FetchBUTTON(BI_BACK)->active)
+						  {
+							  SceneManager::Instance()->replace(SceneManager::S_MAIN_MENU);
+							  if (remove("GameData//Maps//temp_file.csv") != 0)
+							  {
+								  std::cout << "Unable to remove" << std::endl;
+							  }
+							  return;
+						  }
+						  else if (FetchBUTTON(BI_SAVE)->active)
+						  {
+							  if (Auto_MapName == false)
+							  {
+								  std::cout << "Map Name: ";
+								  std::cin >> newMapName;
+
+								  std::stringstream ss;
+								  ss << "GameData//Maps//" << newMapName << ".csv";
+								  ML_map.saveMap(ss.str());
+							  }
+							  else
+							  {
+								  if (newMapName != "")
+								  {
+									  MENU_STATE = ST_REPLACE;
+								  }
+								  else
+								  {
+									  newMapName = ML_map.newFile();
+									  MENU_STATE = ST_NEW;
+								  }
+							  }
+						  }
+					  }
+
+					  if (bLButtonState)
+						  placeTile(selectedTile);
+
+					  if (Application::IsKeyPressed('P'))
+					  {
+						  if (Auto_MapName == false)
+						  {
+							  std::cout << "Map Name: ";
+							  std::cin >> newMapName;
+
+							  std::stringstream ss;
+							  ss << "GameData//Maps//" << newMapName << ".csv";
+							  ML_map.saveMap(ss.str());
+						  }
+						  else
+						  {
+							  if (newMapName != "")
+							  {
+								  MENU_STATE = ST_REPLACE;
+							  }
+							  else
+							  {
+								  newMapName = ML_map.newFile();
+								  MENU_STATE = ST_NEW;
+							  }
+						  }
+					  }
+	}
+		break;
+
+	case ST_NEW:
 	{
-		bLButtonState = true;
+				   msg_timer += static_cast<float>(dt);
+				   if (msg_timer > 2.f || Application::IsKeyPressed(VK_LBUTTON))
+				   {
+					   msg_timer = 0;
+					   MENU_STATE = ST_CREATE;
+				   }
+				   break;
 	}
-	if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
+		break;
+
+	case ST_REPLACE:
 	{
-		bLButtonState = false;
-		if (FetchBUTTON(BI_BACK)->active)
-		{
-			SceneManager::Instance()->replace(SceneManager::S_MAIN_MENU);
-			if (remove("GameData//Maps//temp_file.csv") != 0)
-			{
-				std::cout << "Unable to remove" << std::endl;
-			}
-			return;
-		}
-		else if (FetchBUTTON(BI_SAVE)->active)
-		{
-			cout << "New Map: " << endl;
-			cin >> newMapName;
+					   if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
+					   {
+						   bLButtonState = true;
+					   }
+					   if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
+					   {
+						   bLButtonState = false;
 
-			std::stringstream ss;
-			ss << "GameData//Maps//" << newMapName << ".csv";
-			ML_map.saveMap(ss.str());
-		}
-		//else if (FetchBUTTON(BI_PREV_MAP)->active)
-		//{
-		//	if (i_SimulationSpeed > 1)
-		//	{
-		//		--i_SimulationSpeed;
-		//	}
-		//}
-		//else if (FetchBUTTON(BI_NEXT_MAP)->active)
-		//{
-		//	if (i_SimulationSpeed < 5)
-		//	{
-		//		++i_SimulationSpeed;
-		//	}
-		//}
+						   LuaScript nameScript("button");
+
+						   if (FetchTB(nameScript.get<std::string>("editor_replace.textbutton_1.text"))->active)
+						   {
+							   std::stringstream ss;
+							   ss << "GameData//Maps//" << newMapName << ".csv";
+							   ML_map.saveMap(ss.str());
+							   MENU_STATE = ST_NEW;
+						   }
+						   else if (FetchTB(nameScript.get<std::string>("editor_replace.textbutton_2.text"))->active)
+						   {
+							   newMapName = ML_map.newFile();
+							   MENU_STATE = ST_NEW;
+						   }
+					   }
 	}
-
-	if (bLButtonState)
-		placeTile(selectedTile);
+		break;
+	}
 
 	//float f_camSpeed = 10.f;
 
@@ -747,7 +835,7 @@ void MapScene::placeTile(int selectedTile)
 	selTilePos = calTilePos(Vector3(MousePosX, MousePosY));
 	selTilePos.x -= 8;
 	selTilePos.y += 2;
-	
+
 	//cout << selTilePos << endl;
 	//cout << selWorldPos << endl;
 	if (selTilePos.x < ML_map.map_width && selTilePos.x > -1 && selTilePos.y < ML_map.map_height && selTilePos.y > -1)
@@ -1406,6 +1494,45 @@ void MapScene::RenderUI()
 	modelStack.Scale(18, 18, 18);
 	RenderMeshOnScreen(P_meshArray[E_GEO_DANGER_BORDER], 0, 0);
 	modelStack.PopMatrix();*/
+
+	switch (MENU_STATE)
+	{
+	case ST_NEW:
+	{
+				   modelStack.PushMatrix();
+				   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
+				   modelStack.Scale(400, 300, 1);
+				   RenderMeshOnScreen(P_meshArray[E_GEO_POPUP]);
+				   modelStack.PopMatrix();
+
+				   std::stringstream ss;
+				   ss << "File Name: [" << newMapName << ".csv]";
+				   modelStack.PushMatrix();
+				   modelStack.Translate(Application::GetWindowWidth() * 0.5f - 300.0f, Application::GetWindowHeight() * 0.5f, 0);
+				   modelStack.Scale(35, 35, 1);
+				   RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+				   modelStack.PopMatrix();
+	}
+		break;
+
+	case ST_REPLACE:
+	{
+					   modelStack.PushMatrix();
+					   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
+					   modelStack.Scale(400, 300, 1);
+					   RenderMeshOnScreen(P_meshArray[E_GEO_POPUP]);
+					   modelStack.PopMatrix();
+
+					   std::stringstream ss;
+					   ss << "Replace [" << newMapName << ".csv]?";
+					   modelStack.PushMatrix();
+					   modelStack.Translate(Application::GetWindowWidth() * 0.5f - 250.0f, Application::GetWindowHeight() * 0.5f, 0);
+					   modelStack.Scale(35, 35, 1);
+					   RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+					   modelStack.PopMatrix();
+	}
+		break;
+	}
 
 	//AI Status
 	for (unsigned i = 0; i < GO_List.size(); ++i)

@@ -34,6 +34,7 @@ public:
 	bool fileExists(std::string file);
 	bool loadMap(std::string file);
 	bool saveMap(std::string file);
+	std::string newFile();
 	std::vector<std::vector<std::string>> map_data;
 };
 #endif

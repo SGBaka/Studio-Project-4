@@ -143,3 +143,17 @@ bool MapLoader::saveMap(std::string file)
 	mapFile.close();
 	return true;
 }
+
+std::string MapLoader::newFile()
+{
+	int i = 1;
+	std::string mapName = "GameData//Maps//" + std::to_string(static_cast<unsigned long long>(i)) + ".csv";
+	while (fileExists(mapName))
+	{
+		i++;
+		mapName = "GameData//Maps//" + std::to_string(static_cast<unsigned long long>(i)) + ".csv";
+	}
+	//std::cout << mapName << std::endl;
+	saveMap(mapName);
+	return std::to_string(static_cast<unsigned long long>(i));
+}

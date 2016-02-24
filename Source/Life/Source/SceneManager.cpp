@@ -139,6 +139,20 @@ void SceneManager::push(SCENES newScene)
 		ms_tmp->setMenu(MenuScene::MT_PAUSE_MENU);
 		break;
 	}
+	case SceneManager::S_EDITOR_MENU_NEW:
+	{
+		scene = new MenuScene();
+		MenuScene *ms_tmp = dynamic_cast<MenuScene*>(scene);
+		ms_tmp->setMenu(MenuScene::MT_EDITOR_NEW);
+		break;
+	}
+	case SceneManager::S_EDITOR_MENU_REPLACE:
+	{
+		scene = new MenuScene();
+		MenuScene *ms_tmp = dynamic_cast<MenuScene*>(scene);
+		ms_tmp->setMenu(MenuScene::MT_EDITOR_REPLACE);
+		break;
+	}
 	default:
 		scene = new MenuScene();
 		break;

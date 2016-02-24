@@ -112,6 +112,26 @@ map_screen = {
 	total_button = 2
 }
 
+editor_replace = {
+	--[[Button_1 = Replace Map]]--
+	textbutton_1 = {
+		text = "Yes",
+		scale = 35.0,
+		posX = -25.0,
+		posY = -120.0
+	},
+
+	--[[Button_2 = Save as New Map]]--
+	textbutton_2 = {
+		text = "No",
+		scale = 35.0,
+		posX = -10.0,
+		posY = -170.0
+	},
+
+	total_button = 2
+}
+
 end_screen = {
 	--[[Button_1 = Back]]--
 	textbutton_1 = {

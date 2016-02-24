@@ -142,6 +142,7 @@ void MenuScene::Init()
 		break;
 	case MenuScene::MT_END_MENU:
 		MENU_STATE = E_M_END;
+		break;
 	default:
 		break;
 	}

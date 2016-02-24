@@ -50,11 +50,14 @@ public:
 	enum E_GEO_TYPE
 	{
 		E_GEO_AXES,
+
 		// Text
 		E_GEO_TEXT,
 		E_GEO_BUTTON_LEFT,
 		E_GEO_BUTTON_RIGHT,
 		E_GEO_BUTTON_REFRESH,
+
+		E_GEO_POPUP,
 
 		//Tile Selecteion (Bordered)
 		E_GEO_WALL_BORDER,
@@ -144,6 +147,13 @@ private:
 		BI_DANGER,
 	};
 
+	enum STATE_TYPE
+	{
+		ST_CREATE,
+		ST_NEW,
+		ST_REPLACE,
+	};
+
 public:
 
 	MapScene();
@@ -163,12 +173,14 @@ public:
 	*/
 	/******************************************************************************/
 	Mesh* P_meshArray[E_GEO_TOTAL];
+	STATE_TYPE CUR_STATE;
 
 	//Runtime
 	float f_timer;
 	int i_SimulationSpeed;
 
 	std::string newMapName;
+	float msg_timer;
 
 	//Objectstuff
 	std::vector<GameObject*> GO_List;

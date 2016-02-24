@@ -160,6 +160,8 @@ class MenuScene : public Scene
 		E_M_MAP,
 		E_M_END,
 		E_M_OPTIONS,
+		E_M_EDITOR_NEW,
+		E_M_EDITOR_REPLACE,
 		E_M_OPTIONS_CONTROLS,
 		E_M_OPTIONS_CONTROLS_SETCONTROL,
 		E_M_TOTAL,
@@ -208,6 +210,8 @@ public:
 		MT_MAIN_MENU_MAP,
 		MT_END_MENU,
 		MT_PAUSE_MENU,
+		MT_EDITOR_NEW,
+		MT_EDITOR_REPLACE,
 	};
 
 	MenuScene();
