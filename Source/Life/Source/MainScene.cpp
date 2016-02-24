@@ -264,7 +264,7 @@ bool MainScene::InitLevel(int level)
 {
 	std::cout << "\nLoading map...\n";
 	LuaScript scriptlevel("maps");
-	std::string luaName = "map.map.level_" + std::to_string(static_cast<unsigned long long>(level));
+	std::string luaName = "map.map.level_1";
 	if (!ML_map.loadMap(scriptlevel.getGameData(luaName.c_str())))
 	{
 		std::cout << "!!!ERROR!!! Unable to load map\n";
@@ -567,8 +567,42 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		}
 	}
 
+	float cal = ML_map.star_one;
 	if (onExit == true)
 	{
+		if (f_timer < ML_map.star_three)
+		{
+			SceneManager::Instance()->end_star = 3;
+			float cal2 = cal - f_timer;
+			ML_map.map_data[0][4] = std::to_string(static_cast<unsigned long long>(ML_map.star_three - (cal2 / 7)));
+			ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
+			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
+
+			LuaScript scriptlevel("maps");
+			std::string luaName = "map.map.level_1";
+			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
+		}
+		else if (f_timer < ML_map.star_two)
+		{
+			SceneManager::Instance()->end_star = 2;
+			float cal2 = cal - f_timer;
+			ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
+			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
+
+			LuaScript scriptlevel("maps");
+			std::string luaName = "map.map.level_1";
+			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
+		}
+		else
+		{
+			SceneManager::Instance()->end_star = 1;
+			float cal2 = cal - f_timer;
+			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
+
+			LuaScript scriptlevel("maps");
+			std::string luaName = "map.map.level_1";
+			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
+		}
 		SceneManager::Instance()->replace(SceneManager::S_END_MENU);
 		return;
 	}
@@ -651,6 +685,9 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		onDanger = true;
 	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "3")
 		onExit = true;
+
+	if (f_timer > ML_map.star_one)
+		onDanger = true;
 
 	if (onDanger)
 	{
@@ -1337,6 +1374,40 @@ void MainScene::RenderUI()
 	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 	modelStack.PopMatrix();
 
+	if (f_timer < ML_map.star_three)
+	{
+		ss.str("");
+		ss << "3S " << ML_map.star_three;
+
+		modelStack.PushMatrix();
+		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.975f, 0);
+		modelStack.Scale(20, 20, 20);
+		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+		modelStack.PopMatrix();
+	}
+	else if (f_timer < ML_map.star_two)
+	{
+		ss.str("");
+		ss << "2S " << ML_map.star_two;
+
+		modelStack.PushMatrix();
+		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.975f, 0);
+		modelStack.Scale(20, 20, 20);
+		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+		modelStack.PopMatrix();
+	}
+	else
+	{
+		ss.str("");
+		ss << "1S " << ML_map.star_one;
+
+		modelStack.PushMatrix();
+		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.975f, 0);
+		modelStack.Scale(20, 20, 20);
+		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+		modelStack.PopMatrix();
+	}
+
 	std::stringstream ss2;
 	ss2 << "Simulation Speed " << i_SimulationSpeed << "X";
 
@@ -1345,8 +1416,6 @@ void MainScene::RenderUI()
 	modelStack.Scale(20, 20, 20);
 	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), UIColor);
 	modelStack.PopMatrix();
-
-
 
 	//AI Status
 	for (unsigned i = 0; i < GO_List.size(); ++i)

@@ -100,7 +100,7 @@
     <Filter Include="Source Files\Lua">
       <UniqueIdentifier>{9bcbdd42-091a-4a5c-ae94-2b20eaafaabf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Player\Save/Load">
+    <Filter Include="Source Files\Save/Load">
       <UniqueIdentifier>{d3086d86-eae5-4046-8f08-f8f87f9d7090}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -160,13 +160,13 @@
       <Filter>Source Files\Visuals</Filter>
     </ClCompile>
     <ClCompile Include="Source\maploader.cpp">
-      <Filter>Source Files\Player\Save/Load</Filter>
+      <Filter>Source Files\Save/Load</Filter>
     </ClCompile>
     <ClCompile Include="Source\SaveHandler.cpp">
-      <Filter>Source Files\Player\Save/Load</Filter>
+      <Filter>Source Files\Save/Load</Filter>
     </ClCompile>
     <ClCompile Include="Source\LoadHmap.cpp">
-      <Filter>Source Files\Player\Save/Load</Filter>
+      <Filter>Source Files\Save/Load</Filter>
     </ClCompile>
     <ClCompile Include="Source\Button.cpp">
       <Filter>Source Files\Buttons</Filter>

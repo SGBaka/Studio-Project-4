@@ -1455,6 +1455,13 @@ void MenuScene::Render()
 					RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_END]);
 					modelStack.PopMatrix();
 
+					modelStack.PushMatrix();
+					modelStack.Translate(v3_Menupos[MENU_STATE]);
+					modelStack.Translate(Application::GetWindowWidth()*0.22f + 420.0f, Application::GetWindowHeight() * 0.5f, 0.1f);
+					modelStack.Scale(40, 40, 1);
+					RenderTextOnScreen(P_meshArray[E_GEO_TEXT], std::to_string(static_cast<unsigned long long>(SceneManager::Instance()->end_star)), UIColor);
+					modelStack.PopMatrix();
+
 					RenderTextButtons();
 					RenderButtons();
 					break;

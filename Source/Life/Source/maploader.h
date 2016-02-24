@@ -30,6 +30,9 @@ public:
 	unsigned int map_width;
 	float worldSize;
 	float worldHeight;
+	float star_one; // Passing Grade
+	float star_two;
+	float star_three;
 
 	bool fileExists(std::string file);
 	bool loadMap(std::string file);

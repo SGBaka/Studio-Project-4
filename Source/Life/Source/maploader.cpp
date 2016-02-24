@@ -102,6 +102,10 @@ bool MapLoader::loadMap(std::string file)
 	worldSize = static_cast<float>(std::stoi(map_data[0][0]));
 	worldHeight = static_cast<float>(std::stoi(map_data[0][1]));
 
+	star_one = static_cast<float>(std::stoi(map_data[0][2]));
+	star_two = static_cast<float>(std::stoi(map_data[0][3]));
+	star_three = static_cast<float>(std::stoi(map_data[0][4]));
+
 	map_height = map_data.size();
 	return true;
 }

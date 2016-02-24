@@ -46,7 +46,8 @@ public:
 
 	static SceneManager* Instance();
 	static void destroy();
-				
+	
+	int end_star;
 private:
 	SceneManager();
 	~SceneManager();

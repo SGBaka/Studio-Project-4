@@ -411,6 +411,9 @@ bool MapScene::InitLevel(int level)
 		}
 
 		ML_map.map_data[0][0] = "20";
+		ML_map.map_data[0][2] = "40";
+		ML_map.map_data[0][3] = "30";
+		ML_map.map_data[0][4] = "20";
 
 		std::stringstream ss;
 		ss << "GameData//Maps//temp_file.csv";
@@ -884,9 +887,6 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 
 						   if (FetchTB(nameScript.get<std::string>("editor_replace.textbutton_1.text"))->active)
 						   {
-							   cout << "Enter Map Name: " << endl;
-							   cin >> newMapName;
-
 							   std::stringstream ss;
 							   ss << "GameData//Maps//" << newMapName << ".csv";
 							   ML_map.loadMap(ss.str());
