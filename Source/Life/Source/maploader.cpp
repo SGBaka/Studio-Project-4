@@ -170,7 +170,6 @@ std::string MapLoader::newFile(int difficulty, std::string fileLoc)
 	{	
 		i++;
 	}
-	//std::cout << mapName << std::endl;
 	saveMap(mapName + std::to_string(static_cast<unsigned long long>(i)) + ".csv");
 	if (difficulty == 1)
 	{

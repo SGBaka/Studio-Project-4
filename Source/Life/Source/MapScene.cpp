@@ -809,7 +809,7 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 						   if (FetchTB(nameScript.get<std::string>("editor_replace.textbutton_1.text"))->active)
 						   {
 							   std::stringstream ss;
-							   ss << newMapName;
+							   ss << file_Directory << newMapName << ".csv";
 							   ML_map.saveMap(ss.str());
 							   MENU_STATE = MT_NEW;
 						   }
