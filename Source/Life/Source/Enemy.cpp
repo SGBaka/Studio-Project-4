@@ -169,11 +169,10 @@ void cEnemy::Update(double dt)
 			currTile.y == patrolPath.WayPointTileList[patrolPath.location].y &&
 			routeCounter == 0)
 		{
-
-			if (!(rand() % 4))
+			if (!(rand() % 5))
 			{
 				gotoIdle = true;
-				idleTime = Math::RandFloatMinMax(3, 7);
+				idleTime = Math::RandFloatMinMax(2, 5);
 			}
 				
 			else
