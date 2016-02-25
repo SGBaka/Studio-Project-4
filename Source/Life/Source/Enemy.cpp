@@ -326,6 +326,14 @@ void cEnemy::Update(double dt)
 			AI_STATE = AS_ROAM;
 		}
 
+		if (gotoChase && routeCounter3 == 0)
+		{
+			suspPos.SetZero();
+
+			AI_STATE = AS_CHASE;
+			route3 = "";
+		}
+
 		break;
 
 	default:
