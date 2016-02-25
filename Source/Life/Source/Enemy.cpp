@@ -31,6 +31,9 @@ cEnemy::cEnemy()
 , smart(false)
 , probability(0)
 , idleTime(0)
+, color(0,0,0)
+, fadeTimer(0)
+, fadeDuration(0.2)
 {
 	name = "Enemy";
 
@@ -87,6 +90,25 @@ float cEnemy::GetDistance(float x1, float y1, float x2, float y2)
 }
 void cEnemy::Update(double dt)
 {
+	if (isVisible && (currTile - MainScene::GetInstance()->player_ptr->currTile).Length() <= 3)
+	{
+		if (fadeTimer < fadeDuration)
+			fadeTimer += dt;
+
+		color.r = (fadeTimer / fadeDuration);
+	}
+	else if (fadeTimer >= 0 && color.r >= 0)
+	{
+		fadeTimer -= dt;
+		color.r = (fadeTimer / fadeDuration);
+	}
+
+	else
+	{
+		fadeTimer = 0;
+		color.r = 0;
+	}
+
 	if (AI_STATE == AS_CHASE)
 	{
 		sonarCooldown = 0.5;
@@ -153,7 +175,7 @@ void cEnemy::Update(double dt)
 			if (!(rand() % 4))
 			{
 				gotoIdle = true;
-				idleTime = Math::RandFloatMinMax(2, 7);
+				idleTime = Math::RandFloatMinMax(3, 7);
 			}
 				
 			else
@@ -232,7 +254,7 @@ void cEnemy::Update(double dt)
 			timer2 = 0;
 		}
 
-		if (gotoChase)
+		if (gotoChase || (currTile - MainScene::GetInstance()->player_ptr->currTile).Length() <= 1)
 		{
 			AI_STATE = AS_CHASE;
 		}

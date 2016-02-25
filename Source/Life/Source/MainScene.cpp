@@ -757,7 +757,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 						if (checkForCollision(EO->position, player_ptr->position, GO_List[i]->topLeft, GO_List[i]->bottomRight) && EO->AI_STATE != cEnemy::AS_CHASE)
 						{
-							//EO->isVisible = false;
+							EO->isVisible = false;
 						}
 					}
 				}

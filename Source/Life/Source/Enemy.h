@@ -54,6 +54,8 @@ public:
 	static int AI_counter;
 
 	Color color;
+
+	float fadeTimer, fadeDuration;
 private:
 
 	string route, route2, route3;
