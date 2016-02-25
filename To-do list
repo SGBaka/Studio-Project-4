@@ -12,12 +12,8 @@
 
 == Map Editor ==
 - Allow player to choose map difficulty
-- Have clickable buttons to select tile
 - Have marquee tool to place exit zones
-- Reset button to clear the map
-- Erase tool (right click) to delete tiles
-- Limit to 4 enemies and 1 player
-- Virtual keyboard (if time permits)
+- Virtual keyboard
 
 == Level design / loading ==
 - Randomize easy/medium/hard levels
@@ -25,6 +21,3 @@
 - Make a tutorial level
 - Have at least 3 easy, medium and hard levels
 - Play test and determine the timings for all levels
-
-== Other ==
-- Button to toggle visibility
