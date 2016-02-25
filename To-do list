@@ -12,7 +12,6 @@
 - Have default values for all LUA variables so that program can still run even if LUA file is missing
 
 == Map Editor ==
-- Allow player to choose map difficulty
 - Have marquee tool to place exit zones
 - Virtual keyboard
 
