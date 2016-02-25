@@ -209,6 +209,10 @@ public:
 
 	int WorldMouseX, WorldMouseY;
 
+	bool hasPlacedPlayer;
+	Vector3 playerTile;
+	int enemyCounter;
+
 private:
 
 	// Static Constants

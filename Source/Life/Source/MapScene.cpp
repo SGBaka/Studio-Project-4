@@ -37,7 +37,7 @@ const unsigned int MapScene::ui_NUM_LIGHT_PARAMS = MapScene::E_UNI_LIGHT0_EXPONE
 Default Constructor
 */
 /******************************************************************************/
-MapScene::MapScene() : ui_NUM_LIGHTS(1)
+MapScene::MapScene() : ui_NUM_LIGHTS(1), hasPlacedPlayer(false), playerTile(0, 0, 0), enemyCounter(0), enemyID(50)
 {
 
 }
@@ -696,10 +696,12 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 	//Mouse Section
 	double x, y;
 	Application::GetMousePos(x, y);
-	MousePosX = static_cast<float>(x) / Application::GetWindowWidth() * Application::GetWindowWidth();
-	MousePosY = (Application::GetWindowHeight() - static_cast<float>(y)) / Application::GetWindowHeight() * Application::GetWindowHeight();
+
+	MousePosX = static_cast<float>(x) / Application::GetWindowWidth() * Application::GetWindowWidth();// +v3_2DCam.x;
+	MousePosY = (Application::GetWindowHeight() - static_cast<float>(y)) / Application::GetWindowHeight() * Application::GetWindowHeight();// +v3_2DCam.y;
 
 	static bool bLButtonState = false;
+	static bool bRButtonState = false;
 
 	UpdateTextButtons();
 	UpdateButtons();
@@ -805,7 +807,14 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 			}
 			return;
 		}
-
+		if (!bRButtonState && Application::IsKeyPressed(VK_RBUTTON))
+		{
+			bRButtonState = true;
+		}
+		if (bRButtonState && !Application::IsKeyPressed(VK_RBUTTON))
+		{
+			bRButtonState = false;
+		}
 		if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
 		{
 			bLButtonState = true;
@@ -876,9 +885,10 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 				selectedTile = BI_WIN;
 			}
 		}
-
 		if (bLButtonState)
 			placeTile(selectedTile);
+		if (bRButtonState)
+			placeTile(BI_FLOOR);
 
 		if (Application::IsKeyPressed('P'))
 		{
@@ -948,45 +958,82 @@ void MapScene::placeTile(int selectedTile)
 	GameObject *GO;
 	GO = new GameObject();
 	selTilePos = calTilePos(Vector3(MousePosX, MousePosY));
-	selTilePos.x -= 1;//selTilePos.x -= 8;
-	selTilePos.y -= 2;//selTilePos.y += 2;
+
+	//selTilePos.x -= 1;
+	selTilePos.y -= 2.f;
 
 	//cout << selTilePos << endl;
 	//cout << selWorldPos << endl;
 	if (selTilePos.x < ML_map.map_width && selTilePos.x > -1 && selTilePos.y < ML_map.map_height && selTilePos.y > 0)
 	{
+		GO->currTile.Set(selTilePos.x, selTilePos.y);
 		GO->Init(Vector3(selTilePos.x*ML_map.worldSize*2.f, (ML_map.map_height - selTilePos.y)*ML_map.worldSize*2.f, -0.5f));
 		GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+
+		if (isdigit(ML_map.map_data[selTilePos.y][selTilePos.x][0]))
+		{
+			if (stoi(ML_map.map_data[selTilePos.y][selTilePos.x]) >= 50)
+			{
+				enemyCounter--;
+			}
+		}
 
 		switch (selectedTile)
 		{
 		case BI_FLOOR:
 			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_FLOOR_BORDER];
 			ML_map.map_data[selTilePos.y][selTilePos.x] = "0";
+			MapScene::GetInstance()->GO_List.push_back(GO);
 			break;
 		case BI_WALL:
 			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_WALL_BORDER];
 			ML_map.map_data[selTilePos.y][selTilePos.x] = "1";
+			MapScene::GetInstance()->GO_List.push_back(GO);
 			break;
 		case BI_PLAYER:
 			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_PLAYER_BORDER];
+			if (hasPlacedPlayer)
+			{
+				ML_map.map_data[playerTile.y][playerTile.x] = "0"; 
+
+				for (int i = 0; i < GO_List.size(); ++i)
+				{
+					if (GO_List[i]->currTile == playerTile)
+					{
+						delete GO_List[i];
+						GO_List.erase(GO_List.begin() + i);
+					}
+				}
+			}
 			ML_map.map_data[selTilePos.y][selTilePos.x] = "P";
+			playerTile.Set(selTilePos.x, selTilePos.y);
+			hasPlacedPlayer = true;
+			MapScene::GetInstance()->GO_List.push_back(GO);
 			break;
 		case BI_WIN:
 			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_WIN_BORDER];
 			ML_map.map_data[selTilePos.y][selTilePos.x] = "3";
+			MapScene::GetInstance()->GO_List.push_back(GO);
 			break;
 		case BI_DANGER:
 			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_DANGER_BORDER];
 			ML_map.map_data[selTilePos.y][selTilePos.x] = "2";
+			MapScene::GetInstance()->GO_List.push_back(GO);
 			break;
 		case BI_ENEMY:
-			GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_ENEMY_BORDER];
-			ML_map.map_data[selTilePos.y][selTilePos.x] = std::to_string(enemyID);
-			enemyID++;
+			if (enemyCounter < 4)
+			{
+				GO->mesh = MapScene::GetInstance()->P_meshArray[MapScene::E_GEO_ENEMY_BORDER];
+				ML_map.map_data[selTilePos.y][selTilePos.x] = std::to_string(enemyID);
+
+				enemyID++;
+				enemyCounter++;
+
+				MapScene::GetInstance()->GO_List.push_back(GO);
+			}
 		}
-		MapScene::GetInstance()->GO_List.push_back(GO);
 	}
+	//for ()
 }
 
 /******************************************************************************/
