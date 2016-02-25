@@ -148,16 +148,41 @@ bool MapLoader::saveMap(std::string file)
 	return true;
 }
 
-std::string MapLoader::newFile()
+std::string MapLoader::newFile(int difficulty, std::string fileLoc)
 {
+	std::string mapName = fileLoc;
 	int i = 1;
-	std::string mapName = "GameData//Maps//" + std::to_string(static_cast<unsigned long long>(i)) + ".csv";
-	while (fileExists(mapName))
+
+	if (difficulty == 1)
 	{
+		mapName += "e_";
+	}
+	else if (difficulty == 2)
+	{
+		mapName += "m_";
+	}
+	else if (difficulty == 3)
+	{
+		mapName += "h_";
+	}
+
+	while (fileExists(mapName + std::to_string(static_cast<unsigned long long>(i)) +".csv"))
+	{	
 		i++;
-		mapName = "GameData//Maps//" + std::to_string(static_cast<unsigned long long>(i)) + ".csv";
 	}
 	//std::cout << mapName << std::endl;
-	saveMap(mapName);
-	return std::to_string(static_cast<unsigned long long>(i));
+	saveMap(mapName + std::to_string(static_cast<unsigned long long>(i)) + ".csv");
+	if (difficulty == 1)
+	{
+		return "e_" + std::to_string(static_cast<unsigned long long>(i));
+	}
+	else if (difficulty == 2)
+	{
+		return "m_" + std::to_string(static_cast<unsigned long long>(i));
+	}
+	else if (difficulty == 3)
+	{
+		return "h_" + std::to_string(static_cast<unsigned long long>(i));
+	}
+	return mapName + std::to_string(static_cast<unsigned long long>(i));
 }

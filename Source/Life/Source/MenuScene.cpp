@@ -1393,7 +1393,7 @@ void MenuScene::Render()
 
 							  modelStack.PushMatrix();
 							  modelStack.Translate(v3_Menupos[MENU_STATE]);
-							  modelStack.Translate(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+							  modelStack.Translate(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + buttonScript.get<float>(buttonName + "posY"), 0.1f);
 							  modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 							  RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
 							  modelStack.PopMatrix();

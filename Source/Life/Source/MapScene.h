@@ -175,7 +175,8 @@ public:
 	{
 		MT_CREATE,
 		MT_EDIT,
-		MT_NEW,
+		MT_NEW, // Cout File Name on Screen
+		MT_DIFFICULTY, // Difficulty Selection
 		MT_REPLACE,
 	};
 
@@ -382,6 +383,9 @@ private:
 	//static int **dir_map;				 // map of directions
 	//const int dx[4] = { 1, 0, -1, 0 };
 	//const int dy[4] = { 0, 1, 0, -1 };
+
+	std::string file_Directory;
+	std::string OutputFolder;
 
 public:
 	static MapScene* GetInstance();

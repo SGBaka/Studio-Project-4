@@ -28,7 +28,7 @@ Main menu for the openGL framework
 //#include <vld.h>
 
 MapScene* MapScene::Instance = NULL;
-static bool Auto_MapName = false;
+static bool Auto_MapName = true;
 
 const unsigned int MapScene::ui_NUM_LIGHT_PARAMS = MapScene::E_UNI_LIGHT0_EXPONENT - (MapScene::E_UNI_LIGHT0_POSITION - 1/*Minus the enum before this*/);
 /******************************************************************************/
@@ -51,6 +51,16 @@ Destructor
 MapScene::~MapScene()
 {
 
+}
+
+string ExePath() {
+	char buffer[MAX_PATH];
+	GetModuleFileNameA(NULL, buffer, MAX_PATH);
+	string::size_type pos = string(buffer).find_last_of("\\/");
+	string newBuffer = string(buffer).substr(0, pos);
+	pos = newBuffer.find_last_of("\\/");
+
+	return newBuffer.substr(0, pos);
 }
 
 /******************************************************************************/
@@ -102,6 +112,11 @@ void MapScene::Init()
 	LuaScript sound("Sound");
 	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
+
+	LuaScript fileLoc("GameData");
+	OutputFolder = ExePath() + "\\life\\" + fileLoc.get<string>("file_directory");
+	
+	file_Directory = fileLoc.get<string>("file_directory") + "\\";
 
 	LEVEL = 2;
 	InitSimulation();
@@ -326,18 +341,32 @@ void MapScene::InitMenu(void)
 
 	TextButton* S_MB;
 	LuaScript buttonScript("button");
+	int total_button;
 
 	// Map Menu (New Map / Edit Map)
-	int total_button = buttonScript.get<int>("editor_replace.total_button");
+	total_button = buttonScript.get<int>("editor_replace.total_button");
 	for (int i = 1; i <= total_button; i++)
 	{
 		std::string buttonName = "editor_replace.textbutton_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 
 		S_MB = new TextButton;
-		S_MB->pos.Set(Application::GetWindowWidth()*0.5f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->pos.Set(Application::GetWindowWidth()*0.5f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + buttonScript.get<float>(buttonName + "posY"), 0.1f);
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 		S_MB->gamestate = MT_REPLACE;
+		v_textButtonList.push_back(S_MB);
+	}
+
+	total_button = buttonScript.get<int>("editor_difficulty.total_button");
+	for (int i = 1; i <= total_button; i++)
+	{
+		std::string buttonName = "editor_difficulty.textbutton_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
+
+		S_MB = new TextButton;
+		S_MB->pos.Set(Application::GetWindowWidth()* buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
+		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
+		S_MB->gamestate = MT_DIFFICULTY;
 		v_textButtonList.push_back(S_MB);
 	}
 }
@@ -441,7 +470,6 @@ bool MapScene::InitLevel(int level)
 				}
 			}
 		}
-
 	}
 
 	if (MENU_STATE == MT_EDIT)
@@ -452,7 +480,7 @@ bool MapScene::InitLevel(int level)
 		newMapName = no;
 
 		std::stringstream ss;
-		ss << "GameData//Maps//" + no + ".csv";
+		ss << file_Directory + no + ".csv";
 		temp = ML_map.loadMap(ss.str());
 
 		if (temp == false)
@@ -736,6 +764,16 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 	{
 	case MT_NEW:
 	{
+				   static bool isEscPressed = false;
+				   if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
+				   {
+					   isEscPressed = true;
+				   }
+				   else if (!Application::IsKeyPressed(VK_ESCAPE) && isEscPressed)
+				   {
+					   isEscPressed = false;
+				   }
+
 				   msg_timer += static_cast<float>(dt);
 				   if (msg_timer > 2.f || Application::IsKeyPressed(VK_LBUTTON))
 				   {
@@ -748,6 +786,16 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 
 	case MT_REPLACE:
 	{
+					   static bool isEscPressed = false;
+					   if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
+					   {
+						   isEscPressed = true;
+					   }
+					   else if (!Application::IsKeyPressed(VK_ESCAPE) && isEscPressed)
+					   {
+						   isEscPressed = false;
+					   }
+
 					   if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
 					   {
 						   bLButtonState = true;
@@ -761,19 +809,100 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 						   if (FetchTB(nameScript.get<std::string>("editor_replace.textbutton_1.text"))->active)
 						   {
 							   std::stringstream ss;
-							   ss << "GameData//Maps//" << newMapName << ".csv";
-							   ML_map.loadMap(ss.str());
+							   ss << newMapName;
+							   ML_map.saveMap(ss.str());
 							   MENU_STATE = MT_NEW;
 						   }
 						   else if (FetchTB(nameScript.get<std::string>("editor_replace.textbutton_2.text"))->active)
 						   {
-							   newMapName = ML_map.newFile();
-							   MENU_STATE = MT_NEW;
+							   MENU_STATE = MT_DIFFICULTY;
 						   }
 					   }
 	}
 		break;
-	
+	case MT_DIFFICULTY:
+	{
+						  static bool isEscPressed = false;
+						  if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
+						  {
+							  isEscPressed = true;
+						  }
+						  else if (!Application::IsKeyPressed(VK_ESCAPE) && isEscPressed)
+						  {
+							  isEscPressed = false;
+						  }
+
+						  if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
+						  {
+							  bLButtonState = true;
+						  }
+						  if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
+						  {
+							  bLButtonState = false;
+
+							  LuaScript nameScript("button");
+
+							  if (FetchTB(nameScript.get<std::string>("editor_difficulty.textbutton_1.text"))->active)
+							  {
+								  // Easy
+								  if (CreateDirectoryA(OutputFolder.c_str(), NULL))
+								  {
+									  cout << "new folder" << endl;
+									  newMapName = ML_map.newFile(1, file_Directory);
+								  }
+								  else if (ERROR_ALREADY_EXISTS == GetLastError())
+								  {
+									  cout << "already exist" << endl;
+									  newMapName = ML_map.newFile(1, file_Directory);
+								  }
+								  else
+								  {
+									  cout << "Failed" << endl;
+								  }
+								  MENU_STATE = MT_NEW;
+							  }
+							  else if (FetchTB(nameScript.get<std::string>("editor_difficulty.textbutton_2.text"))->active)
+							  {
+								  // Medium
+								  if (CreateDirectoryA(OutputFolder.c_str(), NULL))
+								  {
+									  cout << "new folder" << endl;
+									  newMapName = ML_map.newFile(2, file_Directory);
+								  }
+								  else if (ERROR_ALREADY_EXISTS == GetLastError())
+								  {
+									  cout << "already exist" << endl;
+									  newMapName = ML_map.newFile(2, file_Directory);
+								  }
+								  else
+								  {
+									  cout << "Failed" << endl;
+								  }
+								  MENU_STATE = MT_NEW;
+							  }
+							  else if (FetchTB(nameScript.get<std::string>("editor_difficulty.textbutton_3.text"))->active)
+							  {
+								  // Hard
+								  if (CreateDirectoryA(OutputFolder.c_str(), NULL))
+								  {
+									  cout << "new folder" << endl;
+									  newMapName = ML_map.newFile(3, file_Directory);
+								  }
+								  else if (ERROR_ALREADY_EXISTS == GetLastError())
+								  {
+									  cout << "already exist" << endl;
+									  newMapName = ML_map.newFile(3, file_Directory);
+								  }
+								  else
+								  {
+									  cout << "Failed" << endl;
+								  }
+								  MENU_STATE = MT_NEW;
+							  }
+						  }
+	}
+		break;
+
 	case MT_CREATE:
 	case MT_EDIT:
 	default:
@@ -855,8 +984,7 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 					}
 					else
 					{
-						newMapName = ML_map.newFile();
-						MENU_STATE = MT_NEW;
+						MENU_STATE = MT_DIFFICULTY;
 					}
 				}
 			}
@@ -909,8 +1037,7 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 				}
 				else
 				{
-					newMapName = ML_map.newFile();
-					MENU_STATE = MT_NEW;
+					MENU_STATE = MT_DIFFICULTY;
 				}
 			}
 		}
@@ -1701,6 +1828,26 @@ void MapScene::RenderUI()
 					   modelStack.Translate(Application::GetWindowWidth() * 0.5f - 250.0f, Application::GetWindowHeight() * 0.5f, 0);
 					   modelStack.Scale(35, 35, 1);
 					   RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+					   modelStack.PopMatrix();
+	}
+		break;
+
+	case MT_DIFFICULTY:
+	{
+					   modelStack.PushMatrix();
+					   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
+					   modelStack.Scale(400, 300, 1);
+					   RenderMeshOnScreen(P_meshArray[E_GEO_POPUP]);
+					   modelStack.PopMatrix();
+
+					   LuaScript buttonScript("button");
+
+					   std::string buttonName = "editor_difficulty.";
+
+					   modelStack.PushMatrix();
+					   modelStack.Translate(Application::GetWindowWidth()*buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
+				       modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
+					   RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
 					   modelStack.PopMatrix();
 	}
 		break;

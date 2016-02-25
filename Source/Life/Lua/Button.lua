@@ -132,6 +132,39 @@ editor_replace = {
 	total_button = 2
 }
 
+editor_difficulty = {
+	text = "Difficulty of Level",
+	scale = 35.0,
+	posX = 0.265,
+	posY = 0.60,
+		
+	--[[Button_1 = Easy Button]]--
+	textbutton_1 = {
+		text = "Easy",
+		scale = 25.0,
+		posX = 0.48,
+		posY = 0.48
+	},
+		
+	--[[Button_2 = Medium Button]]--
+	textbutton_2 = {
+		text = "Medium",
+		scale = 25.0,
+		posX = 0.46,
+		posY = 0.38
+	},
+	
+	--[[Button_3 = Hard Button]]--
+	textbutton_3 = {
+		text = "Hard",
+		scale = 25.0,
+		posX = 0.48,
+		posY = 0.28
+	},
+
+	total_button = 3		
+}
+
 end_screen = {
 	--[[Button_1 = Back]]--
 	textbutton_1 = {
