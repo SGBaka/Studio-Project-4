@@ -15,7 +15,7 @@ cEnemy::cEnemy()
 , rotCounter(0)
 , hasSetDest(false)
 , gotoServe(false)
-, gotoNavi(false)
+, gotoIdle(false)
 , gotoRoam(false)
 , timer(0)
 , sonarCooldown(1)
@@ -23,6 +23,9 @@ cEnemy::cEnemy()
 , gotoChase(false)
 , hasSetDest2(false)
 , isVisible(false)
+, AI_counter(0)
+, smart(false)
+, probability(0)
 {
 	name = "Enemy";
 
@@ -50,9 +53,31 @@ void cEnemy::Init(Vector3 position)
 {
 	AI_STATE = AS_ROAM;
 	this->position = position;
-	setWaypoints();
 	rotation = 0.f;
 	srand((unsigned int)time(NULL));
+	if (AI_counter < 2)
+	{
+		this->smart = true;
+		setWaypoints();
+		AI_counter++;
+	}
+	else
+	{
+		Vector3 temp;
+		int x = rand() % 27 + 2;
+		int y = rand() % 19 + 2;
+		temp.Set(x, y, 0);
+		while(MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "0")
+		{
+			int x = rand() % 27 + 2;
+			int y = rand() % 19 + 2;
+			temp.Set(x, y, 0);
+		}
+			patrolPath.WayPointTileList.push_back(temp);
+		this->smart = false;
+		AI_counter++;
+	}
+
 }
 float cEnemy::GetDistance(float x1, float y1, float x2, float y2)
 {
@@ -106,16 +131,9 @@ void cEnemy::Update(double dt)
 			patrolPath.WayPointTileList[patrolPath.location].x,
 			patrolPath.WayPointTileList[patrolPath.location].y);
 	}
-	if ((gotoNavi || gotoRoam) && routeCounter == 0 && routeCounter2 == 0 && routeCounter3 == 0)
+	if ( gotoRoam && routeCounter == 0 && routeCounter2 == 0 && routeCounter3 == 0)
 	{
-		if (gotoNavi)
-		{
-			route3 = "";
-			routeCounter3 = 0;
-			hasSetDest2 = false;
-		}
-		
-		else if (gotoRoam)
+		if (gotoRoam)
 		{
 			route = "";
 			routeCounter = 0;
@@ -130,23 +148,34 @@ void cEnemy::Update(double dt)
 	
 		gotoRoam = false;
 
-		if (currTile.x == patrolPath.WayPointTileList[patrolPath.location].x &&
-			currTile.y == patrolPath.WayPointTileList[patrolPath.location].y &&
-			routeCounter == 0 && rotating == false)
+		probability = rand() % 100 + 1;
+		if (probability <= 50)
 		{
-			patrolPath.location++;
+			if (currTile.x == patrolPath.WayPointTileList[patrolPath.location].x &&
+				currTile.y == patrolPath.WayPointTileList[patrolPath.location].y &&
+				routeCounter == 0 && rotating == false)
+			{
+				patrolPath.location++;
 
-			if (patrolPath.location >= patrolPath.WayPointTileList.size())
-				patrolPath.location = 0;
+				if (patrolPath.location >= patrolPath.WayPointTileList.size())
+					patrolPath.location = 0;
 
-			route = pathFind(currTile.x, currTile.y,
-				patrolPath.WayPointTileList[patrolPath.location].x,
-				patrolPath.WayPointTileList[patrolPath.location].y);
+				route = pathFind(currTile.x, currTile.y,
+					patrolPath.WayPointTileList[patrolPath.location].x,
+					patrolPath.WayPointTileList[patrolPath.location].y);
 
+			}
 		}
-	
-		executePath(dt, route, routeCounter);
+		else
+			gotoIdle = true;
 
+		executePath(dt, route, routeCounter);
+		
+		if (gotoIdle && routeCounter == 0)
+		{
+			AI_STATE = AS_IDLE;
+			route = "";
+		}
 		if (gotoChase && routeCounter == 0)
 		{
 			AI_STATE = AS_CHASE;
@@ -178,6 +207,18 @@ void cEnemy::Update(double dt)
 			route2 = "";
 			AI_STATE = AS_ROAM;
 		}
+		break;
+	case cEnemy::AS_IDLE:
+
+		timer += dt;
+		gotoIdle = false;
+		
+		if (timer > 5)
+		{
+			gotoRoam = true;
+			timer = 0;
+		}
+
 		break;
 	default:
 		break;

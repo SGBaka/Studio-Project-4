@@ -18,6 +18,7 @@ public:
 	{
 		AS_ROAM,
 		AS_CHASE,
+		AS_IDLE,
 	};
 
 	enum AI_MESSAGES
@@ -43,7 +44,7 @@ public:
 
 	float GetDistance(float x1, float y1, float x2, float y2);
 
-	bool gotoServe, gotoNavi, gotoRoam, gotoChase;
+	bool gotoServe, gotoIdle, gotoRoam, gotoChase;
 
 	vector<Sonar*> sonarList;
 	float sonarCooldown, sonarTimer;
@@ -66,6 +67,9 @@ private:
 
 	bool hasSetDest, hasSetDest2;
 	Sonar sonar;
+	bool smart;
+	float AI_counter;
+	int probability;
 };
 
 #endif
