@@ -1,5 +1,9 @@
 #include "Enemy.h"
 #include "Player.h"
+#include "MyMath.h"
+
+int cEnemy::AI_counter = 0;
+
 cEnemy::cEnemy()
 : route("")
 , routeCounter(0)
@@ -18,14 +22,15 @@ cEnemy::cEnemy()
 , gotoIdle(false)
 , gotoRoam(false)
 , timer(0)
+, timer2(0)
 , sonarCooldown(1)
 , sonarTimer(sonarCooldown)
 , gotoChase(false)
 , hasSetDest2(false)
 , isVisible(false)
-, AI_counter(0)
 , smart(false)
 , probability(0)
+, idleTime(0)
 {
 	name = "Enemy";
 
@@ -46,7 +51,7 @@ cEnemy::cEnemy()
 
 cEnemy::~cEnemy()
 {
-
+	AI_counter = 0;
 }
 
 void cEnemy::Init(Vector3 position)
@@ -54,7 +59,7 @@ void cEnemy::Init(Vector3 position)
 	AI_STATE = AS_ROAM;
 	this->position = position;
 	rotation = 0.f;
-	srand((unsigned int)time(NULL));
+
 	if (AI_counter < 2)
 	{
 		this->smart = true;
@@ -64,16 +69,13 @@ void cEnemy::Init(Vector3 position)
 	else
 	{
 		Vector3 temp;
-		int x = rand() % 27 + 2;
-		int y = rand() % 19 + 2;
-		temp.Set(x, y, 0);
-		while(MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "0")
-		{
-			int x = rand() % 27 + 2;
-			int y = rand() % 19 + 2;
-			temp.Set(x, y, 0);
-		}
-			patrolPath.WayPointTileList.push_back(temp);
+
+		do {
+			temp.x = Math::RandIntMinMax(1, 28);
+			temp.y = Math::RandIntMinMax(2, 19);
+		} while (MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "1");
+
+		patrolPath.WayPointTileList.push_back(temp);
 		this->smart = false;
 		AI_counter++;
 	}
@@ -93,25 +95,29 @@ void cEnemy::Update(double dt)
 	else
 		sonarCooldown = 1;
 
-	if (sonarTimer < sonarCooldown)
-		sonarTimer += dt;
 
-	if (sonarTimer >= sonarCooldown)
+	if (AI_STATE != AS_IDLE)
 	{
-		sonarTimer = 0;
+		if (sonarTimer < sonarCooldown)
+			sonarTimer += dt;
 
-		Sonar *SNR;
-		SNR = new Sonar();
-		SNR->Init(70, 40, 1);
-		SNR->GenerateSonar(position, 3);
-		sonarList.push_back(SNR);
+		if (sonarTimer >= sonarCooldown)
+		{
+			sonarTimer = 0;
+
+			Sonar *SNR;
+			SNR = new Sonar();
+			SNR->Init(70, 40, 1);
+			SNR->GenerateSonar(position, 3);
+			sonarList.push_back(SNR);
+		}
 	}
 
 	for (int i = 0; i < sonarList.size(); ++i)
 	{
 		sonarList[i]->Update(dt);
 
-		if (AI_STATE == AS_ROAM)
+		if (AI_STATE != AS_CHASE)
 			sonarList[i]->alert = false;
 		else
 			sonarList[i]->alert = true;
@@ -131,46 +137,53 @@ void cEnemy::Update(double dt)
 			patrolPath.WayPointTileList[patrolPath.location].x,
 			patrolPath.WayPointTileList[patrolPath.location].y);
 	}
-	if ( gotoRoam && routeCounter == 0 && routeCounter2 == 0 && routeCounter3 == 0)
-	{
-		if (gotoRoam)
-		{
-			route = "";
-			routeCounter = 0;
-			patrolPath.location = 0;
-			AI_STATE = AS_ROAM;
-		}
-	}
+
 	switch (AI_STATE)
 	{
 
 	case cEnemy::AS_ROAM:
-	
+
 		gotoRoam = false;
 
-		probability = rand() % 100 + 1;
-		if (probability <= 50)
+		if (currTile.x == patrolPath.WayPointTileList[patrolPath.location].x &&
+			currTile.y == patrolPath.WayPointTileList[patrolPath.location].y &&
+			routeCounter == 0 && rotating == false)
 		{
-			if (currTile.x == patrolPath.WayPointTileList[patrolPath.location].x &&
-				currTile.y == patrolPath.WayPointTileList[patrolPath.location].y &&
-				routeCounter == 0 && rotating == false)
+
+			if (!(rand() % 4))
+			{
+				gotoIdle = true;
+				idleTime = Math::RandFloatMinMax(2, 7);
+			}
+				
+			else
 			{
 				patrolPath.location++;
 
-				if (patrolPath.location >= patrolPath.WayPointTileList.size())
+				if (!smart)
+				{
+					Vector3 temp;
+
+					do {
+						temp.x = Math::RandIntMinMax(1, 28);
+						temp.y = Math::RandIntMinMax(2, 19);
+					} while (MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "1");
+
+					patrolPath.WayPointTileList.push_back(temp);
+				}
+
+				if (patrolPath.location >= patrolPath.WayPointTileList.size() && !smart)
 					patrolPath.location = 0;
 
 				route = pathFind(currTile.x, currTile.y,
 					patrolPath.WayPointTileList[patrolPath.location].x,
 					patrolPath.WayPointTileList[patrolPath.location].y);
-
 			}
+
 		}
-		else
-			gotoIdle = true;
 
 		executePath(dt, route, routeCounter);
-		
+
 		if (gotoIdle && routeCounter == 0)
 		{
 			AI_STATE = AS_IDLE;
@@ -182,6 +195,7 @@ void cEnemy::Update(double dt)
 			route = "";
 		}
 		break;
+
 	case cEnemy::AS_CHASE:
 		timer += dt;
 		gotoChase = false;
@@ -209,14 +223,23 @@ void cEnemy::Update(double dt)
 		}
 		break;
 	case cEnemy::AS_IDLE:
-
-		timer += dt;
+		timer2 += dt;
 		gotoIdle = false;
 		
-		if (timer > 5)
+		if (timer2 > idleTime)
 		{
 			gotoRoam = true;
-			timer = 0;
+			timer2 = 0;
+		}
+
+		if (gotoChase)
+		{
+			AI_STATE = AS_CHASE;
+		}
+
+		if (gotoRoam)
+		{
+			AI_STATE = AS_ROAM;
 		}
 
 		break;

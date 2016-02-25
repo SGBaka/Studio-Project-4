@@ -50,6 +50,10 @@ public:
 	float sonarCooldown, sonarTimer;
 
 	bool isVisible;
+
+	static int AI_counter;
+
+	Color color;
 private:
 
 	string route, route2, route3;
@@ -62,13 +66,13 @@ private:
 	float angle;
 	bool rotating;
 	float rotCounter;
-	float timer;
+	float timer, timer2;
+	float idleTime;
 	int n, m;
 
 	bool hasSetDest, hasSetDest2;
 	Sonar sonar;
 	bool smart;
-	float AI_counter;
 	int probability;
 };
 

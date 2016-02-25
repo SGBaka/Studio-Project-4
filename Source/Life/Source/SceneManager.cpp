@@ -44,6 +44,7 @@ the first scene to load
 /******************************************************************************/
 void SceneManager::Init(SCENES firstScene)
 {
+	Math::InitRNG();
 	push(firstScene);
 }
 

@@ -757,7 +757,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 						if (checkForCollision(EO->position, player_ptr->position, GO_List[i]->topLeft, GO_List[i]->bottomRight) && EO->AI_STATE != cEnemy::AS_CHASE)
 						{
-							EO->isVisible = false;
+							//EO->isVisible = false;
 						}
 					}
 				}
@@ -1509,6 +1509,12 @@ void MainScene::RenderGO()
 		if (CO != NULL && CO->name == "ENEMY")
 		{
 			cEnemy *EO = dynamic_cast<cEnemy*>(CO);
+
+			modelStack.PushMatrix();
+			modelStack.Translate(EO->position);
+			modelStack.Scale(EO->scale);
+			RenderMeshOnScreen(P_meshArray[E_GEO_PLAYER],13,EO->color);
+			modelStack.PopMatrix();
 
 			if (EO->isVisible)
 			{
