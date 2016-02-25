@@ -35,6 +35,7 @@ font = {
 tile = {
     floor = "Tile//Floor_1.tga",
     floor_2 = "Tile//Floor_2.tga",
+    danger = "Tile//Danger.tga",
     wall = "Tile//Wall_1.tga",
     enemy = "Tile//CoPilot.tga",
     player = "Tile//Pilot.tga",

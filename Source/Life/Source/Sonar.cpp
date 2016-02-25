@@ -8,6 +8,7 @@ Sonar::Sonar()
 , speed(1.5)
 , type(1)
 , alert(false)
+, rad2Counter(0)
 {
 
 }
@@ -17,11 +18,12 @@ Sonar::~Sonar()
 
 }
 
-void Sonar::Init(float radius, int numSides, float speed)
+void Sonar::Init(float radius, float radius2, int numSides, float speed)
 {
 	this->maxRad = radius;
 	this->numSides = numSides;
 	this->speed = speed;
+	this->radius2 = radius2;
 
 	LuaScript playerScript("character");
 	type = playerScript.get<int>("player.sonar_type");
@@ -113,6 +115,7 @@ void Sonar::Update(double dt)
 {
 
 	radius += speed * 60 * dt;
+	rad2Counter = (radius2 - maxRad) + radius;
 
 	for (int i = 0; i < segmentList.size(); ++i)
 	{

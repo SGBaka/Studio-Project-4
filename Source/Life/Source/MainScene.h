@@ -60,9 +60,12 @@ public:
 
 		//World
 		E_GEO_FLOOR_1,
+		E_GEO_FLOOR_2,
 		E_GEO_WALL_1,
 		E_GEO_PLAYER,
 		E_GEO_ENEMY,
+		E_GEO_DANGER,
+		E_GEO_EXIT,
 		//Projectile
 		E_GEO_LINE,
 
@@ -162,7 +165,7 @@ public:
 	Vector3 calWorldPos(Vector3 Tilepos);
 	Player *player_ptr;
 
-	bool onDanger, onExit;
+	bool onDanger, onExit, toggleVisible;
 
 private:
 	

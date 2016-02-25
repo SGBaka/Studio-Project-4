@@ -83,6 +83,13 @@ void cEnemy::Init(Vector3 position)
 		AI_counter++;
 	}
 
+	if (route.empty())
+	{
+		route = pathFind(currTile.x, currTile.y,
+			patrolPath.WayPointTileList[patrolPath.location].x,
+			patrolPath.WayPointTileList[patrolPath.location].y);
+	}
+
 }
 float cEnemy::GetDistance(float x1, float y1, float x2, float y2)
 {
@@ -90,7 +97,7 @@ float cEnemy::GetDistance(float x1, float y1, float x2, float y2)
 }
 void cEnemy::Update(double dt)
 {
-	if (isVisible && (currTile - MainScene::GetInstance()->player_ptr->currTile).Length() <= 3)
+	if ((isVisible && (currTile - MainScene::GetInstance()->player_ptr->currTile).Length() <= 3) || MainScene::GetInstance()->toggleVisible/* || AI_STATE == AS_CHASE*/)
 	{
 		if (fadeTimer < fadeDuration)
 			fadeTimer += dt;
@@ -129,7 +136,7 @@ void cEnemy::Update(double dt)
 
 			Sonar *SNR;
 			SNR = new Sonar();
-			SNR->Init(70, 40, 1);
+			SNR->Init(70, 0, 40, 1);
 			SNR->GenerateSonar(position, 3);
 			sonarList.push_back(SNR);
 		}
@@ -151,15 +158,6 @@ void cEnemy::Update(double dt)
 			}
 	}
 
-	if (route.empty())
-	{
-		patrolPath.location = 0;
-
-		route = pathFind(currTile.x, currTile.y,
-			patrolPath.WayPointTileList[patrolPath.location].x,
-			patrolPath.WayPointTileList[patrolPath.location].y);
-	}
-
 	switch (AI_STATE)
 	{
 
@@ -169,7 +167,7 @@ void cEnemy::Update(double dt)
 
 		if (currTile.x == patrolPath.WayPointTileList[patrolPath.location].x &&
 			currTile.y == patrolPath.WayPointTileList[patrolPath.location].y &&
-			routeCounter == 0 && rotating == false)
+			routeCounter == 0)
 		{
 
 			if (!(rand() % 4))
@@ -194,7 +192,7 @@ void cEnemy::Update(double dt)
 					patrolPath.WayPointTileList.push_back(temp);
 				}
 
-				if (patrolPath.location >= patrolPath.WayPointTileList.size() && !smart)
+				if (patrolPath.location >= patrolPath.WayPointTileList.size() && smart)
 					patrolPath.location = 0;
 
 				route = pathFind(currTile.x, currTile.y,
@@ -230,17 +228,27 @@ void cEnemy::Update(double dt)
 		}
 		else if (timer > 3)
 		{
-			timer = 0;
-			setWaypoints();
 			gotoRoam = true;
-			patrolPath.location = 0;
 		}
 
 		executePath(dt, route2, routeCounter2);
 
 		if (gotoRoam && routeCounter2 == 0)
 		{
+			timer = 0;
+
+			if (smart)
+			{
+				setWaypoints();
+				patrolPath.location = 0;
+			}
+			
 			route2 = "";
+
+			route = pathFind(currTile.x, currTile.y,
+				patrolPath.WayPointTileList[patrolPath.location].x,
+				patrolPath.WayPointTileList[patrolPath.location].y);
+
 			AI_STATE = AS_ROAM;
 		}
 		break;

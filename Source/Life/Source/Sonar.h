@@ -16,11 +16,11 @@ public:
 	~Sonar();
 
 	void GenerateSonar(Vector3 position, int type);
-	void Init(float radius, int numSides, float speed = 2);
+	void Init(float radius, float radius2, int numSides, float speed = 2);
 	void Update(double dt);
 	float GetSonarRadius();
 	vector<RingSegments*> segmentList;
-	float radius, maxRad;
+	float radius, radius2, maxRad, rad2Counter;
 	int type;
 	Color colorStore;
 	bool alert;

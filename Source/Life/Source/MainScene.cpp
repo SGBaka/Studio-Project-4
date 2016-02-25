@@ -84,6 +84,8 @@ void MainScene::Init()
 
 	onDanger = onExit = false;
 
+	toggleVisible = false;
+
 	LEVEL = 1;
 	InitSimulation();
 }
@@ -159,6 +161,12 @@ void MainScene::InitMeshList()
 	//World
 	P_meshArray[E_GEO_FLOOR_1] = MeshBuilder::GenerateQuad("Floor Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_FLOOR_1]->textureID[0] = LoadTGA(script.getGameData("image.tile.floor").c_str(), true);
+
+	P_meshArray[E_GEO_FLOOR_2] = MeshBuilder::GenerateQuad("Floor2 Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_FLOOR_2]->textureID[0] = LoadTGA(script.getGameData("image.tile.floor_2").c_str(), true);
+
+	P_meshArray[E_GEO_DANGER] = MeshBuilder::GenerateQuad("Danger Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_DANGER]->textureID[0] = LoadTGA(script.getGameData("image.tile.danger").c_str(), true);
 
 	P_meshArray[E_GEO_WALL_1] = MeshBuilder::GenerateQuad("Wall Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_WALL_1]->textureID[0] = LoadTGA(script.getGameData("image.tile.wall").c_str(), true);
@@ -681,6 +689,16 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	//	v3_2DCam.x += static_cast<float>(dt) * f_camSpeed;
 	//}
 
+	if (Application::IsKeyPressed('F'))
+	{
+		toggleVisible = true;
+	}
+
+	if (Application::IsKeyPressed('G'))
+	{
+		toggleVisible = false;
+	}
+
 	if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "2")
 		onDanger = true;
 	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "3")
@@ -755,7 +773,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 					{
 						cEnemy *EO = dynamic_cast<cEnemy*>(CO);
 
-						if (checkForCollision(EO->position, player_ptr->position, GO_List[i]->topLeft, GO_List[i]->bottomRight) && EO->AI_STATE != cEnemy::AS_CHASE)
+						if (checkForCollision(EO->position, player_ptr->position, GO_List[i]->topLeft, GO_List[i]->bottomRight) && EO->AI_STATE != cEnemy::AS_CHASE && !toggleVisible)
 						{
 							EO->isVisible = false;
 						}
@@ -1450,6 +1468,7 @@ void MainScene::RenderGO()
 
 
 	//Temporary bandaid solution (render CO last)
+
 	for (unsigned i = 0; i < GO_List.size(); i++)
 	{
 		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[i]);
@@ -1496,8 +1515,40 @@ void MainScene::RenderGO()
 				modelStack.Translate(GO_List[i]->position);
 				modelStack.Rotate(GO_List[i]->rotation, 0, 0, 1);
 				modelStack.Scale(GO_List[i]->scale);
-				RenderMeshOnScreen(GO_List[i]->mesh);
+
+				if (!toggleVisible)
+					RenderMeshOnScreen(GO_List[i]->mesh);
+				else
+					RenderMeshOnScreen(P_meshArray[E_GEO_FLOOR_2]);
+
 				modelStack.PopMatrix();
+			}
+		}
+	}
+
+	if (toggleVisible)
+	{
+		for (unsigned y = ML_map.map_height - 1; y > 0; --y)
+		{
+			for (unsigned x = 0; x < ML_map.map_width; ++x)
+			{
+				if (ML_map.map_data[y][x] == "2")
+				{
+					modelStack.PushMatrix();
+					modelStack.Translate(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+					modelStack.Scale(ML_map.worldSize, ML_map.worldSize, 1);
+					RenderMeshOnScreen(P_meshArray[E_GEO_DANGER]);
+					modelStack.PopMatrix();
+				}
+
+				else if (ML_map.map_data[y][x] == "3")
+				{
+					modelStack.PushMatrix();
+					modelStack.Translate(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+					modelStack.Scale(ML_map.worldSize, ML_map.worldSize, 1);
+					RenderMeshOnScreen(P_meshArray[E_GEO_DANGER], 13, Color(0,1,0));
+					modelStack.PopMatrix();
+				}
 			}
 		}
 	}

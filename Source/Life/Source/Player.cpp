@@ -72,7 +72,7 @@ void Player::Update(double dt)
 			sonarTimer = 0;
 			Sonar *SNR;
 			SNR = new Sonar();
-			SNR->Init(playerScript.get<float>("player.sonar_radius"), playerScript.get<int>("player.sonar_sides"), playerScript.get<float>("player.sonar_speed"));
+			SNR->Init(playerScript.get<float>("player.sonar_radius"), playerScript.get<float>("player.sonar_radius2"), playerScript.get<int>("player.sonar_sides"), playerScript.get<float>("player.sonar_speed"));
 			SNR->GenerateSonar(position, 1);
 			sonarList.push_back(SNR);
 		}
@@ -91,7 +91,7 @@ void Player::Update(double dt)
 			specialTimer2 = 0;
 			Sonar *SNR;
 			SNR = new Sonar();
-			SNR->Init(playerScript.get<float>("player.special_radius"), playerScript.get<int>("player.special_sides"), playerScript.get<float>("player.special_speed"));
+			SNR->Init(playerScript.get<float>("player.special_radius"), playerScript.get<float>("player.special_radius2"), playerScript.get<int>("player.special_sides"), playerScript.get<float>("player.special_speed"));
 			SNR->GenerateSonar(specialPos, 2);
 			sonarList.push_back(SNR);
 		}
