@@ -1,0 +1,28 @@
+== SONAR ==
+- Extra radius to alert enemies
+
+== LOCAL MULTIPLAYER ==
+- Different color spectrum for sonar of players
+- Green and Yello avatars for different players.
+
+== LUA ==
+- Throw all variables into LUA (player movespeed, enemy variables, etc.)
+- Use percentage values for position of buttons
+- Have default values for all LUA variables so that program can still run even if LUA file is missing
+
+== Map Editor ==
+- Allow player to choose map difficulty
+- Have clickable buttons to select tile
+- Have marquee tool to place exit zones
+- Reset button to clear the map
+- Erase tool (right click) to delete tiles
+- Limit to 4 enemies and 1 player
+- Virtual keyboard (if time permits)
+
+== Level design / loading ==
+- Randomize easy/medium/hard levels
+- Allow the player to continue from where he left off
+- Make a tutorial level
+- Have at least 3 easy, medium and hard levels
+- Play test and determine the timings for all levels
+
