@@ -1,5 +1,6 @@
 == SONAR ==
 - Extra radius to alert enemies
+- Resets chase timer for AI
 
 == LOCAL MULTIPLAYER ==
 - Different color spectrum for sonar of players
