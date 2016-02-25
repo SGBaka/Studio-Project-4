@@ -19,6 +19,7 @@ public:
 		AS_ROAM,
 		AS_CHASE,
 		AS_IDLE,
+		AS_SUSP,
 	};
 
 	enum AI_MESSAGES
@@ -44,7 +45,7 @@ public:
 
 	float GetDistance(float x1, float y1, float x2, float y2);
 
-	bool gotoServe, gotoIdle, gotoRoam, gotoChase;
+	bool gotoServe, gotoIdle, gotoRoam, gotoChase, gotoSusp;
 
 	vector<Sonar*> sonarList;
 	float sonarCooldown, sonarTimer;
@@ -56,6 +57,10 @@ public:
 	Color color;
 
 	float fadeTimer, fadeDuration;
+
+	float suspDuration;
+
+	Vector3 suspPos;
 private:
 
 	string route, route2, route3;
@@ -68,7 +73,7 @@ private:
 	float angle;
 	bool rotating;
 	float rotCounter;
-	float timer, timer2;
+	float timer, timer2, timer3;
 	float idleTime;
 	int n, m;
 

@@ -23,13 +23,14 @@ public:
 	float radius, radius2, maxRad, rad2Counter;
 	int type;
 	Color colorStore;
-	bool alert;
+	int alertType;
+	Vector3 position;
 
 private:
 	int numSides;
 	double rotationCounter;
 	float speed;
-	Vector3 position;
+	
 };
 
 #endif

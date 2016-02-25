@@ -34,6 +34,9 @@ cEnemy::cEnemy()
 , color(0,0,0)
 , fadeTimer(0)
 , fadeDuration(0.2)
+, gotoSusp(false)
+, suspDuration(0)
+, suspPos(0,0,0)
 {
 	name = "Enemy";
 
@@ -146,10 +149,12 @@ void cEnemy::Update(double dt)
 	{
 		sonarList[i]->Update(dt);
 
-		if (AI_STATE != AS_CHASE)
-			sonarList[i]->alert = false;
-		else
-			sonarList[i]->alert = true;
+		if (AI_STATE == AS_CHASE)
+			sonarList[i]->alertType = 2;
+		else if (AI_STATE == AS_SUSP)
+			sonarList[i]->alertType = 3;
+		else 
+			sonarList[i]->alertType = 1;
 
 			if (sonarList[i]->radius >= sonarList[i]->maxRad)
 			{
@@ -162,7 +167,6 @@ void cEnemy::Update(double dt)
 	{
 
 	case cEnemy::AS_ROAM:
-
 		gotoRoam = false;
 
 		if (currTile.x == patrolPath.WayPointTileList[patrolPath.location].x &&
@@ -213,6 +217,12 @@ void cEnemy::Update(double dt)
 			AI_STATE = AS_CHASE;
 			route = "";
 		}
+		if (gotoSusp && routeCounter == 0)
+		{
+			AI_STATE = AS_SUSP;
+			route = "";
+		}
+
 		break;
 
 	case cEnemy::AS_CHASE:
@@ -271,7 +281,53 @@ void cEnemy::Update(double dt)
 			AI_STATE = AS_ROAM;
 		}
 
+		if (gotoSusp)
+		{
+			AI_STATE = AS_SUSP;
+		}
+
 		break;
+
+	case cEnemy::AS_SUSP:
+
+		gotoSusp = false;
+
+		timer3 += dt;
+
+		if (timer3 <= suspDuration && routeCounter3 == 0)
+		{
+			route3 = pathFind(currTile.x, currTile.y, suspPos.x, suspPos.y);
+		}
+
+		else if (timer3 > suspDuration)
+		{
+			gotoRoam = true;
+			timer3 = 0;
+		}
+
+		executePath(dt, route3, routeCounter3);
+
+		if (gotoRoam && routeCounter3 == 0)
+		{
+			suspPos.SetZero();
+
+			if (smart)
+			{
+				setWaypoints();
+				patrolPath.location = 0;
+			}
+
+			route3 = "";
+
+			route = pathFind(currTile.x, currTile.y,
+				patrolPath.WayPointTileList[patrolPath.location].x,
+				patrolPath.WayPointTileList[patrolPath.location].y);
+
+			AI_STATE = AS_ROAM;
+		}
+
+		break;
+
 	default:
 		break;
 	}

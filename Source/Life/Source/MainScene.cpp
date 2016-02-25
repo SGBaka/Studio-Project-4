@@ -828,6 +828,24 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 							topLeft = CO->topLeft;
 							botRight = CO->bottomRight;
 							tempType = 4;
+
+							cEnemy *EO = dynamic_cast<cEnemy*>(CO);
+
+							if ((EO->position - player_ptr->sonarList[i]->position).Length() <= player_ptr->sonarList[i]->rad2Counter)
+							{
+								if (!EO->gotoSusp)
+								{
+									EO->gotoSusp = true;
+
+									EO->suspPos = calTilePos(player_ptr->sonarList[i]->position);
+
+									if (player_ptr->sonarList[i]->segmentList[j]->type == 1)
+										EO->suspDuration = player_ptr->sonarList[i]->segmentList[j]->lifeTime;
+									else if (player_ptr->sonarList[i]->segmentList[j]->type == 2)
+										EO->suspDuration = player_ptr->sonarList[i]->segmentList[j]->lifeTime * 3;
+								}	
+							}
+
 						}
 					}
 
