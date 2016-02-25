@@ -29,9 +29,8 @@ public:
 		S_PAUSE_MENU,
 		S_END_MENU,
 		S_GAME,
-		S_EDITOR,
-		S_EDITOR_MENU_NEW,
-		S_EDITOR_MENU_REPLACE,
+		S_EDITOR_NEW,
+		S_EDITOR_EDIT,
 	};
 	
 	void Init(SCENES firstScene = S_MAIN_MENU);

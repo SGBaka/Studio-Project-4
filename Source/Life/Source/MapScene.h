@@ -136,15 +136,18 @@ private:
 
 	enum E_BUTTON_ID
 	{
+		// Button
 		BI_BACK,
-		BI_PREV_MAP,
-		BI_NEXT_MAP,
+		BI_REFRESH,
 		BI_SAVE,
+
+		// Tiles
 		BI_WALL,
 		BI_FLOOR,
 		BI_PLAYER,
 		BI_ENEMY,
 		BI_DANGER,
+		BI_WIN,
 	};
 
 
@@ -168,11 +171,12 @@ public:
 	/******************************************************************************/
 	Mesh* P_meshArray[E_GEO_TOTAL];
 
-	enum STATE_TYPE
+	enum MAP_TYPE
 	{
-		S_CREATE,
-		S_NEW,
-		S_REPLACE,
+		MT_CREATE,
+		MT_EDIT,
+		MT_NEW,
+		MT_REPLACE,
 	};
 
 	//STATE_TYPE CUR_STATE;
@@ -195,7 +199,7 @@ public:
 	Vector3 calTilePos(Vector3 Worldpos);
 	Vector3 calWorldPos(Vector3 Tilepos);
 
-	void setState(STATE_TYPE S);
+	void setState(MAP_TYPE MT);
 
 	//Tile Placing
 	int selectedTile;
@@ -313,7 +317,7 @@ private:
 
 	int LEVEL;
 	int MENU_STATE;
-	STATE_TYPE CUR_STATE;
+	MAP_TYPE CUR_STATE;
 
 	// Update/Control Functions
 	float MousePosX, MousePosY;
@@ -378,6 +382,8 @@ private:
 public:
 	static MapScene* GetInstance();
 	static void Destroy();
+
+	bool temp;
 };
 
 #endif

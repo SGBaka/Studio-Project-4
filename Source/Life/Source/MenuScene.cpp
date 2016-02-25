@@ -150,8 +150,6 @@ void MenuScene::Init()
 	LuaScript sound("Sound");
 	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
-
-	cout << MainScene::GetInstance()->onExit << endl;
 }
 
 /******************************************************************************/
@@ -702,11 +700,11 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 
 						if (FetchTB(nameScript.get<std::string>("map_screen.textbutton_1.text"))->active)
 						{
-							SceneManager::Instance()->replace(SceneManager::S_EDITOR);
+							SceneManager::Instance()->replace(SceneManager::S_EDITOR_NEW);
 						}
 						else if (FetchTB(nameScript.get<std::string>("map_screen.textbutton_2.text"))->active)
 						{
-							SceneManager::Instance()->replace(SceneManager::S_EDITOR_MENU_REPLACE);
+							SceneManager::Instance()->replace(SceneManager::S_EDITOR_EDIT);
 						}
 					}
 					break;
