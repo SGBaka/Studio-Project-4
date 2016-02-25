@@ -1,5 +1,4 @@
 == SONAR ==
-- Extra radius to alert enemies [WH]
 - Resets chase timer for AI [WH]
 
 == LOCAL MULTIPLAYER ==
@@ -26,3 +25,4 @@
 
 == Other ==
 - Difficulty settings changes gameplay variables [WH]
+- Add suspicion state to tutorial image for enemies [RAYNER]
