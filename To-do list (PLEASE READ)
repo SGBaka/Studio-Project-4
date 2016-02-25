@@ -1,0 +1,27 @@
+== SONAR ==
+- Extra radius to alert enemies [WH]
+- Resets chase timer for AI [WH]
+
+== LOCAL MULTIPLAYER ==
+- Have single map with local multiplayer gameplay [TROY]
+- Different color spectrum for sonar of players [WH]
+- Green and Yello avatars for different players. [WH]
+
+== LUA ==
+- Throw all variables into LUA (player movespeed, enemy variables, etc.) [RAYNER]
+- Use percentage values for position of buttons [RY]
+- Have default values for all LUA variables so that program can still run even if LUA file is missing [RY]
+
+== Map Editor ==
+- Virtual keyboard [WH]
+
+== Level design / loading ==
+- Randomize easy/medium/hard levels [RY][WH][RAYNER]
+- Allow the player to continue from where he left off [RY][WH][RAYNER]
+- Make a tutorial level [WH][RAYNER]
+- Render out stars in level complete screen. Also, make sure the buttons work (retry, next level, etc.) [RAYNER]
+- Have at least 3 easy, medium and hard levels [ALL]
+- Play test and determine the timings for all levels [ALL]
+
+== Other ==
+- Difficulty settings changes gameplay variables [WH]
