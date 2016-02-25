@@ -705,7 +705,9 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		onExit = true;
 
 	if (f_timer > ML_map.star_one)
-		onDanger = true;
+	{
+		//onDanger = true;
+	}
 
 	if (onDanger)
 	{
