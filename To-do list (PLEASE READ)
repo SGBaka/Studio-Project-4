@@ -18,6 +18,7 @@
 - Render out stars in level complete screen. Also, make sure the buttons work (retry, next level, etc.) [RAYNER]
 - Have at least 3 easy, medium and hard levels [ALL]
 - Play test and determine the timings for all levels [ALL]
+- Allow player to load any map he wants [RY][WH]
 
 == Other ==
 - Difficulty settings changes gameplay variables [WH]
