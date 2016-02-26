@@ -264,6 +264,9 @@ void MenuScene::InitMeshList()
 
 	P_meshArray[E_GEO_STAR] = MeshBuilder::GenerateQuad("Star", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_STAR]->textureID[0] = LoadTGA(script.getGameData("image.background.star").c_str(), true);
+
+	P_meshArray[E_GEO_SONAR] = MeshBuilder::GenerateQuad("Sonar Screen", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
+	P_meshArray[E_GEO_SONAR]->textureID[0] = LoadTGA(script.getGameData("image.background.background_sonar").c_str(), true);
 }
 
 /******************************************************************************/
@@ -1503,7 +1506,7 @@ void MenuScene::Render()
 					modelStack.PushMatrix();
 					modelStack.LoadIdentity();
 					modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
-					RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_END]);
+					RenderMeshOnScreen(P_meshArray[E_GEO_SONAR]);
 					modelStack.PopMatrix();
 					
 					RenderTextButtons();

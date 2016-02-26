@@ -99,6 +99,8 @@ class MenuScene : public Scene
 		E_GEO_BUTTON_LEFT,
 		E_GEO_BUTTON_RIGHT,
 		// -----------------------
+
+		E_GEO_SONAR,
 		
 		E_GEO_TOTAL,
 	};
