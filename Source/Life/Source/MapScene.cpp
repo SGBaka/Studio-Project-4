@@ -454,7 +454,7 @@ bool MapScene::InitLevel(int level)
 
 		std::stringstream ss;
 		ss << "GameData//Maps//temp_file.csv";
-		ML_map.saveMap(ss.str());
+		ML_map.saveMap_Creator(ss.str());
 		ML_map.loadMap(ss.str());
 		for (unsigned y = ML_map.map_height - 1; y > 0; --y)
 		{
@@ -866,7 +866,7 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 						   {
 							   std::stringstream ss;
 							   ss << file_Directory << newMapName << ".csv";
-							   ML_map.saveMap(ss.str());
+							   ML_map.saveMap_Creator(ss.str());
 							   MENU_STATE = MT_NEW;
 						   }
 						   else if (FetchTB(nameScript.get<std::string>("editor_replace.textbutton_2.text"))->active)
@@ -1030,7 +1030,7 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 
 					std::stringstream ss;
 					ss << "GameData//Maps//" << newMapName << ".csv";
-					ML_map.saveMap(ss.str());
+					ML_map.saveMap_Creator(ss.str());
 				}
 				else
 				{
@@ -1083,7 +1083,7 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 
 				std::stringstream ss;
 				ss << "GameData//Maps//" << newMapName << ".csv";
-				ML_map.saveMap(ss.str());
+				ML_map.saveMap_Creator(ss.str());
 			}
 			else
 			{

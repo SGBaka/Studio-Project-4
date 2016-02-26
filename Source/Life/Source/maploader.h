@@ -37,6 +37,7 @@ public:
 	bool fileExists(std::string file);
 	bool loadMap(std::string file);
 	bool saveMap(std::string file);
+	bool saveMap_Creator(std::string file);
 	std::string newFile(int difficulty, std::string fileLoc);
 	std::vector<std::vector<std::string>> map_data;
 };

@@ -120,11 +120,63 @@ the file location to save the map to
 /****************************************************************************/
 bool MapLoader::saveMap(std::string file)
 {
+	bool create = false;
 	if (!fileExists(file))
 	{
 		std::fstream filecreate;
 		filecreate.open(file, std::fstream::out);
 		filecreate.close(); 
+	}
+	else
+	{
+		create = true;
+		std::fstream filecreate;
+		filecreate.open("GameData//Maps//Problem.csv", std::fstream::out);
+		filecreate.close();
+	}
+
+	std::fstream mapFile;
+	if (create == false)
+	{
+		mapFile.open(file);
+	}
+	else
+	{	
+		mapFile.open("GameData//Maps//Problem.csv");
+	}
+
+	for (unsigned i = 0; i < map_data.size(); ++i)
+	{
+		for (unsigned j = 0; j < map_data[i].size(); ++j)
+		{
+			if (j != map_data[i].size())
+				mapFile << map_data[i][j];
+
+			if (j != map_data[i].size() - 1)
+			{
+				mapFile << ",";
+			}
+		}
+
+		if (i < (map_data.size() - 1))
+			mapFile << "\n";
+	}
+
+	mapFile.close();
+
+	remove(file.c_str());
+	rename("GameData//Maps//Problem.csv", file.c_str());
+	remove("GameData//Maps//Problem.csv");
+	return true;
+}
+
+bool MapLoader::saveMap_Creator(std::string file)
+{
+	if (!fileExists(file))
+	{
+		std::fstream filecreate;
+		filecreate.open(file, std::fstream::out);
+		filecreate.close();
 	}
 
 	std::fstream mapFile;
