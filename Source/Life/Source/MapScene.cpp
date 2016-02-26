@@ -586,8 +586,8 @@ Vector3 MapScene::calTilePos(Vector3 Worldpos)
 {
 	if (Worldpos != 0)
 	{
-		Worldpos.x = static_cast<int>(Worldpos.x / ((ML_map.worldSize) * 2.f));
-		Worldpos.y = static_cast<int>((Worldpos.y) / ((ML_map.worldSize) * 2.f));
+		Worldpos.x = roundf(Worldpos.x / ((ML_map.worldSize) * 2.f));
+		Worldpos.y = roundf((Worldpos.y) / ((ML_map.worldSize) * 2.f));
 		Worldpos.y -= ML_map.map_height;
 		Worldpos.y = -Worldpos.y;
 	}
@@ -780,6 +780,9 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 
 	MousePosX = static_cast<float>(x) / Application::GetWindowWidth() * Application::GetWindowWidth();// +v3_2DCam.x;
 	MousePosY = (Application::GetWindowHeight() - static_cast<float>(y)) / Application::GetWindowHeight() * Application::GetWindowHeight();// +v3_2DCam.y;
+
+	MousePosX2 = static_cast<float>(x) / static_cast<float>(Application::GetWindowWidth()) * static_cast<float>(Application::GetWindowWidth()) + v3_2DCam.x;
+	MousePosY2 = (static_cast<float>(Application::GetWindowHeight()) - static_cast<float>(y)) / static_cast<float>(Application::GetWindowHeight()) * static_cast<float>(Application::GetWindowHeight()) + v3_2DCam.y;
 
 	static bool bLButtonState = false;
 	static bool bRButtonState = false;
@@ -1137,10 +1140,10 @@ void MapScene::placeTile(int selectedTile)
 {
 	GameObject *GO;
 	GO = new GameObject();
-	selTilePos = calTilePos(Vector3(MousePosX, MousePosY));
+	selTilePos = calTilePos(Vector3(MousePosX2, MousePosY2));
 
 	//selTilePos.x -= 1;
-	selTilePos.y -= 2.f;
+	//selTilePos.y -= 2.f;
 
 	//cout << selTilePos << endl;
 	//cout << selWorldPos << endl;

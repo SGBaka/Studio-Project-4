@@ -326,6 +326,7 @@ private:
 
 	// Update/Control Functions
 	float MousePosX, MousePosY;
+	float MousePosX2, MousePosY2;
 	void editFOV(float &newFOV);
 	void UpdateFOV();
 

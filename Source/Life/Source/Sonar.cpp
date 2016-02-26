@@ -74,7 +74,6 @@ void Sonar::GenerateSonar(Vector3 position, int type)
 
 		RS->rotation = rotationCounter;										// Set rotation value for the line
 
-
 		// Find the 2 points that makes up the line (start and end point)
 		// Needed for Line-BoundingBox collision detection
 		RS->posStart = RS->position + (lengthOfSide / 2);					
@@ -86,9 +85,10 @@ void Sonar::GenerateSonar(Vector3 position, int type)
 		RS->startTrans = RS->posStart - RS->position;
 		RS->endTrans = RS->posEnd - RS->position;
 
+		// Set rotation value for points to line rotation value
 		double angle = Math::DegreeToRadian(RS->rotation);
 
-		// Rotate around the center 
+		// Rotate points around the center 
 		double oldStartX = RS->startTrans.x;
 		RS->startTrans.x = RS->startTrans.x * cos(angle) - RS->startTrans.y * sin(angle);
 		RS->startTrans.y = oldStartX * sin(angle) + RS->startTrans.y * cos(angle);
