@@ -122,6 +122,8 @@ void MapScene::Init()
 	InitSimulation();
 
 	temp = false;
+	temp_string = -1;
+	temp_total_string = "";
 }
 
 
@@ -496,16 +498,13 @@ bool MapScene::InitLevel(int level)
 			{
 				for (unsigned x = 0; x < ML_map.map_width; ++x)
 				{
-					if (ML_map.map_data[y][x] == "0")
-					{
-						GameObject *GO;
-						GO = new GameObject();
-						GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
-						GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
-						GO->enableCollision = false;
-						GO->mesh = P_meshArray[E_GEO_FLOOR_BORDER];
-						GO_List.push_back(GO);
-					}
+					GameObject *GO;
+					GO = new GameObject();
+					GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+					GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+					GO->enableCollision = false;
+					GO->mesh = P_meshArray[E_GEO_FLOOR_BORDER];
+					GO_List.push_back(GO);
 
 					if (ML_map.map_data[y][x] == "P")
 					{
@@ -547,15 +546,18 @@ bool MapScene::InitLevel(int level)
 						GO->mesh = P_meshArray[E_GEO_WIN_BORDER];
 						GO_List.push_back(GO);
 					}
-					if (ML_map.map_data[y][x] == std::to_string(enemyID))
+					if (isdigit(ML_map.map_data[y][x][0]))
 					{
-						GameObject *GO;
-						GO = new GameObject();
-						GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
-						GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
-						GO->enableCollision = false;
-						GO->mesh = P_meshArray[E_GEO_ENEMY_BORDER];
-						GO_List.push_back(GO);
+						if (stoi(ML_map.map_data[y][x]) >= 50)
+						{
+							GameObject *GO;
+							GO = new GameObject();
+							GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+							GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+							GO->enableCollision = false;
+							GO->mesh = P_meshArray[E_GEO_ENEMY_BORDER];
+							GO_List.push_back(GO);
+						}
 					}
 				}
 			}
@@ -719,6 +721,57 @@ Animations, controls
 /******************************************************************************/
 void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 {
+	//keyboard_timer -= (float)dt;
+	//static bool any_press = false;
+	//if (any_press == false && temp_total_string.size() < 10)
+	//{
+	//	for (int i = VK_LBUTTON; i <= VK_OEM_CLEAR; i++)
+	//	{
+	//		//std::cout << i << std::endl;
+	//		if ((GetAsyncKeyState(i) & 0x8001) != 0)
+	//		{
+	//			keyboard_timer = 0.1f;
+	//			any_press = true;
+
+	//			if (i == VK_BACK)
+	//			{
+	//				temp_total_string = temp_total_string.substr(0, temp_total_string.size() - 1);
+	//			}
+	//			else
+	//			{
+	//				// Letter && Number
+	//				if (i >= 65 && i <= 90 || i >= 48 && i <= 57)
+	//				{
+	//					temp_string = i;
+	//					std::stringstream ss;
+	//					std::string s;
+
+	//					ss << temp_string;
+	//					s = ss.str();
+	//					temp_total_string += s;
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
+	//else if (any_press == true)
+	//{
+	//	bool any_key = false;
+	//	for (int i = VK_LBUTTON; i <= VK_OEM_CLEAR; i++)
+	//	{
+	//		//std::cout << i << std::endl;
+	//		if ((GetAsyncKeyState(i) & 0x8001) != 0)
+	//		{
+	//			any_key = true;
+	//		}
+	//	}
+
+	//	if (any_key == false || keyboard_timer < 0)
+	//	{
+	//		any_press = false;
+	//	}
+	//}
+
 	dt *= static_cast<double>(i_SimulationSpeed);
 	f_timer += static_cast<float>(dt);
 	//Mouse Section
@@ -1681,6 +1734,14 @@ void MapScene::RenderUI()
 	modelStack.Translate(Application::GetWindowWidth() * 0.96f, Application::GetWindowHeight() * 0.975f - 80.f, 0);
 	modelStack.Scale(10, 10, 10);
 	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), UIColor);
+	modelStack.PopMatrix();
+
+	std::stringstream ss3;
+	ss3 << temp_total_string;
+	modelStack.PushMatrix();
+	modelStack.Translate(Application::GetWindowWidth() * 0.5f - 300.0f, Application::GetWindowHeight() * 0.5f, 0);
+	modelStack.Scale(35, 35, 1);
+	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss3.str(), UIColor);
 	modelStack.PopMatrix();
 
 	if (selectedTile == BI_FLOOR)

@@ -387,6 +387,11 @@ private:
 	std::string file_Directory;
 	std::string OutputFolder;
 
+	float keyboard_timer;
+	char temp_string;
+	std::string temp_total_string;
+	std::vector <std::string> input_keyboard;
+
 public:
 	static MapScene* GetInstance();
 	static void Destroy();

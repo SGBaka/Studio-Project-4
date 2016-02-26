@@ -25,7 +25,7 @@ GLFWwindow* m_window;
 unsigned char FPS = 120; // FPS of this game
 unsigned int frameTime = 1000 / FPS; // time for each frame
 bool frameLimiter = false;
-bool FULL_SCREEN = true;
+bool FULL_SCREEN = false;
 const char* WIN_NAME = "Project 42";
 const int initWidth = 1280;
 const int initHeight = 720;
@@ -327,8 +327,6 @@ void Application::Init()
 	glfwWindowHint(GLFW_BLUE_BITS, win_data->blueBits);
 	glfwWindowHint(GLFW_REFRESH_RATE, win_data->refreshRate);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
-
 
 	FPS = win_data->refreshRate; // FPS of this game
 	frameTime = 1000 / FPS;
