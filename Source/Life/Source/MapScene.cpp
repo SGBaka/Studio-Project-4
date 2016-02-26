@@ -783,6 +783,9 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 
 	MousePosX = static_cast<float>(x) / Application::GetWindowWidth() * Application::GetWindowWidth();// +v3_2DCam.x;
 	MousePosY = (Application::GetWindowHeight() - static_cast<float>(y)) / Application::GetWindowHeight() * Application::GetWindowHeight();// +v3_2DCam.y;
+	
+	MousePosX2 = static_cast<float>(x) / Application::GetWindowWidth() * Application::GetWindowWidth() +v3_2DCam.x;
+	MousePosY2 = (Application::GetWindowHeight() - static_cast<float>(y)) / Application::GetWindowHeight() * Application::GetWindowHeight() +v3_2DCam.y;
 
 	static bool bLButtonState = false;
 	static bool bRButtonState = false;
