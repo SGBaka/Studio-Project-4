@@ -167,6 +167,7 @@ public:
 	Player *player_ptr;
 
 	bool onDanger, onExit, toggleVisible;
+	bool shownSonar, shownEnemy, shownZone;
 
 private:
 	

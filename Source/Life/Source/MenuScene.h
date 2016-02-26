@@ -99,7 +99,7 @@ class MenuScene : public Scene
 		E_GEO_BUTTON_LEFT,
 		E_GEO_BUTTON_RIGHT,
 		// -----------------------
-
+		
 		E_GEO_TOTAL,
 	};
 
@@ -165,6 +165,9 @@ class MenuScene : public Scene
 		E_M_EDITOR_REPLACE,
 		E_M_OPTIONS_CONTROLS,
 		E_M_OPTIONS_CONTROLS_SETCONTROL,
+		E_M_SONAR,
+		E_M_ENEMY,
+		E_M_ZONE,
 		E_M_TOTAL,
 	};
 
@@ -213,6 +216,9 @@ public:
 		MT_PAUSE_MENU,
 		MT_EDITOR_NEW,
 		MT_EDITOR_REPLACE,
+		MT_SONAR,
+		MT_ENEMY,
+		MT_ZONE,
 	};
 
 	MenuScene();

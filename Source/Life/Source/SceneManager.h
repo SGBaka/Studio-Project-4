@@ -31,6 +31,9 @@ public:
 		S_GAME,
 		S_EDITOR_NEW,
 		S_EDITOR_EDIT,
+		S_SONAR,
+		S_ENEMY,
+		S_ZONE,
 	};
 	
 	void Init(SCENES firstScene = S_MAIN_MENU);

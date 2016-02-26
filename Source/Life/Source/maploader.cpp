@@ -193,7 +193,9 @@ bool MapLoader::saveMap_Creator(std::string file)
 				mapFile << ",";
 			}
 		}
-		mapFile << "\n";
+
+		if (i < map_data.size() - 1)
+			mapFile << "\n";
 	}
 
 	mapFile.close();

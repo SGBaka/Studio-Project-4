@@ -151,6 +151,27 @@ void SceneManager::push(SCENES newScene)
 		ms_tmp->setState(MapScene::MT_EDIT);
 		break;
 	}
+	case SceneManager::S_SONAR:
+	{
+		scene = new MenuScene();
+		MenuScene *ms_tmp = dynamic_cast<MenuScene*>(scene);
+		ms_tmp->setMenu(MenuScene::MT_SONAR);
+		break;
+	}
+	case SceneManager::S_ENEMY:
+	{
+								  scene = new MenuScene();
+								  MenuScene *ms_tmp = dynamic_cast<MenuScene*>(scene);
+								  ms_tmp->setMenu(MenuScene::MT_ENEMY);
+								  break;
+	}
+	case SceneManager::S_ZONE:
+	{
+								  scene = new MenuScene();
+								  MenuScene *ms_tmp = dynamic_cast<MenuScene*>(scene);
+								  ms_tmp->setMenu(MenuScene::MT_ZONE);
+								  break;
+	}
 	default:
 		scene = new MenuScene();
 		break;

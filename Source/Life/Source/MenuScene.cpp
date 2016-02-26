@@ -143,6 +143,15 @@ void MenuScene::Init()
 	case MenuScene::MT_END_MENU:
 		MENU_STATE = E_M_END;
 		break;
+	case MenuScene::MT_SONAR:
+		MENU_STATE = E_M_SONAR;
+		break;
+	case MenuScene::MT_ENEMY:
+		MENU_STATE = E_M_ENEMY;
+		break;
+	case MenuScene::MT_ZONE:
+		MENU_STATE = E_M_ZONE;
+		break;
 	default:
 		break;
 	}
@@ -277,6 +286,9 @@ void MenuScene::InitMenu(void)
 	v3_Menupos[E_M_OPTIONS].Set(0, -2000, 0);
 	v3_Menupos[E_M_MAP].Set(-4000, 0, 0);
 	v3_Menupos[E_M_END].Set(0, 2000, 0);
+	v3_Menupos[E_M_SONAR].Set(0, 0, 0);
+	v3_Menupos[E_M_ENEMY].Set(0, 0, 0);
+	v3_Menupos[E_M_ZONE].Set(0, 0, 0);
 
 	transcomplete = false;
 
@@ -763,6 +775,16 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 						}
 						break;
 	}
+
+	case E_M_SONAR: E_M_ENEMY : E_M_ZONE :
+	{
+		if (Application::IsKeyPressed(VK_LBUTTON))
+		{
+			SceneManager::Instance()->pop();
+		}
+		break;
+	}
+
 	}
 }
 
@@ -1472,6 +1494,18 @@ void MenuScene::Render()
 						modelStack.PopMatrix();
 
 					}
+					RenderTextButtons();
+					RenderButtons();
+					break;
+	}
+	case E_M_SONAR:
+	{
+					modelStack.PushMatrix();
+					modelStack.LoadIdentity();
+					modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+					RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_END]);
+					modelStack.PopMatrix();
+					
 					RenderTextButtons();
 					RenderButtons();
 					break;

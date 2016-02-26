@@ -82,7 +82,7 @@ void MainScene::Init()
 	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
 
-	onDanger = onExit = false;
+	onDanger = onExit = shownZone = shownSonar = shownEnemy = false;
 
 	toggleVisible = false;
 
@@ -275,7 +275,11 @@ bool MainScene::InitLevel(int level)
 {
 	std::cout << "\nLoading map...\n";
 	LuaScript scriptlevel("maps");
-	std::string luaName = "map.map.level_1";
+
+	stringstream ss;
+	ss << "map.map.level_" << level;
+	std::string luaName = ss.str();
+
 	if (!ML_map.loadMap(scriptlevel.getGameData(luaName.c_str())))
 	{
 		std::cout << "!!!ERROR!!! Unable to load map\n";
@@ -568,6 +572,13 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 	//-----------------------------------------------------------------------------
 
+	if (!shownSonar)
+	{
+		shownSonar = true;
+		SceneManager::Instance()->push(SceneManager::S_SONAR);
+	}
+
+
 	for (unsigned i = 0; i < GO_List.size(); ++i)
 	{
 		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[i]);
@@ -614,6 +625,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			std::string luaName = "map.map.level_1";
 			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
 		}
+
 		SceneManager::Instance()->replace(SceneManager::S_END_MENU);
 		return;
 	}
