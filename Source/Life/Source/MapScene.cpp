@@ -63,6 +63,27 @@ string ExePath() {
 	return newBuffer.substr(0, pos);
 }
 
+vector<string> get_all_files_name_within_folder(string folder)
+{
+	vector<string> names;
+
+	char search_path[200];
+	std::sprintf(search_path, "%s/*.*", folder.c_str());
+	//WIN32_FIND_DATA fd;
+	LPWIN32_FIND_DATAA fd;
+	HANDLE hFind = ::FindFirstFileA(search_path, fd);
+
+	if (hFind != INVALID_HANDLE_VALUE) {
+		do {
+			if (!(fd->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+				names.push_back(fd->cFileName);
+			}
+		} while (::FindNextFileA(hFind, fd));
+		::FindClose(hFind);
+	}
+	return names;
+}
+
 /******************************************************************************/
 /*!
 \brief
