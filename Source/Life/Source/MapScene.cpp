@@ -713,6 +713,60 @@ void MapScene::UpdateButtons(void)
 	}
 }
 
+void MapScene::Virtual_Keyboard(double dt)
+{
+	keyboard_timer -= (float)dt;
+	static bool any_press = false;
+	if (any_press == false)
+	{
+		for (int i = VK_LBUTTON; i <= VK_OEM_CLEAR; i++)
+		{
+			//std::cout << i << std::endl;
+			if ((GetAsyncKeyState(i) & 0x8001) != 0)
+			{
+				keyboard_timer = 0.1f;
+				any_press = true;
+
+				if (i == VK_BACK)
+				{
+					temp_total_string = temp_total_string.substr(0, temp_total_string.size() - 1);
+				}
+				else
+				{
+					// Letter && Number
+					if ((i >= 65 && i <= 90 || i >= 48 && i <= 57) && temp_total_string.size() < 10)
+					{
+						temp_string = i;
+						std::stringstream ss;
+						std::string s;
+
+						ss << temp_string;
+						s = ss.str();
+						temp_total_string += s;
+					}
+				}
+			}
+		}
+	}
+	else if (any_press == true)
+	{
+		bool any_key = false;
+		for (int i = VK_LBUTTON; i <= VK_OEM_CLEAR; i++)
+		{
+			//std::cout << i << std::endl;
+			if ((GetAsyncKeyState(i) & 0x8001) != 0)
+			{
+				any_key = true;
+			}
+		}
+
+		if (any_key == false || keyboard_timer < 0)
+		{
+			any_press = false;
+		}
+	}
+}
+
 /******************************************************************************/
 /*!
 \brief
@@ -721,57 +775,6 @@ Animations, controls
 /******************************************************************************/
 void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 {
-	//keyboard_timer -= (float)dt;
-	//static bool any_press = false;
-	//if (any_press == false && temp_total_string.size() < 10)
-	//{
-	//	for (int i = VK_LBUTTON; i <= VK_OEM_CLEAR; i++)
-	//	{
-	//		//std::cout << i << std::endl;
-	//		if ((GetAsyncKeyState(i) & 0x8001) != 0)
-	//		{
-	//			keyboard_timer = 0.1f;
-	//			any_press = true;
-
-	//			if (i == VK_BACK)
-	//			{
-	//				temp_total_string = temp_total_string.substr(0, temp_total_string.size() - 1);
-	//			}
-	//			else
-	//			{
-	//				// Letter && Number
-	//				if (i >= 65 && i <= 90 || i >= 48 && i <= 57)
-	//				{
-	//					temp_string = i;
-	//					std::stringstream ss;
-	//					std::string s;
-
-	//					ss << temp_string;
-	//					s = ss.str();
-	//					temp_total_string += s;
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
-	//else if (any_press == true)
-	//{
-	//	bool any_key = false;
-	//	for (int i = VK_LBUTTON; i <= VK_OEM_CLEAR; i++)
-	//	{
-	//		//std::cout << i << std::endl;
-	//		if ((GetAsyncKeyState(i) & 0x8001) != 0)
-	//		{
-	//			any_key = true;
-	//		}
-	//	}
-
-	//	if (any_key == false || keyboard_timer < 0)
-	//	{
-	//		any_press = false;
-	//	}
-	//}
-
 	dt *= static_cast<double>(i_SimulationSpeed);
 	f_timer += static_cast<float>(dt);
 	//Mouse Section
@@ -781,14 +784,12 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 	MousePosX = static_cast<float>(x) / Application::GetWindowWidth() * Application::GetWindowWidth();// +v3_2DCam.x;
 	MousePosY = (Application::GetWindowHeight() - static_cast<float>(y)) / Application::GetWindowHeight() * Application::GetWindowHeight();// +v3_2DCam.y;
 
-	MousePosX2 = static_cast<float>(x) / static_cast<float>(Application::GetWindowWidth()) * static_cast<float>(Application::GetWindowWidth()) + v3_2DCam.x;
-	MousePosY2 = (static_cast<float>(Application::GetWindowHeight()) - static_cast<float>(y)) / static_cast<float>(Application::GetWindowHeight()) * static_cast<float>(Application::GetWindowHeight()) + v3_2DCam.y;
-
 	static bool bLButtonState = false;
 	static bool bRButtonState = false;
 
 	UpdateTextButtons();
 	UpdateButtons();
+	//Virtual_Keyboard(dt);
 
 	if (f_fov != f_fov_target)
 	{

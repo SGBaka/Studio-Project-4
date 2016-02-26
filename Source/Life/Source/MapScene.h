@@ -201,6 +201,7 @@ public:
 	Vector3 calWorldPos(Vector3 Tilepos);
 
 	void setState(MAP_TYPE MT);
+	void Virtual_Keyboard(double dt);
 
 	//Tile Placing
 	int selectedTile;
