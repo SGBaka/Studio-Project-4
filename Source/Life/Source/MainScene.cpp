@@ -574,7 +574,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 	//-----------------------------------------------------------------------------
 
-	if (!shownSonar)
+	if (!shownSonar && LEVEL == 1)
 	{
 		shownSonar = true;
 		SceneManager::Instance()->push(SceneManager::S_SONAR);
