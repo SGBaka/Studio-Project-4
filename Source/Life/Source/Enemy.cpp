@@ -311,6 +311,7 @@ void cEnemy::Update(double dt)
 		{
 			suspPos.SetZero();
 
+			//Comment out if you want enemies to return to patrol path (suspicion)
 			if (smart)
 			{
 				setWaypoints();

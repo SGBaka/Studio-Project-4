@@ -61,6 +61,8 @@ public:
 	float suspDuration;
 
 	Vector3 suspPos;
+
+	float timer;
 private:
 
 	string route, route2, route3;
@@ -73,7 +75,7 @@ private:
 	float angle;
 	bool rotating;
 	float rotCounter;
-	float timer, timer2, timer3;
+	float timer2, timer3;
 	float idleTime;
 	int n, m;
 

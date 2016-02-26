@@ -900,6 +900,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 						{
 							cEnemy *EO = dynamic_cast<cEnemy*>(CO);
 							EO->gotoChase = true;
+							EO->timer = 0;
 						}
 					}
 				}
