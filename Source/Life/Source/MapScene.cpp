@@ -1734,8 +1734,8 @@ void MapScene::RenderUI()
 	std::stringstream ss2;
 	ss2 << "Tile:";
 	modelStack.PushMatrix();
-	modelStack.Translate(Application::GetWindowWidth() * 0.96f, Application::GetWindowHeight() * 0.975f - 80.f, 0);
-	modelStack.Scale(10, 10, 10);
+	modelStack.Translate(Application::GetWindowWidth() * 0.96f, Application::GetWindowHeight() * 0.975f - ML_map.worldSize, 0);
+	modelStack.Scale(15, 15, 15);
 	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), UIColor);
 	modelStack.PopMatrix();
 
