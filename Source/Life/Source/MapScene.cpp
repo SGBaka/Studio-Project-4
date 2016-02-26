@@ -65,7 +65,7 @@ string ExePath() {
 
 vector<string> get_all_files_name_within_folder(string folder)
 {
-	vector<string> names;
+	vector<string> files_name;
 
 	char search_path[200];
 	std::sprintf(search_path, "%s/*.*", folder.c_str());
@@ -76,12 +76,34 @@ vector<string> get_all_files_name_within_folder(string folder)
 	if (hFind != INVALID_HANDLE_VALUE) {
 		do {
 			if (!(fd->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-				names.push_back(fd->cFileName);
+				files_name.push_back(fd->cFileName);
 			}
 		} while (::FindNextFileA(hFind, fd));
 		::FindClose(hFind);
 	}
-	return names;
+	return files_name;
+}
+
+vector<string> get_all_folder_name_within_folder(string folder)
+{
+	vector<string> folders_name;
+
+	char search_path[200];
+	std::sprintf(search_path, "%s/*.*", folder.c_str());
+	//WIN32_FIND_DATA fd;
+	LPWIN32_FIND_DATAA fd;
+	HANDLE hFind = ::FindFirstFileA(search_path, fd);
+
+	if (hFind != INVALID_HANDLE_VALUE) {
+		do {
+			if (!(fd->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {		
+			}
+			else
+				folders_name.push_back(fd->cFileName);
+		} while (::FindNextFileA(hFind, fd));
+		::FindClose(hFind);
+	}
+	return folders_name;
 }
 
 /******************************************************************************/
@@ -428,6 +450,25 @@ the level to load
 /******************************************************************************/
 bool MapScene::InitLevel(int level)
 {
+	// Seeing All Files
+	/*vector <string> please;
+	please = get_all_files_name_within_folder(OutputFolder);
+
+	for (int i = 0; i < please.size(); i++)
+	{
+		cout << please[i] << "  ,  ";
+	}*/
+
+	// Seeing All Folder
+	/*string tempOutput = ExePath() + "\\life\\GameData\\Image";
+	vector <string> please;
+	please = get_all_folder_name_within_folder(tempOutput);
+
+	for (int i = 2; i < please.size(); i++)
+	{
+		cout << please[i] << endl;
+	}*/
+
 	if (MENU_STATE == MT_CREATE)
 	{
 		newMapName = "";
