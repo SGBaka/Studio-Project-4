@@ -632,22 +632,25 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 						LuaScript nameScript("button");
 
 						if (FetchTB(nameScript.get<std::string>("end_screen.textbutton_1.text"))->active)
-						{
+						{		
 							SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
-							PREV_STATE = MENU_STATE;
-							MENU_STATE = E_M_MAIN;
-							setMenu(MT_MAIN_MENU);
-							transcomplete = false;
+							SceneManager::Instance()->pop();
+							SceneManager::Instance()->pop();
+							SceneManager::Instance()->push(SceneManager::S_MAIN_MENU);						
 						}
 						else if (FetchTB(nameScript.get<std::string>("end_screen.textbutton_2.text"))->active)
 						{
-							PREV_STATE = MENU_STATE;
-							MENU_STATE = E_M_LOADING;
+							SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
+							MainScene::GetInstance()->InitSimulation();
+							SceneManager::Instance()->pop();
+						
 						}
 						else if (FetchTB(nameScript.get<std::string>("end_screen.textbutton_3.text"))->active)
 						{
-							PREV_STATE = MENU_STATE;
-							MENU_STATE = E_M_LOADING;
+							SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
+							MainScene::GetInstance()->LEVEL++;
+							MainScene::GetInstance()->InitSimulation();
+							SceneManager::Instance()->pop();
 						}
 					}
 					break;
@@ -682,6 +685,7 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 
 							  if (FetchTB(nameScript.get<std::string>("main_selection.option_1.text"))->active)
 							  {
+								  MainScene::GetInstance()->LEVEL = 1;
 								  PREV_STATE = MENU_STATE;
 								  MENU_STATE = E_M_LOADING;
 							  }

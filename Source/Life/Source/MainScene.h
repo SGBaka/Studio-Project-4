@@ -161,6 +161,7 @@ public:
 
 	void CO_attach(CharacterObject *CO, GameObject *GO);
 	void CO_drop(CharacterObject *CO);
+	bool InitSimulation(void);
 
 	Vector3 calTilePos(Vector3 Worldpos);
 	Vector3 calWorldPos(Vector3 Tilepos);
@@ -168,7 +169,7 @@ public:
 
 	bool onDanger, onExit, toggleVisible;
 	bool shownSonar, shownEnemy, shownZone;
-
+	int LEVEL;
 private:
 	
 
@@ -274,10 +275,10 @@ private:
 	void InitMeshList(void);
 	void InitShadersAndLights(void);
 	void InitMenu(void);
-	bool InitSimulation(void);
+
 	bool InitLevel(int level);
 
-	int LEVEL;
+	
 	int MENU_STATE;
 
 	// Update/Control Functions

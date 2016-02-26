@@ -81,11 +81,6 @@ void MainScene::Init()
 	LuaScript sound("Sound");
 	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
-
-	onDanger = onExit = shownZone = shownSonar = shownEnemy = false;
-
-	toggleVisible = false;
-
 	LEVEL = 1;
 	InitSimulation();
 }
@@ -263,6 +258,9 @@ bool MainScene::InitSimulation(void)
 
 	f_timer = 0.f;
 	i_SimulationSpeed = 1;
+	onDanger = onExit = shownZone = shownSonar = shownEnemy = false;
+
+	toggleVisible = false;
 	return true;
 }
 
@@ -630,7 +628,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
 		}
 
-		SceneManager::Instance()->replace(SceneManager::S_END_MENU);
+		SceneManager::Instance()->push(SceneManager::S_END_MENU);
 		return;
 	}
 
