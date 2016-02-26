@@ -128,7 +128,7 @@ void SceneManager::push(SCENES newScene)
 		break;
 	}
 	case SceneManager::S_GAME:
-		scene = MultScene::GetInstance();
+		scene = MainScene::GetInstance();
 		break;
 	case SceneManager::S_PAUSE_MENU:
 	{
