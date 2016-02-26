@@ -1,6 +1,6 @@
-#include "Player.h"
+#include "MPlayer.h"
 
-Player::Player() 
+MPlayer::MPlayer()
 : moveSpeed(4)
 , sonarCooldown(1)
 , sonarTimer(sonarCooldown)
@@ -11,22 +11,23 @@ Player::Player()
 , specialTimer2(specialROF)
 , specialCounter(0)
 , isSpecial(false)
+, playerID(0)
 {
 	for (int i = 0; i < 4; ++i)
 	{
 		moveToDir.push_back(false);
 	}
 
-	mapWidth = MainScene::GetInstance()->ML_map.map_width;
-	mapHeight = MainScene::GetInstance()->ML_map.map_height;
+	mapWidth = MultScene::GetInstance()->ML_map.map_width;
+	mapHeight = MultScene::GetInstance()->ML_map.map_height;
 }
 
-Player::~Player()
+MPlayer::~MPlayer()
 {
 
 }
 
-void Player::Init(Vector3 position)
+void MPlayer::Init(Vector3 position)
 {
 	SE_Engine.Init();
 
@@ -35,47 +36,46 @@ void Player::Init(Vector3 position)
 	LuaScript playerScript("character");
 	sonarCooldown = playerScript.get<float>("player.sonar_cooldown");
 	sonarTimer = sonarCooldown;
-
 	specialCooldown = playerScript.get<float>("player.special_cooldown");
 	specialTimer = specialCooldown;
-
-	moveSpeed = playerScript.get<float>("player.move_speed");
-
-	specialDuration = playerScript.get<float>("player.special_duration");
-
-	specialROF = playerScript.get<float>("player.special_ROF");
-	specialTimer2 = specialROF;
-
-	specialCounter = playerScript.get<float>("player.special_counter");
 
 	LuaScript sound("Sound");
 	SoundList[ST_FOOTSTEPS] = SE_Engine.preloadSound(sound.getGameData("sound.footsteps").c_str());
 }
 
 
-void Player::Update(double dt)
+void MPlayer::Update(double dt)
 {
 	if (std::all_of(moveToDir.begin(), moveToDir.end(), [](bool v){return !v; })) // Check if all boolean in vector list are false
 	{
-		if (Application::IsKeyPressed('W') && !checkCollision(2))
+		if ((Application::IsKeyPressed('W') && !checkCollision(2) && playerID == 1)
+			|| (Application::IsKeyPressed(VK_UP) && !checkCollision(2) && playerID == 2))
 			checkMovement(2, dt);
-		else if (Application::IsKeyPressed('A') && !checkCollision(0))
+		else if ((Application::IsKeyPressed('A') && !checkCollision(0) && playerID == 1)
+			|| (Application::IsKeyPressed(VK_LEFT) && !checkCollision(0) && playerID == 2))
 			checkMovement(0, dt);
-		else if (Application::IsKeyPressed('S') && !checkCollision(3))
+		else if ((Application::IsKeyPressed('S') && !checkCollision(3) && playerID == 1)
+			|| (Application::IsKeyPressed(VK_DOWN) && !checkCollision(3) && playerID == 2))
 			checkMovement(3, dt);
-		else if (Application::IsKeyPressed('D') && !checkCollision(1))
+		else if ((Application::IsKeyPressed('D') && !checkCollision(1) && playerID == 1)
+			|| (Application::IsKeyPressed(VK_RIGHT) && !checkCollision(1) && playerID == 2))
 			checkMovement(1, dt);
 
 		if (Application::IsKeyPressed('W') ||
 			Application::IsKeyPressed('A') ||
 			Application::IsKeyPressed('S') ||
-			Application::IsKeyPressed('D'))
+			Application::IsKeyPressed('D') ||
+			Application::IsKeyPressed(VK_UP) ||
+			Application::IsKeyPressed(VK_DOWN) ||
+			Application::IsKeyPressed(VK_LEFT) ||
+			Application::IsKeyPressed(VK_RIGHT))
 		{
 			if (!SE_Engine.isSoundPlaying(SoundList[ST_FOOTSTEPS]))
 				SE_Engine.playSound2D(SoundList[ST_FOOTSTEPS]);
 		}
 
-		if (Application::IsKeyPressed(VK_LBUTTON) && sonarTimer >= sonarCooldown)
+		if ((Application::IsKeyPressed('N') && sonarTimer >= sonarCooldown && playerID == 2) || 
+			(Application::IsKeyPressed(VK_LBUTTON) && sonarTimer >= sonarCooldown && playerID == 1))
 		{
 			LuaScript playerScript("character");
 			sonarTimer = 0;
@@ -85,7 +85,8 @@ void Player::Update(double dt)
 			SNR->GenerateSonar(position, 1);
 			sonarList.push_back(SNR);
 		}
-		else if (Application::IsKeyPressed(VK_RBUTTON) && specialTimer >= specialCooldown && !isSpecial)
+		else if ((Application::IsKeyPressed('M') && specialTimer >= specialCooldown && !isSpecial && playerID == 2) 
+			|| (Application::IsKeyPressed(VK_RBUTTON) && specialTimer >= specialCooldown && !isSpecial && playerID == 1))
 		{
 			specialPos = position;
 			specialTimer = 0;
@@ -125,7 +126,7 @@ void Player::Update(double dt)
 		specialTimer2 = 0;
 		specialPos.SetZero();
 	}
-	
+
 
 	for (int i = 0; i < sonarList.size(); ++i)
 	{
@@ -137,30 +138,27 @@ void Player::Update(double dt)
 			sonarList.erase(sonarList.begin() + i);
 		}
 	}
-
 	for (int i = 0; i < moveToDir.size(); ++i)
 	{
 		checkDirection(i, dt);
 	}
-
-
 }
 
-bool Player::checkCollision(int mode)
+bool MPlayer::checkCollision(int mode)
 {
 	switch (mode)
 	{
 	case 0:
-		return (MainScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x - 1] == "1");
+		return (MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x - 1] == "1");
 		break;
 	case 1:
-		return (MainScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x + 1] == "1");
+		return (MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x + 1] == "1");
 		break;
 	case 2:
-		return (MainScene::GetInstance()->ML_map.map_data[currTile.y - 1][currTile.x] == "1");
+		return (MultScene::GetInstance()->ML_map.map_data[currTile.y - 1][currTile.x] == "1");
 		break;
 	case 3:
-		return (MainScene::GetInstance()->ML_map.map_data[currTile.y + 1][currTile.x] == "1");
+		return (MultScene::GetInstance()->ML_map.map_data[currTile.y + 1][currTile.x] == "1");
 		break;
 	default:
 		return false;
@@ -168,7 +166,7 @@ bool Player::checkCollision(int mode)
 	}
 }
 
-void Player::checkDirection(int mode, double dt)
+void MPlayer::checkDirection(int mode, double dt)
 {
 	if (moveToDir[mode])
 	{
@@ -177,9 +175,9 @@ void Player::checkDirection(int mode, double dt)
 		float check;
 
 		if (mode <= 1)
-			check = (float)position.x / (MainScene::GetInstance()->ML_map.worldSize * 2);
+			check = (float)position.x / (MultScene::GetInstance()->ML_map.worldSize * 2);
 		else
-			check = (float)position.y / (MainScene::GetInstance()->ML_map.worldSize * 2);
+			check = (float)position.y / (MultScene::GetInstance()->ML_map.worldSize * 2);
 
 		if (check == (int)check)
 		{
@@ -188,16 +186,16 @@ void Player::checkDirection(int mode, double dt)
 	}
 }
 
-void Player::checkMovement(int mode, double dt)
+void MPlayer::checkMovement(int mode, double dt)
 {
 	movePlayer(mode, dt);
 
 	float check;
 
 	if (mode <= 1)
-		check = (float)position.x / (MainScene::GetInstance()->ML_map.worldSize * 2);
+		check = (float)position.x / (MultScene::GetInstance()->ML_map.worldSize * 2);
 	else
-		check = (float)position.y / (MainScene::GetInstance()->ML_map.worldSize * 2);
+		check = (float)position.y / (MultScene::GetInstance()->ML_map.worldSize * 2);
 
 	if (moveToDir[mode] == false)
 	{
@@ -223,7 +221,7 @@ void Player::checkMovement(int mode, double dt)
 
 }
 
-void Player::movePlayer(int mode, double dt)
+void MPlayer::movePlayer(int mode, double dt)
 {
 	switch (mode)
 	{
@@ -250,7 +248,7 @@ void Player::movePlayer(int mode, double dt)
 	}
 }
 
-int Player::roundUp(int numToRound, int factor)
+int MPlayer::roundUp(int numToRound, int factor)
 {
 	vector<int> factors;
 

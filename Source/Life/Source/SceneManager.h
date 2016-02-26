@@ -14,6 +14,7 @@ A class to handle scene switching and cleaning
 #include "MenuScene.h"
 #include "MainScene.h"
 #include "MapScene.h"
+#include "MultScene.h"
 
 #include <iostream>
 #include <string>

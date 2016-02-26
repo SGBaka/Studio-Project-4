@@ -128,7 +128,7 @@ void SceneManager::push(SCENES newScene)
 		break;
 	}
 	case SceneManager::S_GAME:
-		scene = MainScene::GetInstance();
+		scene = MultScene::GetInstance();
 		break;
 	case SceneManager::S_PAUSE_MENU:
 	{
@@ -222,6 +222,11 @@ void SceneManager::pop(bool reloadscene)
 			if (scene == MapScene::GetInstance())
 			{
 				MapScene::Destroy();
+				scene = NULL;
+			}
+			if (scene == MultScene::GetInstance())
+			{
+				MultScene::Destroy();
 				scene = NULL;
 			}
 			else

@@ -1,13 +1,13 @@
 /****************************************************************************/
 /*!
-\file MainScene.cpp
+\file MultScene.cpp
 \author Gabriel Wong Choon Jieh
 \par email: AuraTigital\@gmail.com
 \brief
 Main menu for the openGL framework
 !*/
 /****************************************************************************/
-#include "MainScene.h"
+#include "MultScene.h"
 #include "GL\glew.h"
 
 #include <cstdlib>
@@ -24,21 +24,20 @@ Main menu for the openGL framework
 #include "Utility.h"
 #include <sstream>
 #include "Pathfinding.h"
-#include "Enemy.h"
-#include "Player.h"
+#include "MPlayer.h"
 
 //#include <vld.h>
 
-MainScene* MainScene::Instance = NULL;
+MultScene* MultScene::Instance = NULL;
 
-const unsigned int MainScene::ui_NUM_LIGHT_PARAMS = MainScene::E_UNI_LIGHT0_EXPONENT - (MainScene::E_UNI_LIGHT0_POSITION - 1/*Minus the enum before this*/);
+const unsigned int MultScene::ui_NUM_LIGHT_PARAMS = MultScene::E_UNI_LIGHT0_EXPONENT - (MultScene::E_UNI_LIGHT0_POSITION - 1/*Minus the enum before this*/);
 /******************************************************************************/
 /*!
 \brief
 Default Constructor
 */
 /******************************************************************************/
-MainScene::MainScene() : ui_NUM_LIGHTS(1)
+MultScene::MultScene() : ui_NUM_LIGHTS(1)
 {
 
 }
@@ -49,7 +48,7 @@ MainScene::MainScene() : ui_NUM_LIGHTS(1)
 Destructor
 */
 /******************************************************************************/
-MainScene::~MainScene()
+MultScene::~MultScene()
 {
 
 }
@@ -60,7 +59,7 @@ MainScene::~MainScene()
 Initialize default variables, create meshes, lighting
 */
 /******************************************************************************/
-void MainScene::Init()
+void MultScene::Init()
 {
 	SE_Engine.Init();
 	f_fov = 0.f;
@@ -82,7 +81,7 @@ void MainScene::Init()
 	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
 
-	onDanger = onExit = shownZone = shownSonar = shownEnemy = false;
+	onDanger = onExit = false;
 
 	toggleVisible = false;
 
@@ -96,7 +95,7 @@ void MainScene::Init()
 Initialize shaders
 */
 /******************************************************************************/
-void MainScene::InitShaders()
+void MultScene::InitShaders()
 {
 	Application::SetCursor(true);
 	// Init VBO here
@@ -135,7 +134,7 @@ void MainScene::InitShaders()
 Initializes the meshes that is in the P_meshArray
 */
 /******************************************************************************/
-void MainScene::InitMeshList()
+void MultScene::InitMeshList()
 {
 	for (unsigned i = 0; i < E_GEO_TOTAL; ++i)
 	{
@@ -174,16 +173,13 @@ void MainScene::InitMeshList()
 	P_meshArray[E_GEO_PLAYER] = MeshBuilder::GenerateQuad("AI Player", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_PLAYER]->textureID[0] = LoadTGA(script.getGameData("image.tile.player").c_str(), true);
 
-	//P_meshArray[E_GEO_PLAYER_2] = MeshBuilder::GenerateQuad("AI Player", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	//P_meshArray[E_GEO_PLAYER_2]->textureID[0] = LoadTGA(script.getGameData("image.tile.player_2").c_str(), true);
+	P_meshArray[E_GEO_PLAYER_2] = MeshBuilder::GenerateQuad("AI Player", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_PLAYER_2]->textureID[0] = LoadTGA(script.getGameData("image.tile.player_2").c_str(), true);
 
-	P_meshArray[E_GEO_ENEMY] = MeshBuilder::GenerateQuad("AI Enemy", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_ENEMY]->textureID[0] = LoadTGA(script.getGameData("image.tile.enemy").c_str(), true);
+	//P_meshArray[E_GEO_ENEMY] = MeshBuilder::GenerateQuad("AI Enemy", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	//P_meshArray[E_GEO_ENEMY]->textureID[0] = LoadTGA(script.getGameData("image.tile.enemy").c_str(), true);
 
-	P_meshArray[E_GEO_LINE] = MeshBuilder::GenerateQuad("Ring Segment", Color(1.f, 0.f, 0.f), 1.f, 1.f);
-
-	P_meshArray[E_GEO_STAR] = MeshBuilder::GenerateQuad("Star", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_STAR]->textureID[0] = LoadTGA(script.getGameData("image.background.star").c_str(), true);
+	P_meshArray[E_GEO_LINE] = MeshBuilder::GenerateQuad("Ring Segment", Color(1.f, 0.f, 0.f), 1, 1);
 }
 
 /******************************************************************************/
@@ -192,7 +188,7 @@ void MainScene::InitMeshList()
 Initializes menu
 */
 /******************************************************************************/
-void MainScene::InitMenu(void)
+void MultScene::InitMenu(void)
 {
 	UIColor.Set(0.48235f, 0.70196f, 1.f);
 	UIColorPressed.Set(0.9098f, 0.41568f, 0.94117f);
@@ -253,7 +249,7 @@ void MainScene::InitMenu(void)
 Initializes simulation
 */
 /******************************************************************************/
-bool MainScene::InitSimulation(void)
+bool MultScene::InitSimulation(void)
 {
 	//Init Character/world stuff here
 	if (!InitLevel(LEVEL))
@@ -274,15 +270,11 @@ Initializes a level
 the level to load
 */
 /******************************************************************************/
-bool MainScene::InitLevel(int level)
+bool MultScene::InitLevel(int level)
 {
 	std::cout << "\nLoading map...\n";
 	LuaScript scriptlevel("maps");
-
-	stringstream ss;
-	ss << "map.map.level_" << level;
-	std::string luaName = ss.str();
-
+	std::string luaName = "map.map.level_1";
 	if (!ML_map.loadMap(scriptlevel.getGameData(luaName.c_str())))
 	{
 		std::cout << "!!!ERROR!!! Unable to load map\n";
@@ -324,7 +316,7 @@ bool MainScene::InitLevel(int level)
 					GO->bottomRight = GO->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
 				}
 
-				else if(ML_map.map_data[y][x] == "3")
+				else if (ML_map.map_data[y][x] == "3")
 				{
 					GO->name = "EXIT";
 					GO->topLeft = GO->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
@@ -335,37 +327,35 @@ bool MainScene::InitLevel(int level)
 
 				if (ML_map.map_data[y][x] == "P")
 				{
-					Player *player;
-					player = new Player;
+					MPlayer *player;
+					player = new MPlayer;
 					player->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0));
 					player->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
 					player->mesh = P_meshArray[E_GEO_PLAYER];
 					player->currTile.Set(x, y);
 					player->topLeft = player->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
 					player->bottomRight = player->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
-					//player->playerCount++;
+					player->playerID = 1;
 
 					player_ptr = player;
 					GO_List.push_back(player);
+					player_List.push_back(player_ptr);
 				}
-				if (isdigit(ML_map.map_data[y][x][0]))
+				if (ML_map.map_data[y][x] == "P2")
 				{
-					if (stoi(ML_map.map_data[y][x]) >= 50)
-					{
-						cEnemy *enemy;
-						enemy = new cEnemy;
-						enemy->ID = stoi(ML_map.map_data[y][x]);
-						enemy->currTile.Set(x, y);
-						enemy->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0));
-						enemy->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
-						enemy->mesh = P_meshArray[E_GEO_ENEMY];
-						
-						enemy->name = "ENEMY";
-						enemy->topLeft = enemy->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
-						enemy->bottomRight = enemy->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
+					MPlayer *player;
+					player = new MPlayer;
+					player->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0));
+					player->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
+					player->mesh = P_meshArray[E_GEO_PLAYER_2];
+					player->currTile.Set(x, y);
+					player->topLeft = player->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
+					player->bottomRight = player->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
+					player->playerID = 2;
 
-						GO_List.push_back(enemy);
-					}
+					player_ptr = player;
+					GO_List.push_back(player);
+					player_List.push_back(player_ptr);
 				}
 				continue;
 			}
@@ -405,7 +395,7 @@ the world position
 returns the tile position
 */
 /******************************************************************************/
-Vector3 MainScene::calTilePos(Vector3 Worldpos)
+Vector3 MultScene::calTilePos(Vector3 Worldpos)
 {
 	if (Worldpos != 0)
 	{
@@ -432,7 +422,7 @@ the tile position
 returns the world position
 */
 /******************************************************************************/
-Vector3 MainScene::calWorldPos(Vector3 Tilepos)
+Vector3 MultScene::calWorldPos(Vector3 Tilepos)
 {
 	Tilepos.x = Tilepos.x * ML_map.worldSize * 2.f;
 	Tilepos.y = (ML_map.map_height - Tilepos.y) * ML_map.worldSize * 2.f;
@@ -445,7 +435,7 @@ Vector3 MainScene::calWorldPos(Vector3 Tilepos)
 Gets the button
 */
 /******************************************************************************/
-TextButton* MainScene::FetchTB(std::string name)
+TextButton* MultScene::FetchTB(std::string name)
 {
 	for (std::vector<TextButton*>::iterator it = v_textButtonList.begin(); it != v_textButtonList.end(); ++it)
 	{
@@ -468,7 +458,7 @@ TextButton* MainScene::FetchTB(std::string name)
 Gets the button
 */
 /******************************************************************************/
-Button* MainScene::FetchBUTTON(int ID)
+Button* MultScene::FetchBUTTON(int ID)
 {
 	for (std::vector<Button*>::iterator it = v_buttonList.begin(); it != v_buttonList.end(); ++it)
 	{
@@ -491,7 +481,7 @@ Button* MainScene::FetchBUTTON(int ID)
 Update button state
 */
 /******************************************************************************/
-void MainScene::UpdateTextButtons(void)
+void MultScene::UpdateTextButtons(void)
 {
 	for (std::vector<TextButton*>::iterator it = v_textButtonList.begin(); it != v_textButtonList.end(); ++it)
 	{
@@ -518,7 +508,7 @@ void MainScene::UpdateTextButtons(void)
 Update button state
 */
 /******************************************************************************/
-void MainScene::UpdateButtons(void)
+void MultScene::UpdateButtons(void)
 {
 	for (std::vector<Button*>::iterator it = v_buttonList.begin(); it != v_buttonList.end(); ++it)
 	{
@@ -543,7 +533,7 @@ void MainScene::UpdateButtons(void)
 Animations, controls
 */
 /******************************************************************************/
-void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update()
+void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update()
 {
 	dt *= static_cast<double>(i_SimulationSpeed);
 	f_timer += static_cast<float>(dt);
@@ -554,7 +544,6 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	MousePosY = (Application::GetWindowHeight() - static_cast<float>(y)) / Application::GetWindowHeight() * Application::GetWindowHeight();
 
 	static bool bLButtonState = false;
-
 	UpdateTextButtons();
 	UpdateButtons();
 
@@ -576,13 +565,6 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 	//-----------------------------------------------------------------------------
 
-	if (!shownSonar)
-	{
-		shownSonar = true;
-		SceneManager::Instance()->push(SceneManager::S_SONAR);
-	}
-
-
 	for (unsigned i = 0; i < GO_List.size(); ++i)
 	{
 		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[i]);
@@ -593,10 +575,10 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		}
 	}
 
-	float cal = ML_map.star_one;
+	//float cal = ML_map.star_one;
 	if (onExit == true)
 	{
-		if (f_timer < ML_map.star_three)
+		/*if (f_timer < ML_map.star_three)
 		{
 			SceneManager::Instance()->end_star = 3;
 			float cal2 = cal - f_timer;
@@ -628,8 +610,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			LuaScript scriptlevel("maps");
 			std::string luaName = "map.map.level_1";
 			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
-		}
-
+		}*/
 		SceneManager::Instance()->replace(SceneManager::S_END_MENU);
 		return;
 	}
@@ -733,7 +714,6 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		onDanger = false;
 		InitSimulation();
 	}
-		
 
 	for (int k = 0; k < GO_List.size(); ++k)
 	{
@@ -741,7 +721,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 		if (CO != NULL)
 		{
-			if (CO->name == "ENEMY")
+			/*if (CO->name == "ENEMY")
 			{
 				cEnemy *EO = dynamic_cast<cEnemy*>(CO);
 				EO->isVisible = true;
@@ -776,7 +756,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 					}
 				}
-			}
+			}*/
 		}
 	}
 
@@ -790,7 +770,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 				if (CO != NULL)
 				{
-					if (CO->name == "ENEMY")
+					/*if (CO->name == "ENEMY")
 					{
 						cEnemy *EO = dynamic_cast<cEnemy*>(CO);
 
@@ -798,134 +778,135 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 						{
 							EO->isVisible = false;
 						}
-					}
+					}*/
 				}
 			}
 		}
 	}
 
 	string sideHit = "";
-
-	for (int i = 0; i < player_ptr->sonarList.size(); ++i)
-	{
-		for (int j = 0; j < player_ptr->sonarList[i]->segmentList.size(); ++j)
+	//for (int i = 0; i < player_List.size(); ++i)
+	//{
+		for (int i = 0; i < player_List[i]->sonarList.size(); ++i)
 		{
-			if (player_ptr->sonarList[i]->segmentList[j]->active)
+			for (int j = 0; j < player_List[i]->sonarList[i]->segmentList.size(); ++j)
 			{
-				for (int k = 0; k < GO_List.size(); ++k)
+				if (player_List[i]->sonarList[i]->segmentList[j]->active)
 				{
-					CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[k]);
-
-					Vector3 topLeft, botRight;
-					int tempType = 0;
-
-					if (GO_List[k]->name == "WALL")
+					for (int k = 0; k < GO_List.size(); ++k)
 					{
-						topLeft = GO_List[k]->topLeft;
-						botRight = GO_List[k]->bottomRight;
-						tempType = 1;
-					}
+						CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[k]);
 
-					else if (GO_List[k]->name == "DANGER")
-					{
-						topLeft = GO_List[k]->topLeft;
-						botRight = GO_List[k]->bottomRight;
-						tempType = 2;
-					}
+						Vector3 topLeft, botRight;
+						int tempType = 0;
 
-					else if (GO_List[k]->name == "EXIT")
-					{
-						topLeft = GO_List[k]->topLeft;
-						botRight = GO_List[k]->bottomRight;
-						tempType = 3;
-					}
-
-					else if (CO != NULL)
-					{
-						if (CO->name == "ENEMY")
+						if (GO_List[k]->name == "WALL")
 						{
-							topLeft = CO->topLeft;
-							botRight = CO->bottomRight;
-							tempType = 4;
-
-							cEnemy *EO = dynamic_cast<cEnemy*>(CO);
-
-							if ((EO->position - player_ptr->sonarList[i]->position).Length() <= player_ptr->sonarList[i]->rad2Counter)
-							{
-								if (!EO->gotoSusp)
-								{
-									EO->gotoSusp = true;
-
-									EO->suspPos = calTilePos(player_ptr->sonarList[i]->position);
-
-									if (player_ptr->sonarList[i]->segmentList[j]->type == 1)
-										EO->suspDuration = player_ptr->sonarList[i]->segmentList[j]->lifeTime;
-									else if (player_ptr->sonarList[i]->segmentList[j]->type == 2)
-										EO->suspDuration = player_ptr->sonarList[i]->segmentList[j]->lifeTime * 3;
-								}	
-							}
-
+							topLeft = GO_List[k]->topLeft;
+							botRight = GO_List[k]->bottomRight;
+							tempType = 1;
 						}
-					}
 
-					if (checkForCollision(player_ptr->sonarList[i]->segmentList[j]->posStart,
-									      player_ptr->sonarList[i]->segmentList[j]->posEnd,
-										  topLeft, botRight, &sideHit))
-					{
-						if (tempType == 1)
+						else if (GO_List[k]->name == "DANGER")
 						{
-							player_ptr->sonarList[i]->segmentList[j]->active = false;
+							topLeft = GO_List[k]->topLeft;
+							botRight = GO_List[k]->bottomRight;
+							tempType = 2;
+						}
 
-							if (player_ptr->sonarList[i]->segmentList[j]->type == 1)
+						else if (GO_List[k]->name == "EXIT")
+						{
+							topLeft = GO_List[k]->topLeft;
+							botRight = GO_List[k]->bottomRight;
+							tempType = 3;
+						}
+
+						else if (CO != NULL)
+						{
+						  /*if (CO->name == "ENEMY")
 							{
-								player_ptr->sonarList[i]->segmentList[j]->attached = true;
-								player_ptr->sonarList[i]->segmentList[j]->lifeTime = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad) * 2;
+								topLeft = CO->topLeft;
+								botRight = CO->bottomRight;
+								tempType = 4;
 
-								if (player_ptr->sonarList[i]->type == 1)
+								cEnemy *EO = dynamic_cast<cEnemy*>(CO);
+
+								if ((EO->position - player_ptr->sonarList[i]->position).Length() <= player_ptr->sonarList[i]->rad2Counter)
 								{
-									player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = 0;
-									player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad);
-									player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad);
+									if (!EO->gotoSusp)
+									{
+										EO->gotoSusp = true;
+
+										EO->suspPos = calTilePos(player_ptr->sonarList[i]->position);
+
+										if (player_ptr->sonarList[i]->segmentList[j]->type == 1)
+											EO->suspDuration = player_ptr->sonarList[i]->segmentList[j]->lifeTime;
+										else if (player_ptr->sonarList[i]->segmentList[j]->type == 2)
+											EO->suspDuration = player_ptr->sonarList[i]->segmentList[j]->lifeTime * 3;
+									}
 								}
 
-								else
-									player_ptr->sonarList[i]->segmentList[j]->segmentColor = player_ptr->sonarList[i]->colorStore;
-						
-								player_ptr->sonarList[i]->segmentList[j]->scale.y *= 1.2;
-								//player_ptr->sonarList[i]->segmentList[j]->scale.x *= 1.2;
+							}*/
+						}
 
-								if (sideHit == "Top" || sideHit == "Bottom")
-									player_ptr->sonarList[i]->segmentList[j]->rotation = 0;
-								else
-									player_ptr->sonarList[i]->segmentList[j]->rotation = 90;
+						if (checkForCollision(player_List[i]->sonarList[i]->segmentList[j]->posStart,
+							player_List[i]->sonarList[i]->segmentList[j]->posEnd,
+							topLeft, botRight, &sideHit))
+						{
+							if (tempType == 1)
+							{
+								player_List[i]->sonarList[i]->segmentList[j]->active = false;
+
+								if (player_List[i]->sonarList[i]->segmentList[j]->type == 1)
+								{
+									player_List[i]->sonarList[i]->segmentList[j]->attached = true;
+									player_List[i]->sonarList[i]->segmentList[j]->lifeTime = (1 - player_List[i]->sonarList[i]->radius / player_List[i]->sonarList[i]->maxRad) * 2;
+
+									if (player_List[i]->sonarList[i]->type == 1)
+									{
+										player_List[i]->sonarList[i]->segmentList[j]->segmentColor.r = 0;
+										player_List[i]->sonarList[i]->segmentList[j]->segmentColor.g = (1 - player_List[i]->sonarList[i]->radius / player_List[i]->sonarList[i]->maxRad);
+										player_List[i]->sonarList[i]->segmentList[j]->segmentColor.b = (1 - player_List[i]->sonarList[i]->radius / player_List[i]->sonarList[i]->maxRad);
+									}
+
+									else
+										player_List[i]->sonarList[i]->segmentList[j]->segmentColor = player_List[i]->sonarList[i]->colorStore;
+
+									player_List[i]->sonarList[i]->segmentList[j]->scale.y *= 1.2;
+									//player_ptr->sonarList[i]->segmentList[j]->scale.x *= 1.2;
+
+									if (sideHit == "Top" || sideHit == "Bottom")
+										player_List[i]->sonarList[i]->segmentList[j]->rotation = 0;
+									else
+										player_List[i]->sonarList[i]->segmentList[j]->rotation = 90;
+								}
 							}
-						}
 
-						else if (tempType == 2 && player_ptr->sonarList[i]->segmentList[j]->type == 1 && !player_ptr->sonarList[i]->segmentList[j]->attached)
-						{
-							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad)) * 2;
-							player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = 0;
-							player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = 0;
-						}
+							else if (tempType == 2 && player_List[i]->sonarList[i]->segmentList[j]->type == 1 && !player_List[i]->sonarList[i]->segmentList[j]->attached)
+							{
+								player_List[i]->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_List[i]->sonarList[i]->radius / player_List[i]->sonarList[i]->maxRad)) * 2;
+								player_List[i]->sonarList[i]->segmentList[j]->segmentColor.g = 0;
+								player_List[i]->sonarList[i]->segmentList[j]->segmentColor.b = 0;
+							}
 
-						else if (tempType == 3 && player_ptr->sonarList[i]->segmentList[j]->type == 1 && !player_ptr->sonarList[i]->segmentList[j]->attached)
-						{
-							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad)) * 2;
-							player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = 0;
-							player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = (1 - (player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad)) * 2;
-						}
+							else if (tempType == 3 && player_List[i]->sonarList[i]->segmentList[j]->type == 1 && !player_List[i]->sonarList[i]->segmentList[j]->attached)
+							{
+								player_List[i]->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_List[i]->sonarList[i]->radius / player_List[i]->sonarList[i]->maxRad)) * 2;
+								player_List[i]->sonarList[i]->segmentList[j]->segmentColor.g = 0;
+								player_List[i]->sonarList[i]->segmentList[j]->segmentColor.b = (1 - (player_List[i]->sonarList[i]->radius / player_List[i]->sonarList[i]->maxRad)) * 2;
+							}
 
-						else if (tempType == 4)
-						{
-							cEnemy *EO = dynamic_cast<cEnemy*>(CO);
-							EO->gotoChase = true;
-							EO->timer = 0;
+							else if (tempType == 4)
+							{
+								//cEnemy *EO = dynamic_cast<cEnemy*>(CO);
+								//EO->gotoChase = true;
+							}
 						}
 					}
 				}
 			}
 		}
-	}
+	//}
 }
 
 /******************************************************************************/
@@ -936,7 +917,7 @@ edits FOV
 new fov to change to
 */
 /******************************************************************************/
-void MainScene::editFOV(float &newFOV)
+void MultScene::editFOV(float &newFOV)
 {
 	Mtx44 proj;
 	proj.SetToPerspective(newFOV, static_cast<double>(Application::GetWindowWidth()) / static_cast<double>(Application::GetWindowHeight()), 0.1f, 10000.0f);
@@ -949,7 +930,7 @@ void MainScene::editFOV(float &newFOV)
 Update FOV
 */
 /******************************************************************************/
-void MainScene::UpdateFOV()
+void MultScene::UpdateFOV()
 {
 	if (Application::IsKeyPressed('K'))
 	{
@@ -977,7 +958,7 @@ void MainScene::UpdateFOV()
 Initializes all the Shaders & Lights
 */
 /******************************************************************************/
-void MainScene::InitShadersAndLights(void)
+void MultScene::InitShadersAndLights(void)
 {
 	LuaScript scriptshader("Shader");
 
@@ -1088,7 +1069,7 @@ Renders mesh
 \param enableLight - should the mesh rendered be affected by light?
 */
 /******************************************************************************/
-void MainScene::RenderMesh(Mesh *mesh, bool enableLight, float Glow, Color GlowColor)
+void MultScene::RenderMesh(Mesh *mesh, bool enableLight, float Glow, Color GlowColor)
 {
 	glUniform1i(u_m_parameters[U_UNI_GLOW], static_cast<GLint>(Glow));
 	glUniform3fv(u_m_parameters[U_UNI_GLOW_COLOR], 1, &GlowColor.r);
@@ -1144,7 +1125,7 @@ Renders text
 \param color - The colour of the text to be printed
 */
 /******************************************************************************/
-void MainScene::RenderText(Mesh* mesh, std::string text, Color color)
+void MultScene::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -1182,7 +1163,7 @@ Renders text around the center
 \param color - The colour of the text to be printed
 */
 /******************************************************************************/
-void MainScene::RenderTextCenter(Mesh* mesh, std::string text, Color color)
+void MultScene::RenderTextCenter(Mesh* mesh, std::string text, Color color)
 {
 	modelStack.PushMatrix();
 	modelStack.Translate(-(text.size() / 2.0f), 0.0f, 0.0f);
@@ -1200,7 +1181,7 @@ Renders text around the center on the screen
 \param color - The colour of the text to be printed
 */
 /******************************************************************************/
-void MainScene::RenderTextCenterOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void MultScene::RenderTextCenterOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	modelStack.PushMatrix();
 	x -= ((text.length() - 1.5f) / 2.0f) * size;
@@ -1216,7 +1197,7 @@ void MainScene::RenderTextCenterOnScreen(Mesh* mesh, std::string text, Color col
 Renders text on screen
 */
 /******************************************************************************/
-void MainScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color)
+void MultScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color)
 {
 	glUniform1i(u_m_parameters[U_UNI_GLOW], static_cast<GLint>(0));
 	if (!mesh || mesh->textureID <= 0) //Proper error check
@@ -1267,7 +1248,7 @@ void MainScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color)
 Renders a mesh on screen
 */
 /******************************************************************************/
-void MainScene::RenderMeshOnScreen(Mesh* mesh, float Glow, Color GlowColor)
+void MultScene::RenderMeshOnScreen(Mesh* mesh, float Glow, Color GlowColor)
 {
 	glUniform1i(u_m_parameters[U_UNI_GLOW], static_cast<GLint>(Glow));
 	glUniform3fv(u_m_parameters[U_UNI_GLOW_COLOR], 1, &GlowColor.r);
@@ -1314,7 +1295,7 @@ void MainScene::RenderMeshOnScreen(Mesh* mesh, float Glow, Color GlowColor)
 Renders the menu buttons
 */
 /******************************************************************************/
-void MainScene::RenderTextButtons(void)
+void MultScene::RenderTextButtons(void)
 {
 	for (unsigned i = 0; i < v_textButtonList.size(); ++i)
 	{
@@ -1336,7 +1317,7 @@ void MainScene::RenderTextButtons(void)
 Renders the menu buttons
 */
 /******************************************************************************/
-void MainScene::RenderButtons(void)
+void MultScene::RenderButtons(void)
 {
 	for (unsigned i = 0; i < v_buttonList.size(); ++i)
 	{
@@ -1364,7 +1345,7 @@ void MainScene::RenderButtons(void)
 Renders the scene
 */
 /******************************************************************************/
-void MainScene::Render()
+void MultScene::Render()
 {
 	// Render VBO here
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1421,73 +1402,68 @@ void MainScene::Render()
 Renders the user interface
 */
 /******************************************************************************/
-void MainScene::RenderUI()
+void MultScene::RenderUI()
 {
 	std::stringstream ss;
-	ss.precision(3);
-	ss << "Time: " << f_timer;
+	ss << "RunTime " << f_timer;
 
 	modelStack.PushMatrix();
-	modelStack.Translate(Application::GetWindowWidth() * 0.025f, Application::GetWindowHeight() * 0.970f, 0);
-	modelStack.Scale(25, 25, 0);
+	modelStack.Translate(Application::GetWindowWidth() * 0.025f, Application::GetWindowHeight() * 0.975f, 0);
+	modelStack.Scale(20, 20, 20);
 	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 	modelStack.PopMatrix();
 
 	if (f_timer < ML_map.star_three)
 	{
-		for (int i = 0; i < 3; i++)
-		{
-			modelStack.PushMatrix();
-			modelStack.Translate(Application::GetWindowWidth() * 0.42f + (i*50), Application::GetWindowHeight() * 0.970f, 0);
-			modelStack.Scale(20, 20, 20);
-			RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
-			modelStack.PopMatrix();
-
-		}
 		ss.str("");
-		ss << ML_map.star_three<<"secs";
+		ss << "3S " << ML_map.star_three;
+
 		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.968f, 0);
-		modelStack.Scale(30, 30, 0);
+		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.975f, 0);
+		modelStack.Scale(20, 20, 20);
 		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 		modelStack.PopMatrix();
 	}
 	else if (f_timer < ML_map.star_two)
 	{
-		for (int i = 0; i < 2; i++)
-		{
-			modelStack.PushMatrix();
-			modelStack.Translate(Application::GetWindowWidth() * 0.42f + (i * 50), Application::GetWindowHeight() * 0.970f, 0);
-			modelStack.Scale(20, 20, 20);
-			RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
-			modelStack.PopMatrix();
-
-		}
 		ss.str("");
-		ss << ML_map.star_two << "secs";
+		ss << "2S " << ML_map.star_two;
 
 		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.968f, 0);
-		modelStack.Scale(30, 30, 0);
+		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.975f, 0);
+		modelStack.Scale(20, 20, 20);
 		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 		modelStack.PopMatrix();
 	}
 	else
 	{
-		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() * 0.42f , Application::GetWindowHeight() * 0.970f, 0);
-		modelStack.Scale(20, 20, 20);
-		RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
-		modelStack.PopMatrix();
-
 		ss.str("");
-		ss << ML_map.star_one << "secs";
+		ss << "1S " << ML_map.star_one;
 
 		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.968f, 0);
-		modelStack.Scale(30, 30, 20);
+		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.975f, 0);
+		modelStack.Scale(20, 20, 20);
 		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 		modelStack.PopMatrix();
+	}
+
+	std::stringstream ss2;
+	ss2 << "Simulation Speed " << i_SimulationSpeed << "X";
+
+	modelStack.PushMatrix();
+	modelStack.Translate(Application::GetWindowWidth() * 0.025f, Application::GetWindowHeight() * 0.975f - 20.f, 0);
+	modelStack.Scale(20, 20, 20);
+	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), UIColor);
+	modelStack.PopMatrix();
+
+	//AI Status
+	for (unsigned i = 0; i < GO_List.size(); ++i)
+	{
+		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[i]);
+		if (CO != NULL)
+		{
+			//
+		}
 	}
 }
 
@@ -1497,7 +1473,7 @@ void MainScene::RenderUI()
 Renders the all gameobjects
 */
 /******************************************************************************/
-void MainScene::RenderGO()
+void MultScene::RenderGO()
 {
 	//modelStack.PushMatrix();
 	//modelStack.Translate(player_ptr->topLeft);
@@ -1528,18 +1504,17 @@ void MainScene::RenderGO()
 			}
 		}
 	}
-
-	for (int i = 0; i < player_ptr->sonarList.size(); ++i)
+	for (int i = 0; i < player_List[i]->sonarList.size(); ++i)
 	{
-		for (int j = 0; j < player_ptr->sonarList[i]->segmentList.size(); ++j)
+		for (int j = 0; j < player_List[i]->sonarList[i]->segmentList.size(); ++j)
 		{
-			if (player_ptr->sonarList[i]->segmentList[j]->active || player_ptr->sonarList[i]->segmentList[j]->attached)
+			if (player_List[i]->sonarList[i]->segmentList[j]->active || player_List[i]->sonarList[i]->segmentList[j]->attached)
 			{
 				modelStack.PushMatrix();
-				modelStack.Translate(player_ptr->sonarList[i]->segmentList[j]->position);
-				modelStack.Rotate(player_ptr->sonarList[i]->segmentList[j]->rotation, 0, 0, 1);
-				modelStack.Scale(player_ptr->sonarList[i]->segmentList[j]->scale);
-				RenderMeshOnScreen(player_ptr->sonarList[i]->segmentList[j]->mesh, 13, player_ptr->sonarList[i]->segmentList[j]->segmentColor);
+				modelStack.Translate(player_List[i]->sonarList[i]->segmentList[j]->position);
+				modelStack.Rotate(player_List[i]->sonarList[i]->segmentList[j]->rotation, 0, 0, 1);
+				modelStack.Scale(player_List[i]->sonarList[i]->segmentList[j]->scale);
+				RenderMeshOnScreen(player_List[i]->sonarList[i]->segmentList[j]->mesh, 13, player_List[i]->sonarList[i]->segmentList[j]->segmentColor);
 				modelStack.PopMatrix();
 			}
 		}
@@ -1588,43 +1563,8 @@ void MainScene::RenderGO()
 					modelStack.PushMatrix();
 					modelStack.Translate(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
 					modelStack.Scale(ML_map.worldSize, ML_map.worldSize, 1);
-					RenderMeshOnScreen(P_meshArray[E_GEO_DANGER], 13, Color(0,1,0));
+					RenderMeshOnScreen(P_meshArray[E_GEO_DANGER], 13, Color(0, 1, 0));
 					modelStack.PopMatrix();
-				}
-			}
-		}
-	}
-
-	for (unsigned k = 0; k < GO_List.size(); k++)
-	{
-		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[k]);
-
-		if (CO != NULL && CO->name == "ENEMY")
-		{
-			cEnemy *EO = dynamic_cast<cEnemy*>(CO);
-
-			modelStack.PushMatrix();
-			modelStack.Translate(EO->position);
-			modelStack.Scale(EO->scale);
-			RenderMeshOnScreen(P_meshArray[E_GEO_PLAYER],13,EO->color);
-			modelStack.PopMatrix();
-
-			if (EO->isVisible)
-			{
-				for (int i = 0; i < EO->sonarList.size(); ++i)
-				{
-					for (int j = 0; j < EO->sonarList[i]->segmentList.size(); ++j)
-					{
-						if (EO->sonarList[i]->segmentList[j]->active)
-						{
-							modelStack.PushMatrix();
-							modelStack.Translate(EO->sonarList[i]->segmentList[j]->position);
-							modelStack.Rotate(EO->sonarList[i]->segmentList[j]->rotation, 0, 0, 1);
-							modelStack.Scale(EO->sonarList[i]->segmentList[j]->scale);
-							RenderMeshOnScreen(EO->sonarList[i]->segmentList[j]->mesh, 13, EO->sonarList[i]->segmentList[j]->segmentColor);
-							modelStack.PopMatrix();
-						}
-					}
 				}
 			}
 		}
@@ -1660,24 +1600,24 @@ void MainScene::RenderGO()
 	}
 }
 
-void MainScene::CO_attach(CharacterObject *CO, GameObject *GO)
+void MultScene::CO_attach(CharacterObject *CO, GameObject *GO)
 {
 	GO->active = false;
 	CO->Holding = GO;
 }
 
-void MainScene::CO_drop(CharacterObject *CO)
+void MultScene::CO_drop(CharacterObject *CO)
 {
 	CO->Holding->position = CO->position;
 	CO->Holding->active = true;
 	CO->Holding = NULL;
 }
 
-bool MainScene::checkForCollision(Vector3 position_start, Vector3 position_end, Vector3 top_left, Vector3 bottom_right, string *side, Vector3 &Hit)
+bool MultScene::checkForCollision(Vector3 position_start, Vector3 position_end, Vector3 top_left, Vector3 bottom_right, string *side, Vector3 &Hit)
 {
 	Vector3 ObjectTopLeft = top_left;
 	Vector3 ObjectBottomRight = bottom_right;
-	
+
 	Vector3 botLeft = Vector3(ObjectBottomRight.x - ML_map.worldSize * 2, ObjectBottomRight.y);
 	Vector3 topRight = Vector3(ObjectBottomRight.x, ObjectBottomRight.y + ML_map.worldSize * 2);
 
@@ -1692,11 +1632,11 @@ bool MainScene::checkForCollision(Vector3 position_start, Vector3 position_end, 
 		Hit = position_start;
 		return true;
 	}
-		
+
 	return false;
 }
 
-bool  MainScene::LineIntersectsRect(Vector3 p1, Vector3 p2, Vector3 topLeft, Vector3 botRight, Vector3 topRight, Vector3 botLeft, string *side)
+bool  MultScene::LineIntersectsRect(Vector3 p1, Vector3 p2, Vector3 topLeft, Vector3 botRight, Vector3 topRight, Vector3 botLeft, string *side)
 {
 	if (LineIntersectsLine(p1, p2, botLeft, botRight))
 	{
@@ -1727,7 +1667,7 @@ bool  MainScene::LineIntersectsRect(Vector3 p1, Vector3 p2, Vector3 topLeft, Vec
 	return false;
 }
 
-bool  MainScene::LineIntersectsLine(Vector3 l1p1, Vector3 l1p2, Vector3 l2p1, Vector3 l2p2)
+bool  MultScene::LineIntersectsLine(Vector3 l1p1, Vector3 l1p2, Vector3 l2p1, Vector3 l2p2)
 {
 	float q = (l1p1.y - l2p1.y) * (l2p2.x - l2p1.x) - (l1p1.x - l2p1.x) * (l2p2.y - l2p1.y);
 	float d = (l1p2.x - l1p1.x) * (l2p2.y - l2p1.y) - (l1p2.y - l1p1.y) * (l2p2.x - l2p1.x);
@@ -1756,7 +1696,7 @@ bool  MainScene::LineIntersectsLine(Vector3 l1p1, Vector3 l1p2, Vector3 l2p1, Ve
 Clears memory upon exit
 */
 /******************************************************************************/
-void MainScene::Exit()
+void MultScene::Exit()
 {
 	SE_Engine.Exit();
 
@@ -1809,27 +1749,27 @@ void MainScene::Exit()
 Clears shaders upon exit
 */
 /******************************************************************************/
-void MainScene::CleanShaders(void)
+void MultScene::CleanShaders(void)
 {
 	glDeleteVertexArrays(1, &u_m_vertexArrayID);
 	glDeleteProgram(u_m_programID);
 }
 
-MainScene* MainScene::GetInstance()
+MultScene* MultScene::GetInstance()
 {
-	if (MainScene::Instance == NULL)
+	if (MultScene::Instance == NULL)
 	{
-		MainScene::Instance = new MainScene();
+		MultScene::Instance = new MultScene();
 	}
 
-	return MainScene::Instance;
+	return MultScene::Instance;
 }
 
-void MainScene::Destroy()
+void MultScene::Destroy()
 {
-	if (MainScene::Instance != NULL)
+	if (MultScene::Instance != NULL)
 	{
-		delete MainScene::Instance;
-		MainScene::Instance = NULL;
+		delete MultScene::Instance;
+		MultScene::Instance = NULL;
 	}
 }
