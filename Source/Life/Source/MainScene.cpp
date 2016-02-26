@@ -722,6 +722,26 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		onDanger = true;
 	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "3")
 		onExit = true;
+	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "-1")
+	{
+		if (!shownEnemy)
+		{
+			shownEnemy = true;
+			SceneManager::Instance()->push(SceneManager::S_ENEMY);
+		}
+
+	}
+	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "-2")
+	{
+		if (!shownZone)
+		{
+			shownZone = true;
+			SceneManager::Instance()->push(SceneManager::S_ZONE);
+		}
+	}
+
+
+	
 
 	if (f_timer > ML_map.star_one)
 	{

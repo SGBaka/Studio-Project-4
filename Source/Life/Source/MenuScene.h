@@ -101,6 +101,8 @@ class MenuScene : public Scene
 		// -----------------------
 
 		E_GEO_SONAR,
+		E_GEO_ENEMY,
+		E_GEO_ZONE,
 		
 		E_GEO_TOTAL,
 	};

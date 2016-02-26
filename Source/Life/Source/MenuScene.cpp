@@ -267,6 +267,12 @@ void MenuScene::InitMeshList()
 
 	P_meshArray[E_GEO_SONAR] = MeshBuilder::GenerateQuad("Sonar Screen", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
 	P_meshArray[E_GEO_SONAR]->textureID[0] = LoadTGA(script.getGameData("image.background.background_sonar").c_str(), true);
+
+	P_meshArray[E_GEO_ENEMY] = MeshBuilder::GenerateQuad("Enemy Screen", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
+	P_meshArray[E_GEO_ENEMY]->textureID[0] = LoadTGA(script.getGameData("image.background.background_enemy").c_str(), true);
+
+	P_meshArray[E_GEO_ZONE] = MeshBuilder::GenerateQuad("Zone Screen", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
+	P_meshArray[E_GEO_ZONE]->textureID[0] = LoadTGA(script.getGameData("image.background.background_zone").c_str(), true);
 }
 
 /******************************************************************************/
@@ -779,7 +785,7 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 						break;
 	}
 
-	case E_M_SONAR: E_M_ENEMY : E_M_ZONE :
+	case E_M_SONAR: case E_M_ENEMY : case E_M_ZONE :
 	{
 		if (Application::IsKeyPressed(VK_LBUTTON))
 		{
@@ -1512,6 +1518,32 @@ void MenuScene::Render()
 					RenderTextButtons();
 					RenderButtons();
 					break;
+	}
+
+	case E_M_ENEMY:
+	{
+					  modelStack.PushMatrix();
+					  modelStack.LoadIdentity();
+					  modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+					  RenderMeshOnScreen(P_meshArray[E_GEO_ENEMY]);
+					  modelStack.PopMatrix();
+
+					  RenderTextButtons();
+					  RenderButtons();
+					  break;
+	}
+
+	case E_M_ZONE:
+	{
+					  modelStack.PushMatrix();
+					  modelStack.LoadIdentity();
+					  modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+					  RenderMeshOnScreen(P_meshArray[E_GEO_ZONE]);
+					  modelStack.PopMatrix();
+
+					  RenderTextButtons();
+					  RenderButtons();
+					  break;
 	}
 	}
 
