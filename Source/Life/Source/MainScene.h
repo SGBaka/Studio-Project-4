@@ -66,6 +66,7 @@ public:
 		E_GEO_ENEMY,
 		E_GEO_DANGER,
 		E_GEO_EXIT,
+		E_GEO_STAR,
 		//Projectile
 		E_GEO_LINE,
 

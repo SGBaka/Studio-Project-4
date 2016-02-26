@@ -31,6 +31,8 @@ cEnemy::cEnemy()
 , smart(false)
 , probability(0)
 , idleTime(0)
+, idleTimemin(0)
+, idleTimemax(0)
 , color(0,0,0)
 , fadeTimer(0)
 , fadeDuration(0.2)
@@ -62,6 +64,26 @@ cEnemy::~cEnemy()
 
 void cEnemy::Init(Vector3 position)
 {
+
+	LuaScript enemyScript("enemy");
+	chase_timer_max = enemyScript.get<float>("enemy.chase_timer_max");//3
+	default_sonarCooldown = enemyScript.get<float>("enemy.default_sonarCooldown");//1
+	sonarTimer = default_sonarCooldown;
+	chase_sonarCooldown = enemyScript.get<float>("enemy.chase_sonarCooldown");//0.5
+	sonar_radius = enemyScript.get<int>("enemy.sonar_radius");//70
+	sonar_speed = enemyScript.get<int>("enemy.sonar_speed");//1
+	sonar_sides = enemyScript.get<int>("enemy.sonar_sides");//40
+	idleTimemin = enemyScript.get<int>("enemy.idleTimemin");//1
+	idleTimemax = enemyScript.get<int>("enemy.idleTimemax");//5
+	fadeDuration = enemyScript.get<float>("enemy.fadeDuration");//0.2
+	suspDuration = enemyScript.get<float>("enemy.suspDuration");//0
+	map_min_x = enemyScript.get<int>("enemy.map_min_x");//1
+	map_max_x = enemyScript.get<int>("enemy.map_max_x");//28
+	map_min_y = enemyScript.get<int>("enemy.map_min_y");//2
+	map_max_y = enemyScript.get<int>("enemy.map_max_y");//19
+	vislble_range = enemyScript.get<int>("enemy.vislble_range");//3
+	//suspPos
+	//probability(0)
 	AI_STATE = AS_ROAM;
 	this->position = position;
 	rotation = 0.f;
@@ -77,8 +99,8 @@ void cEnemy::Init(Vector3 position)
 		Vector3 temp;
 
 		do {
-			temp.x = Math::RandIntMinMax(1, 28);
-			temp.y = Math::RandIntMinMax(2, 19);
+			temp.x = Math::RandIntMinMax(map_min_x, map_max_x);
+			temp.y = Math::RandIntMinMax(map_min_y, map_max_y);
 		} while (MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "1");
 
 		patrolPath.WayPointTileList.push_back(temp);
@@ -100,7 +122,7 @@ float cEnemy::GetDistance(float x1, float y1, float x2, float y2)
 }
 void cEnemy::Update(double dt)
 {
-	if ((isVisible && (currTile - MainScene::GetInstance()->player_ptr->currTile).Length() <= 3) || MainScene::GetInstance()->toggleVisible/* || AI_STATE == AS_CHASE*/)
+	if ((isVisible && (currTile - MainScene::GetInstance()->player_ptr->currTile).Length() <= vislble_range) || MainScene::GetInstance()->toggleVisible/* || AI_STATE == AS_CHASE*/)
 	{
 		if (fadeTimer < fadeDuration)
 			fadeTimer += dt;
@@ -121,11 +143,11 @@ void cEnemy::Update(double dt)
 
 	if (AI_STATE == AS_CHASE)
 	{
-		sonarCooldown = 0.5;
+		sonarCooldown = chase_sonarCooldown;
 	}
 
 	else
-		sonarCooldown = 1;
+		sonarCooldown = default_sonarCooldown;
 
 
 	if (AI_STATE != AS_IDLE)
@@ -139,7 +161,7 @@ void cEnemy::Update(double dt)
 
 			Sonar *SNR;
 			SNR = new Sonar();
-			SNR->Init(70, 0, 40, 1);
+			SNR->Init(sonar_radius, 0, sonar_sides, sonar_speed);
 			SNR->GenerateSonar(position, 3);
 			sonarList.push_back(SNR);
 		}
@@ -176,7 +198,7 @@ void cEnemy::Update(double dt)
 			if (!(rand() % 5))
 			{
 				gotoIdle = true;
-				idleTime = Math::RandFloatMinMax(2, 5);
+				idleTime = Math::RandFloatMinMax(idleTimemin, idleTimemax);
 			}
 				
 			else
@@ -188,8 +210,8 @@ void cEnemy::Update(double dt)
 					Vector3 temp;
 
 					do {
-						temp.x = Math::RandIntMinMax(1, 28);
-						temp.y = Math::RandIntMinMax(2, 19);
+						temp.x = Math::RandIntMinMax(map_min_x, map_max_x);
+						temp.y = Math::RandIntMinMax(map_min_y, map_max_y);
 					} while (MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "1");
 
 					patrolPath.WayPointTileList.push_back(temp);
@@ -230,12 +252,12 @@ void cEnemy::Update(double dt)
 		gotoChase = false;
 		isVisible = true;
 
-		if (timer <= 3 && routeCounter2 == 0)
+		if (timer <= chase_timer_max && routeCounter2 == 0)
 		{
 			route2 = pathFind(currTile.x, currTile.y, MainScene::GetInstance()->player_ptr->currTile.x, MainScene::GetInstance()->player_ptr->currTile.y);
 
 		}
-		else if (timer > 3)
+		else if (timer > chase_timer_max)
 		{
 			gotoRoam = true;
 		}

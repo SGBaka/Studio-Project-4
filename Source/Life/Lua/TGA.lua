@@ -7,7 +7,8 @@ background = {
     popup = "UI//PopUps.tga",
     splash = "UI//Splash.tga",
     load = "UI//Loading.tga",
-    button = "UI//Button.tga"
+    button = "UI//Button.tga",
+    star = "UI//Star.tga"
 }
 
 button = {

@@ -48,7 +48,9 @@ public:
 	bool gotoServe, gotoIdle, gotoRoam, gotoChase, gotoSusp;
 
 	vector<Sonar*> sonarList;
-	float sonarCooldown, sonarTimer;
+	float sonarCooldown,default_sonarCooldown, chase_sonarCooldown, sonarTimer;
+	
+	int sonar_radius, sonar_sides, sonar_speed;
 
 	bool isVisible;
 
@@ -58,11 +60,16 @@ public:
 
 	float fadeTimer, fadeDuration;
 
+	float  chase_timer_max;
+
 	float suspDuration;
 
 	Vector3 suspPos;
 
 	float timer;
+	int idleTimemin, idleTimemax;
+	int map_min_x, map_max_x, map_min_y, map_max_y;
+	int vislble_range;
 private:
 
 	string route, route2, route3;
@@ -83,6 +90,7 @@ private:
 	Sonar sonar;
 	bool smart;
 	int probability;
+	
 };
 
 #endif

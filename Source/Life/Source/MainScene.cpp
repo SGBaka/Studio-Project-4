@@ -177,7 +177,10 @@ void MainScene::InitMeshList()
 	P_meshArray[E_GEO_ENEMY] = MeshBuilder::GenerateQuad("AI Enemy", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_ENEMY]->textureID[0] = LoadTGA(script.getGameData("image.tile.enemy").c_str(), true);
 
-	P_meshArray[E_GEO_LINE] = MeshBuilder::GenerateQuad("Ring Segment", Color(1.f, 0.f, 0.f), 1, 1);
+	P_meshArray[E_GEO_LINE] = MeshBuilder::GenerateQuad("Ring Segment", Color(1.f, 0.f, 0.f), 1.f, 1.f);
+
+	P_meshArray[E_GEO_STAR] = MeshBuilder::GenerateQuad("Star", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_STAR]->textureID[0] = LoadTGA(script.getGameData("image.background.star").c_str(), true);
 }
 
 /******************************************************************************/
@@ -1405,65 +1408,70 @@ Renders the user interface
 void MainScene::RenderUI()
 {
 	std::stringstream ss;
-	ss << "RunTime " << f_timer;
+	ss.precision(3);
+	ss << "Time: " << f_timer;
 
 	modelStack.PushMatrix();
-	modelStack.Translate(Application::GetWindowWidth() * 0.025f, Application::GetWindowHeight() * 0.975f, 0);
-	modelStack.Scale(20, 20, 20);
+	modelStack.Translate(Application::GetWindowWidth() * 0.025f, Application::GetWindowHeight() * 0.970f, 0);
+	modelStack.Scale(25, 25, 0);
 	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 	modelStack.PopMatrix();
 
 	if (f_timer < ML_map.star_three)
 	{
-		ss.str("");
-		ss << "3S " << ML_map.star_three;
+		for (int i = 0; i < 3; i++)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(Application::GetWindowWidth() * 0.42f + (i*50), Application::GetWindowHeight() * 0.970f, 0);
+			modelStack.Scale(20, 20, 20);
+			RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
+			modelStack.PopMatrix();
 
+		}
+		ss.str("");
+		ss << ML_map.star_three<<"secs";
 		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.975f, 0);
-		modelStack.Scale(20, 20, 20);
+		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.968f, 0);
+		modelStack.Scale(30, 30, 0);
 		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 		modelStack.PopMatrix();
 	}
 	else if (f_timer < ML_map.star_two)
 	{
+		for (int i = 0; i < 2; i++)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(Application::GetWindowWidth() * 0.42f + (i * 50), Application::GetWindowHeight() * 0.970f, 0);
+			modelStack.Scale(20, 20, 20);
+			RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
+			modelStack.PopMatrix();
+
+		}
 		ss.str("");
-		ss << "2S " << ML_map.star_two;
+		ss << ML_map.star_two << "secs";
 
 		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.975f, 0);
-		modelStack.Scale(20, 20, 20);
+		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.968f, 0);
+		modelStack.Scale(30, 30, 0);
 		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 		modelStack.PopMatrix();
 	}
 	else
 	{
+		modelStack.PushMatrix();
+		modelStack.Translate(Application::GetWindowWidth() * 0.42f , Application::GetWindowHeight() * 0.970f, 0);
+		modelStack.Scale(20, 20, 20);
+		RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
+		modelStack.PopMatrix();
+
 		ss.str("");
-		ss << "1S " << ML_map.star_one;
+		ss << ML_map.star_one << "secs";
 
 		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.975f, 0);
-		modelStack.Scale(20, 20, 20);
+		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.968f, 0);
+		modelStack.Scale(30, 30, 20);
 		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 		modelStack.PopMatrix();
-	}
-
-	std::stringstream ss2;
-	ss2 << "Simulation Speed " << i_SimulationSpeed << "X";
-
-	modelStack.PushMatrix();
-	modelStack.Translate(Application::GetWindowWidth() * 0.025f, Application::GetWindowHeight() * 0.975f - 20.f, 0);
-	modelStack.Scale(20, 20, 20);
-	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), UIColor);
-	modelStack.PopMatrix();
-
-	//AI Status
-	for (unsigned i = 0; i < GO_List.size(); ++i)
-	{
-		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[i]);
-		if (CO != NULL)
-		{
-			//
-		}
 	}
 }
 

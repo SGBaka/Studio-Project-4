@@ -93,6 +93,7 @@ class MenuScene : public Scene
 		E_GEO_BACKGROUND_TUTORIAL,
 		E_GEO_BACKGROUND_END,
 		E_GEO_LOADING_BACKGROUND,
+		E_GEO_STAR,
 		// -----------------------
 		E_GEO_BUTTON_BACK,
 		E_GEO_BUTTON_LEFT,

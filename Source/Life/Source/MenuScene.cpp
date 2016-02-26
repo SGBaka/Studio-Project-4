@@ -252,6 +252,9 @@ void MenuScene::InitMeshList()
 
 	P_meshArray[E_GEO_BUTTON_RIGHT] = MeshBuilder::GenerateQuad("Button Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_BUTTON_RIGHT]->textureID[0] = LoadTGA(script.getGameData("image.button.right").c_str(), true);
+
+	P_meshArray[E_GEO_STAR] = MeshBuilder::GenerateQuad("Star", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_STAR]->textureID[0] = LoadTGA(script.getGameData("image.background.star").c_str(), true);
 }
 
 /******************************************************************************/
@@ -1452,14 +1455,23 @@ void MenuScene::Render()
 					modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
 					RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_END]);
 					modelStack.PopMatrix();
-
+					/*
 					modelStack.PushMatrix();
-					modelStack.Translate(v3_Menupos[MENU_STATE]);
+
 					modelStack.Translate(Application::GetWindowWidth()*0.22f + 420.0f, Application::GetWindowHeight() * 0.5f, 0.1f);
 					modelStack.Scale(40, 40, 1);
 					RenderTextOnScreen(P_meshArray[E_GEO_TEXT], std::to_string(static_cast<unsigned long long>(SceneManager::Instance()->end_star)), UIColor);
-					modelStack.PopMatrix();
+					modelStack.PopMatrix();*/
+					for (int i = 0; i < SceneManager::Instance()->end_star; i++)
+					{
+						modelStack.PushMatrix();
+						modelStack.Translate(v3_Menupos[MENU_STATE]);
+						modelStack.Translate(Application::GetWindowWidth()*0.22f + 420.0f + (i * 100), Application::GetWindowHeight() * 0.5f, 0.1);
+						modelStack.Scale(40, 40, 40);
+						RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
+						modelStack.PopMatrix();
 
+					}
 					RenderTextButtons();
 					RenderButtons();
 					break;

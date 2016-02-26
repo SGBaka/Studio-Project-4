@@ -35,8 +35,18 @@ void Player::Init(Vector3 position)
 	LuaScript playerScript("character");
 	sonarCooldown = playerScript.get<float>("player.sonar_cooldown");
 	sonarTimer = sonarCooldown;
+
 	specialCooldown = playerScript.get<float>("player.special_cooldown");
 	specialTimer = specialCooldown;
+
+	moveSpeed = playerScript.get<float>("player.move_speed");
+
+	specialDuration = playerScript.get<float>("player.special_duration");
+
+	specialROF = playerScript.get<float>("player.special_ROF");
+	specialTimer2 = specialROF;
+
+	specialCounter = playerScript.get<float>("player.special_counter");
 
 	LuaScript sound("Sound");
 	SoundList[ST_FOOTSTEPS] = SE_Engine.preloadSound(sound.getGameData("sound.footsteps").c_str());
