@@ -10,7 +10,7 @@
 
 == Map Editor ==
 - Virtual keyboard [RY]
-- Fix Edit Map (wrong tiles) [RY]
+- Fix offset [WH]
 
 == Level design / loading ==
 - Randomize easy/medium/hard levels [RY][WH][RAYNER]
