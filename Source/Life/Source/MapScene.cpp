@@ -388,20 +388,20 @@ void MapScene::InitMenu(void)
 	LuaScript buttonScript("button");
 	int total_button;
 
-	// Map Menu (New Map / Edit Map)
+	// Editor replace(repalce and new map)
 	total_button = buttonScript.get<int>("editor_replace.total_button");
 	for (int i = 1; i <= total_button; i++)
 	{
 		std::string buttonName = "editor_replace.textbutton_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 
 		S_MB = new TextButton;
-		S_MB->pos.Set(Application::GetWindowWidth()*0.5f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->pos.Set(Application::GetWindowWidth()* buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()* buttonScript.get<float>(buttonName + "posY"), 0.1f);
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 		S_MB->gamestate = MT_REPLACE;
 		v_textButtonList.push_back(S_MB);
 	}
-
+	//edot difficulty
 	total_button = buttonScript.get<int>("editor_difficulty.total_button");
 	for (int i = 1; i <= total_button; i++)
 	{

@@ -316,7 +316,7 @@ void MenuScene::InitMenu(void)
 		std::string buttonName = "main.textbutton_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 
 		S_MB = new TextButton;
-		S_MB->pos.Set(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->pos.Set(Application::GetWindowWidth()* buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()* buttonScript.get<float>(buttonName + "posY"), 0.1f);
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 		S_MB->gamestate = E_M_MAIN;
@@ -324,13 +324,13 @@ void MenuScene::InitMenu(void)
 	}
 
 	// Selection Menu (New Game / Load Game)
-	total_option = buttonScript.get<int>("main_selection.total_option");
-	for (int i = 1; i <= total_option; i++)
+	total_button = buttonScript.get<int>("main_selection.total_button");
+	for (int i = 1; i <= total_button; i++)
 	{
 		std::string buttonName = "main_selection.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 
 		S_MB = new TextButton;
-		S_MB->pos.Set(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->pos.Set(Application::GetWindowWidth()*buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 		S_MB->gamestate = E_M_SELECTION;
@@ -349,7 +349,7 @@ void MenuScene::InitMenu(void)
 			buttonName = "option.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".textbutton_" + std::to_string(static_cast<unsigned long long>(j)) + ".";
 
 			S_MB = new TextButton;
-			S_MB->pos.Set(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+			S_MB->pos.Set(Application::GetWindowWidth()*buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
 			S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 			S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 			S_MB->gamestate = E_M_OPTIONS;
@@ -364,7 +364,7 @@ void MenuScene::InitMenu(void)
 		std::string buttonName = "map_screen.textbutton_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 
 		S_MB = new TextButton;
-		S_MB->pos.Set(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->pos.Set(Application::GetWindowWidth()*buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 		S_MB->gamestate = E_M_MAP;
@@ -378,7 +378,7 @@ void MenuScene::InitMenu(void)
 		std::string buttonName = "end_screen.textbutton_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 
 		S_MB = new TextButton;
-		S_MB->pos.Set(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->pos.Set(Application::GetWindowWidth()* buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()* buttonScript.get<float>(buttonName + "posY"), 0.1f);
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 		S_MB->gamestate = E_M_END;
@@ -589,18 +589,18 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 						 else if (FetchTB(nameScript.get<std::string>("main.textbutton_2.text"))->active)
 						 {
 							 PREV_STATE = MENU_STATE;
-							 MENU_STATE = E_M_OPTIONS;
-							 setMenu(MT_MAIN_MENU_OPTION);
+							 MENU_STATE = E_M_MAP;
+							 setMenu(MT_MAIN_MENU_MAP);
 							 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
 							 transcomplete = false;
 						 }
 						 else if (FetchTB(nameScript.get<std::string>("main.textbutton_3.text"))->active)
 						 {
 							 PREV_STATE = MENU_STATE;
-							 MENU_STATE = E_M_MAP;
-							 setMenu(MT_MAIN_MENU_MAP);
+							 MENU_STATE = E_M_OPTIONS;
+							 setMenu(MT_MAIN_MENU_OPTION);
 							 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
-							 transcomplete = false;
+							 transcomplete = false;			
 						 }
 						 else if (FetchTB(nameScript.get<std::string>("main.textbutton_4.text"))->active)
 						 {
@@ -1382,7 +1382,6 @@ void MenuScene::Render()
 	{
 						RenderTextButtons();
 						RenderButtons();
-
 						modelStack.PushMatrix();
 						modelStack.LoadIdentity();
 						modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
@@ -1394,7 +1393,6 @@ void MenuScene::Render()
 	{
 					   RenderTextButtons();
 					   RenderButtons();
-
 					   modelStack.PushMatrix();
 					   modelStack.LoadIdentity();
 					   modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
@@ -1409,66 +1407,45 @@ void MenuScene::Render()
 					 modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
 					 RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_MAIN]);
 					 modelStack.PopMatrix();
-
 					 RenderTextButtons();
 					 RenderButtons();
 					 break;
 	}
 	case E_M_SELECTION:
 	{
-						  modelStack.PushMatrix();
-						  modelStack.LoadIdentity();
-						  modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
-						  RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_MAIN]);
-						  modelStack.PopMatrix();
-
-						  LuaScript buttonScript("button");
-
-						  int total_option = buttonScript.get<int>("main_selection.total_option");
-						  for (int i = 1; i <= total_option; i++)
-						  {
-							  std::string buttonName = "main_selection.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
-
-							  modelStack.PushMatrix();
-							  modelStack.Translate(v3_Menupos[MENU_STATE]);
-							  modelStack.Translate(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + buttonScript.get<float>(buttonName + "posY"), 0.1f);
-							  modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
-							  RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
-							  modelStack.PopMatrix();
-						  }
-
-						  RenderTextButtons();
-						  RenderButtons();
-
-						  break;
+					 modelStack.PushMatrix();
+					 modelStack.LoadIdentity();
+					 modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+					 RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_MAIN]);
+					 modelStack.PopMatrix();
+					 RenderTextButtons();
+					 RenderButtons();
+					 break;
 	}
 
 	case E_M_OPTIONS:
 	{
+					modelStack.PushMatrix();
+					modelStack.LoadIdentity();
+					modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+					RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_OPTION]);
+					modelStack.PopMatrix();
+					LuaScript buttonScript("button");
+
+					int total_option = buttonScript.get<int>("option.total_option");
+					for (int i = 1; i <= total_option; i++)
+					{
+						std::string buttonName = "option.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 						modelStack.PushMatrix();
-						modelStack.LoadIdentity();
-						modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
-						RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_OPTION]);
+						modelStack.Translate(v3_Menupos[MENU_STATE]);
+						modelStack.Translate(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+						modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
+						RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
 						modelStack.PopMatrix();
-
-						LuaScript buttonScript("button");
-
-						int total_option = buttonScript.get<int>("option.total_option");
-						for (int i = 1; i <= total_option; i++)
-						{
-							std::string buttonName = "option.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
-
-							modelStack.PushMatrix();
-							modelStack.Translate(v3_Menupos[MENU_STATE]);
-							modelStack.Translate(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
-							modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
-							RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
-							modelStack.PopMatrix();
-						}
-
-						RenderTextButtons();
-						RenderButtons();
-						break;
+					}
+					RenderTextButtons();
+					RenderButtons();
+					break;
 	}
 	case E_M_MAP:
 	{
@@ -1490,13 +1467,6 @@ void MenuScene::Render()
 					modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
 					RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_END]);
 					modelStack.PopMatrix();
-					/*
-					modelStack.PushMatrix();
-
-					modelStack.Translate(Application::GetWindowWidth()*0.22f + 420.0f, Application::GetWindowHeight() * 0.5f, 0.1f);
-					modelStack.Scale(40, 40, 1);
-					RenderTextOnScreen(P_meshArray[E_GEO_TEXT], std::to_string(static_cast<unsigned long long>(SceneManager::Instance()->end_star)), UIColor);
-					modelStack.PopMatrix();*/
 					for (int i = 0; i < SceneManager::Instance()->end_star; i++)
 					{
 						modelStack.PushMatrix();
@@ -1517,8 +1487,7 @@ void MenuScene::Render()
 					modelStack.LoadIdentity();
 					modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
 					RenderMeshOnScreen(P_meshArray[E_GEO_SONAR]);
-					modelStack.PopMatrix();
-					
+					modelStack.PopMatrix();			
 					RenderTextButtons();
 					RenderButtons();
 					break;
@@ -1531,7 +1500,6 @@ void MenuScene::Render()
 					  modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
 					  RenderMeshOnScreen(P_meshArray[E_GEO_ENEMY]);
 					  modelStack.PopMatrix();
-
 					  RenderTextButtons();
 					  RenderButtons();
 					  break;
@@ -1544,7 +1512,6 @@ void MenuScene::Render()
 					  modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
 					  RenderMeshOnScreen(P_meshArray[E_GEO_ZONE]);
 					  modelStack.PopMatrix();
-
 					  RenderTextButtons();
 					  RenderButtons();
 					  break;

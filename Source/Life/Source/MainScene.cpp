@@ -1453,10 +1453,10 @@ void MainScene::RenderUI()
 
 	if (f_timer < ML_map.star_three)
 	{
-		for (int i = 0; i < 3; i++)
+		for (int i = 1; i <= 3; i++)
 		{
 			modelStack.PushMatrix();
-			modelStack.Translate(Application::GetWindowWidth() * 0.42f + (i*50), Application::GetWindowHeight() * 0.970f, 0);
+			modelStack.Translate(Application::GetWindowWidth()/2 -(i*50), Application::GetWindowHeight() * 0.970f, 0);
 			modelStack.Scale(20, 20, 20);
 			RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
 			modelStack.PopMatrix();
@@ -1465,17 +1465,17 @@ void MainScene::RenderUI()
 		ss.str("");
 		ss << ML_map.star_three<<"secs";
 		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.968f, 0);
+		modelStack.Translate(Application::GetWindowWidth()/2 + 50, Application::GetWindowHeight() * 0.968f, 0);
 		modelStack.Scale(30, 30, 0);
 		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 		modelStack.PopMatrix();
 	}
 	else if (f_timer < ML_map.star_two)
 	{
-		for (int i = 0; i < 2; i++)
+		for (int i = 1; i <= 2; i++)
 		{
 			modelStack.PushMatrix();
-			modelStack.Translate(Application::GetWindowWidth() * 0.42f + (i * 50), Application::GetWindowHeight() * 0.970f, 0);
+			modelStack.Translate(Application::GetWindowWidth() / 2 - (i * 50), Application::GetWindowHeight() * 0.970f, 0);
 			modelStack.Scale(20, 20, 20);
 			RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
 			modelStack.PopMatrix();
@@ -1485,7 +1485,7 @@ void MainScene::RenderUI()
 		ss << ML_map.star_two << "secs";
 
 		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.968f, 0);
+		modelStack.Translate(Application::GetWindowWidth() / 2 + 50, Application::GetWindowHeight() * 0.968f, 0);
 		modelStack.Scale(30, 30, 0);
 		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 		modelStack.PopMatrix();
@@ -1493,7 +1493,7 @@ void MainScene::RenderUI()
 	else
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() * 0.42f , Application::GetWindowHeight() * 0.970f, 0);
+		modelStack.Translate(Application::GetWindowWidth() / 2 - 50 , Application::GetWindowHeight() * 0.970f, 0);
 		modelStack.Scale(20, 20, 20);
 		RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
 		modelStack.PopMatrix();
@@ -1502,7 +1502,7 @@ void MainScene::RenderUI()
 		ss << ML_map.star_one << "secs";
 
 		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.968f, 0);
+		modelStack.Translate(Application::GetWindowWidth() / 2 + 50, Application::GetWindowHeight() * 0.968f, 0);
 		modelStack.Scale(30, 30, 20);
 		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 		modelStack.PopMatrix();
