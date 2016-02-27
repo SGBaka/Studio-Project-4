@@ -134,8 +134,8 @@ editor_replace = {
 
 editor_difficulty = {
 	text = "Difficulty of Level",
-	scale = 35.0,
-	posX = 0.265,
+	scale = 30.0,
+	posX = 0.28,
 	posY = 0.60,
 		
 	--[[Button_1 = Easy Button]]--

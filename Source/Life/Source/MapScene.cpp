@@ -1789,14 +1789,6 @@ Renders the user interface
 /******************************************************************************/
 void MapScene::RenderUI()
 {
-	std::stringstream ss;
-	ss << "RunTime " << f_timer;
-	modelStack.PushMatrix();
-	modelStack.Translate(Application::GetWindowWidth() * 0.025f, Application::GetWindowHeight() * 0.9815f, 0);
-	modelStack.Scale(15, 15, 15);
-	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
-	modelStack.PopMatrix();
-
 	std::stringstream ss2;
 	ss2 << "Tile:";
 	modelStack.PushMatrix();
@@ -1938,7 +1930,7 @@ void MapScene::RenderUI()
 				   ss << "File Name: [" << newMapName << ".csv]";
 				   modelStack.PushMatrix();
 				   modelStack.Translate(Application::GetWindowWidth() * 0.5f - 300.0f, Application::GetWindowHeight() * 0.5f, 0);
-				   modelStack.Scale(35, 35, 1);
+				   modelStack.Scale(25, 25, 1);
 				   RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 				   modelStack.PopMatrix();
 	}
@@ -1956,7 +1948,7 @@ void MapScene::RenderUI()
 					   ss << "Replace [" << newMapName << ".csv]?";
 					   modelStack.PushMatrix();
 					   modelStack.Translate(Application::GetWindowWidth() * 0.5f - 250.0f, Application::GetWindowHeight() * 0.5f, 0);
-					   modelStack.Scale(35, 35, 1);
+					   modelStack.Scale(25, 25, 1);
 					   RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 					   modelStack.PopMatrix();
 	}
