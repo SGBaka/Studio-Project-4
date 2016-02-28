@@ -16,7 +16,6 @@
 - Randomize easy/medium/hard levels [RAYNER]
 - Allow the player to continue from where he left off [RAYNER]
 - Make a tutorial level [WH]
-- Render out stars in level complete screen. Also, make sure the buttons work (retry, next level, etc.) [RAYNER]
 - Allow player to load any map he wants [RAYNER]
 
 == Other ==
