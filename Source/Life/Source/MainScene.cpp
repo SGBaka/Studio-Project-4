@@ -851,20 +851,20 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 				InitSimulation();
 			}
 		}
-		else if (FetchBUTTON(BI_PREV_MAP)->active)
-		{
-			if (i_SimulationSpeed > 1)
-			{
-				--i_SimulationSpeed;
-			}
-		}
-		else if (FetchBUTTON(BI_NEXT_MAP)->active)
-		{
-			if (i_SimulationSpeed < 5)
-			{
-				++i_SimulationSpeed;
-			}
-		}
+		//else if (FetchBUTTON(BI_PREV_MAP)->active)
+		//{
+		//	if (i_SimulationSpeed > 1)
+		//	{
+		//		--i_SimulationSpeed;
+		//	}
+		//}
+		//else if (FetchBUTTON(BI_NEXT_MAP)->active)
+		//{
+		//	if (i_SimulationSpeed < 5)
+		//	{
+		//		++i_SimulationSpeed;
+		//	}
+		//}
 	}
 
 	float f_camSpeed = 50.f;
