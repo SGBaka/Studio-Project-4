@@ -10,10 +10,10 @@ player = {
 	special_speed = 4,
 	special_sides = 40,
 	special_cooldown = 3,
-    special_duration = 0.2,
-    special_ROF = 0.04,
-    special_counter = 0;
-    move_speed = 4.0
+   	 special_duration = 0.2,
+    	special_ROF = 0.04,
+   	 special_counter = 0;
+    	move_speed = 4.0
 }
 
 ai = {

@@ -1175,7 +1175,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 							if ((EO->position - player_ptr->sonarList[i]->position).Length() <= player_ptr->sonarList[i]->rad2Counter)
 							{
-								if (!EO->gotoSusp)
+								if (!EO->gotoSusp && EO->AI_STATE != cEnemy::AS_SUSP)
 								{
 									EO->hasPath = false;
 									EO->gotoSusp = true;
@@ -1183,7 +1183,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 									EO->suspPos = calTilePos(player_ptr->sonarList[i]->position);
 
 									if (player_ptr->sonarList[i]->segmentList[j]->type == 1)
-										EO->suspDuration = player_ptr->sonarList[i]->segmentList[j]->lifeTime;
+										EO->suspDuration = player_ptr->sonarList[i]->segmentList[j]->lifeTime * 2;
 									else if (player_ptr->sonarList[i]->segmentList[j]->type == 2)
 										EO->suspDuration = 100;
 								}	
