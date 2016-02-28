@@ -1,12 +1,4 @@
-/******************************************************************************/
-/*!
-\file	CustomCamThirdPerson.cpp
-\author Gabriel Wong Choon Jieh
-\par	email: AuraTigital\@gmail.com
-\brief
-Custom made camera
-*/
-/******************************************************************************/
+
 #include "CustomCamThirdPerson.h"
 #include "Application.h"
 #include "Mtx44.h"

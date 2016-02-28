@@ -1,12 +1,4 @@
-/******************************************************************************/
-/*!
-\file	CustomCam1.h
-\author Gabriel Wong Choon Jieh
-\par	email: AuraTigital\@gmail.com
-\brief
-Custom made camera
-*/
-/******************************************************************************/
+
 #ifndef CUSTOMCAM1_H
 #define CUSTOMCAM1_H
 

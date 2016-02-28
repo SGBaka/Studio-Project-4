@@ -1,12 +1,4 @@
-/****************************************************************************/
-/*!
-\file SceneManager.cpp
-\author Gabriel Wong Choon Jieh
-\par email: AuraTigital\@gmail.com
-\brief
-A class to handle scene switching and cleaning
-!*/
-/****************************************************************************/
+
 #include "SceneManager.h"
 //#include <vld.h>
 

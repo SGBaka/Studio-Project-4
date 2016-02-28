@@ -1,12 +1,4 @@
-/****************************************************************************/
-/*!
-\file SaveHandler.h
-\author Gabriel Wong Choon Jieh
-\par email: AuraTigital\@gmail.com
-\brief
-A save file handler to ensure easy saving and loading
-!*/
-/****************************************************************************/
+
 #ifndef SAVEHANDLER_H
 #define SAVEHANDLER_H
 

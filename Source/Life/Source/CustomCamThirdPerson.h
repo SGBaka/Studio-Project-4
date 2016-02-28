@@ -1,12 +1,4 @@
-/******************************************************************************/
-/*!
-\file	CustomCamThirdPerson.h
-\author Gabriel Wong Choon Jieh
-\par	email: AuraTigital\@gmail.com
-\brief
-Custom made camera
-*/
-/******************************************************************************/
+
 #ifndef CUSTOMCAMTHIRDPERSON_H
 #define CUSTOMCAMTHIRDPERSON_H
 

@@ -1,12 +1,4 @@
-/******************************************************************************/
-/*!
-\file	MeshBuilder.h
-\author Gabriel Wong Choon Jieh
-\par	email: AuraTigital\@gmail.com
-\brief
-Generate meshes
-*/
-/******************************************************************************/
+
 #ifndef MESH_BUILDER_H
 #define MESH_BUILDER_H
 

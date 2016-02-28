@@ -1,12 +1,4 @@
-/****************************************************************************/
-/*!
-\file Button.h
-\author Gabriel Wong Choon Jieh
-\par email: AuraTigital\@gmail.com
-\brief
-menu button
-!*/
-/****************************************************************************/
+
 #ifndef BUTTON_H
 #define BUTTON_H
 

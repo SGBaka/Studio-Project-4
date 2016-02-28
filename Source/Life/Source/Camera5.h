@@ -1,12 +1,4 @@
-/******************************************************************************/
-/*!
-\file	Camera5.h
-\author Gabriel Wong Choon Jieh
-\par	email: AuraTigital\@gmail.com
-\brief
-Camera code 3
-*/
-/******************************************************************************/
+
 #ifndef CAMERA_5_H
 #define CAMERA_5_H
 

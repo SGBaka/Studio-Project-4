@@ -1,12 +1,4 @@
-/****************************************************************************/
-/*!
-\file Light.h
-\author Gabriel Wong Choon Jieh
-\par email: AuraTigital\@gmail.com
-\brief
-Light header file
-*/
-/****************************************************************************/
+/*****
 #ifndef LIGHT_H
 #define LIGHT_H
 

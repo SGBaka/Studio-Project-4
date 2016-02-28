@@ -1,12 +1,4 @@
-/******************************************************************************/
-/*!
-\file	MeshBuilder.cpp
-\author Gabriel Wong Choon Jieh
-\par	email: AuraTigital\@gmail.com
-\brief
-Generate meshes
-*/
-/******************************************************************************/
+
 #include "MeshBuilder.h"
 #include <GL\glew.h>
 #include <vector>

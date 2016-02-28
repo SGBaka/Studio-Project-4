@@ -1,12 +1,4 @@
-/******************************************************************************/
-/*!
-\file	Vector2.cpp
-\author Gabriel Wong Choon Jieh
-\par	email: AuraTigital\@gmail.com
-\brief
-Struct to define a 2D vector
-*/
-/******************************************************************************/
+
 #include "Vector2.h"
 #include <cmath>
 

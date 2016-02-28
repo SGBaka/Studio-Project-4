@@ -1,12 +1,4 @@
-/****************************************************************************/
-/*!
-\file TextButton.h
-\author Gabriel Wong Choon Jieh
-\par email: AuraTigital\@gmail.com
-\brief
-menu button for text
-!*/
-/****************************************************************************/
+
 #ifndef TEXTBUTTON_H
 #define TEXTBUTTON_H
 

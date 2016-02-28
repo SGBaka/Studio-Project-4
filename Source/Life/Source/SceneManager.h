@@ -1,12 +1,4 @@
-/****************************************************************************/
-/*!
-\file SceneManager.h
-\author Gabriel Wong Choon Jieh
-\par email: AuraTigital\@gmail.com
-\brief
-A class to handle scene switching and cleaning
-!*/
-/****************************************************************************/
+
 #ifndef SCENEMANAGER_H
 #define SCENEMANAGER_H
 

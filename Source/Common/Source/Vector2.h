@@ -1,12 +1,4 @@
-/******************************************************************************/
-/*!
-\file	Vector2.h
-\author Gabriel Wong Choon Jieh
-\par	email: AuraTigital\@gmail.com
-\brief
-Struct to define a 2D vector
-*/
-/******************************************************************************/
+
 #ifndef VECTOR2_H
 #define VECTOR2_H
 

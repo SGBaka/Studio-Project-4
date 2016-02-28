@@ -1,12 +1,5 @@
-/****************************************************************************/
-/*!
-\file MapScene.cpp
-\author Gabriel Wong Choon Jieh
-\par email: AuraTigital\@gmail.com
-\brief
-Main menu for the openGL framework
-!*/
-/****************************************************************************/
+
+
 #include "MapScene.h"
 #include "GL\glew.h"
 

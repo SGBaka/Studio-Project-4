@@ -1,12 +1,4 @@
-/****************************************************************************/
-/*!
-\file Maploader.cpp
-\author Gabriel Wong Choon Jieh
-\par email: AuraTigital\@gmail.com
-\brief
-Handles loading a map into a 2D vector
-!*/
-/****************************************************************************/
+
 #include "maploader.h"
 
 /****************************************************************************/

@@ -1,12 +1,4 @@
-/****************************************************************************/
-/*!
-\file MultScene.cpp
-\author Gabriel Wong Choon Jieh
-\par email: AuraTigital\@gmail.com
-\brief
-Main menu for the openGL framework
-!*/
-/****************************************************************************/
+
 #ifndef MULT_SCENE_H
 #define MULT_SCENE_H
 

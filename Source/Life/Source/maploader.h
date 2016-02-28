@@ -1,12 +1,4 @@
-/****************************************************************************/
-/*!
-\file Maploader.h
-\author Gabriel Wong Choon Jieh
-\par email: AuraTigital\@gmail.com
-\brief
-Handles loading a map into a 2D vector
-!*/
-/****************************************************************************/
+
 #ifndef MAPLOADER_H
 #define MAPLOADER_H
 

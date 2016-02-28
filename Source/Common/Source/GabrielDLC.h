@@ -1,12 +1,5 @@
-/****************************************************************************/
-/*!
-\file GabrielDLC.h
-\author Gabriel Wong Choon Jieh
-\par email: AuraTigital\@gmail.com
-\brief
-Useful functions that I use often in my work
-!*/
-/****************************************************************************/
+
+
 #ifndef GABRIELDLC_H
 #define GABRIELDLC_H
 

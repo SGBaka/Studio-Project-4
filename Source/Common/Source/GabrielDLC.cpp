@@ -1,12 +1,4 @@
-/****************************************************************************/
-/*!
-\file GabrielDLC.cpp
-\author Gabriel Wong Choon Jieh
-\par email: AuraTigital\@gmail.com
-\brief
-Useful functions that I use often in my work
-!*/
-/****************************************************************************/
+
 #include "GabrielDLC.h"
 
 /******************************************************************************/

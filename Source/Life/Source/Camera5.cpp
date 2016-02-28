@@ -1,12 +1,4 @@
-/******************************************************************************/
-/*!
-\file	Camera5.cpp
-\author Gabriel Wong Choon Jieh
-\par	email: AuraTigital\@gmail.com
-\brief
-Camera code 3
-*/
-/******************************************************************************/
+
 #include "Camera5.h"
 #include "Application.h"
 #include "Mtx44.h"

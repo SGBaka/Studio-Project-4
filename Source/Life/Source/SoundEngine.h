@@ -1,12 +1,4 @@
-/****************************************************************************/
-/*!
-\file SoundEngine.h
-\author Gabriel Wong Choon Jieh
-\par email: AuraTigital\@gmail.com
-\brief
-File to handle all sounds effects
-!*/
-/****************************************************************************/
+
 #ifndef SOUNDENGINE_H
 #define SOUNDENGINE_H
 

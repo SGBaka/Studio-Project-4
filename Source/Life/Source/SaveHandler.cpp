@@ -1,12 +1,4 @@
-/****************************************************************************/
-/*!
-\file SaveHandler.cpp
-\author Gabriel Wong Choon Jieh
-\par email: AuraTigital\@gmail.com
-\brief
-A save file handler to ensure easy saving and loading
-!*/
-/****************************************************************************/
+
 #include "SaveHandler.h"
 
 /****************************************************************************/
