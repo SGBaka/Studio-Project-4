@@ -1140,7 +1140,7 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 		if (bRButtonState)
 			placeTile(BI_FLOOR);
 
-		if (Application::IsKeyPressed('P'))
+		/*if (Application::IsKeyPressed('P'))
 		{
 			if (Auto_MapName == false)
 			{
@@ -1162,7 +1162,7 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 					MENU_STATE = MT_DIFFICULTY;
 				}
 			}
-		}
+		}*/
 		break;
 	}
 

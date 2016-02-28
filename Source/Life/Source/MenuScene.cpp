@@ -791,7 +791,7 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 
 	case E_M_SONAR: case E_M_ENEMY : case E_M_ZONE :
 	{
-		if (Application::IsKeyPressed(VK_LBUTTON))
+		if (Application::IsKeyPressed(VK_SPACE))
 		{
 			SceneManager::Instance()->pop();
 		}

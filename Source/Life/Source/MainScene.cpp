@@ -82,6 +82,7 @@ void MainScene::Init()
 	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
 	LEVEL = 1;
+	tutorialStage = 1;
 	InitSimulation();
 }
 
@@ -214,23 +215,23 @@ void MainScene::InitMenu(void)
 	v_buttonList.push_back(m_B);
 
 
-	m_B = new Button;
-	m_B->Position.Set(Application::GetWindowWidth()*0.97f - 50.f, Application::GetWindowHeight()*0.95f, 0.1f);
-	m_B->Scale.Set(20, 20, 20);
-	m_B->mesh = P_meshArray[E_GEO_BUTTON_LEFT];
-	m_B->ID = BI_PREV_MAP;
-	m_B->labeltype = Button::LT_NONE;
-	m_B->gamestate = 1;
-	v_buttonList.push_back(m_B);
+	//m_B = new Button;
+	//m_B->Position.Set(Application::GetWindowWidth()*0.97f - 50.f, Application::GetWindowHeight()*0.95f, 0.1f);
+	//m_B->Scale.Set(20, 20, 20);
+	//m_B->mesh = P_meshArray[E_GEO_BUTTON_LEFT];
+	//m_B->ID = BI_PREV_MAP;
+	//m_B->labeltype = Button::LT_NONE;
+	//m_B->gamestate = 1;
+	//v_buttonList.push_back(m_B);
 
-	m_B = new Button;
-	m_B->Position.Set(Application::GetWindowWidth()*0.97f, Application::GetWindowHeight()*0.95f, 0.1f);
-	m_B->Scale.Set(20, 20, 20);
-	m_B->mesh = P_meshArray[E_GEO_BUTTON_RIGHT];
-	m_B->ID = BI_NEXT_MAP;
-	m_B->labeltype = Button::LT_NONE;
-	m_B->gamestate = 1;
-	v_buttonList.push_back(m_B);
+	//m_B = new Button;
+	//m_B->Position.Set(Application::GetWindowWidth()*0.97f, Application::GetWindowHeight()*0.95f, 0.1f);
+	//m_B->Scale.Set(20, 20, 20);
+	//m_B->mesh = P_meshArray[E_GEO_BUTTON_RIGHT];
+	//m_B->ID = BI_NEXT_MAP;
+	//m_B->labeltype = Button::LT_NONE;
+	//m_B->gamestate = 1;
+	//v_buttonList.push_back(m_B);
 
 	m_B = new Button;
 	m_B->Position.Set(Application::GetWindowWidth()*0.03f + 50.f, Application::GetWindowHeight()*0.05f, 0.1f);
@@ -358,6 +359,122 @@ bool MainScene::InitLevel(int level)
 						enemy->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
 						enemy->mesh = P_meshArray[E_GEO_ENEMY];
 						
+						enemy->name = "ENEMY";
+						enemy->topLeft = enemy->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
+						enemy->bottomRight = enemy->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
+
+						GO_List.push_back(enemy);
+					}
+				}
+				continue;
+			}
+
+			else
+			{
+				GameObject *GO;
+				GO = new GameObject();
+				GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+				GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+				GO->enableCollision = true;
+				GO->mesh = P_meshArray[E_GEO_WALL_1];
+				GO->name = "WALL";
+				GO->topLeft = GO->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
+				GO->bottomRight = GO->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
+				GO_List.push_back(GO);
+			}
+		}
+	}
+
+	v3_2DCam.x = -static_cast<float>(Application::GetWindowWidth()) * 0.5f;
+	v3_2DCam.y = -static_cast<float>(Application::GetWindowHeight()) * 0.5f;
+
+	v3_2DCam.x += ML_map.map_width*ML_map.worldSize;
+	v3_2DCam.y += ML_map.map_height*ML_map.worldSize;
+
+	return true;
+}
+
+bool MainScene::InitLevel(string filename)
+{
+	std::cout << "\nLoading map...\n";
+
+	if (!ML_map.loadMap(filename))
+	{
+		std::cout << "!!!ERROR!!! Unable to load map\n";
+		return false;
+	}
+
+	std::cout << "Map Size: ";
+	std::cout << ML_map.map_width << ", " << ML_map.map_height << "\n";
+
+	//Deletes everything from the world
+	while (GO_List.size() > 0)
+	{
+		GameObject *GO = GO_List.back();
+		if (GO != NULL)
+		{
+			delete GO;
+			GO = NULL;
+		}
+		GO_List.pop_back();
+	}
+
+	for (unsigned y = ML_map.map_height - 1; y > 0; --y)
+	{
+		for (unsigned x = 0; x < ML_map.map_width; ++x)
+		{
+			if (ML_map.map_data[y][x] != "1")
+			{
+				GameObject *GO;
+				GO = new GameObject();
+				GO->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
+				GO->scale.Set(ML_map.worldSize, ML_map.worldSize, 1);
+				GO->enableCollision = false;
+				GO->mesh = P_meshArray[E_GEO_FLOOR_1];
+
+				if (ML_map.map_data[y][x] == "2")
+				{
+					GO->name = "DANGER";
+					GO->topLeft = GO->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
+					GO->bottomRight = GO->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
+				}
+
+				else if (ML_map.map_data[y][x] == "3")
+				{
+					GO->name = "EXIT";
+					GO->topLeft = GO->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
+					GO->bottomRight = GO->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
+				}
+
+				GO_List.push_back(GO);
+
+				if (ML_map.map_data[y][x] == "P")
+				{
+					Player *player;
+					player = new Player;
+					player->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0));
+					player->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
+					player->mesh = P_meshArray[E_GEO_PLAYER];
+					player->currTile.Set(x, y);
+					player->topLeft = player->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
+					player->bottomRight = player->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
+					//player->playerCount++;
+
+					player_ptr = player;
+					GO_List.push_back(player);
+				}
+				if (isdigit(ML_map.map_data[y][x][0]))
+				{
+					if (stoi(ML_map.map_data[y][x]) >= 50)
+					{
+						cEnemy *enemy;
+						enemy = new cEnemy;
+						enemy->ID = stoi(ML_map.map_data[y][x]);
+						enemy->currTile.Set(x, y);
+						enemy->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0));
+						enemy->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
+						enemy->mesh = P_meshArray[E_GEO_ENEMY];
+
 						enemy->name = "ENEMY";
 						enemy->topLeft = enemy->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
 						enemy->bottomRight = enemy->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
@@ -572,13 +689,18 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		editFOV(f_fov);
 	}
 
+	if (LEVEL == 1 && tutorialStage == 1)
+	{
+		toggleVisible = true;
+	}
+
 	//-----------------------------------------------------------------------------
 
-	if (!shownSonar && LEVEL == 1)
-	{
-		shownSonar = true;
-		SceneManager::Instance()->push(SceneManager::S_SONAR);
-	}
+	//if (!shownSonar && LEVEL == 1)
+	//{
+	//	shownSonar = true;
+	//	SceneManager::Instance()->push(SceneManager::S_SONAR);
+	//}
 
 
 	for (unsigned i = 0; i < GO_List.size(); ++i)
@@ -592,7 +714,8 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	}
 
 	float cal = ML_map.star_one;
-	if (onExit == true)
+
+	if (onExit == true && LEVEL != 1)
 	{
 		if (f_timer < ML_map.star_three)
 		{
@@ -638,6 +761,38 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		return;
 	}
 
+	else if (onExit && LEVEL == 1)
+	{
+		tutorialStage++;
+
+		string filename;
+
+		switch (tutorialStage)
+		{
+		case 2:
+			filename = "GameData//Maps//tutorial1.csv";
+			break;
+		case 3:
+			filename = "GameData//Maps//tutorial2.csv";
+			break;
+		case 4:
+			filename = "GameData//Maps//tutorial3.csv";
+			break;
+		case 5:
+			LEVEL++;
+			filename = "GameData//Maps//6.csv";
+			break;
+		}
+
+		InitLevel(filename);
+
+		f_timer = 0.f;
+		i_SimulationSpeed = 1;
+		onDanger = onExit = shownZone = shownSonar = shownEnemy = false;
+
+		toggleVisible = false;
+	}
+
 	static bool isEscPressed = false;
 	if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
 	{
@@ -665,7 +820,36 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		}
 		else if (FetchBUTTON(BI_REFRESH)->active)
 		{
-			InitSimulation();
+			if (LEVEL == 1)
+			{
+				string filename;
+
+				switch (tutorialStage)
+				{
+				case 2:
+					filename = "GameData//Maps//tutorial1.csv";
+					break;
+				case 3:
+					filename = "GameData//Maps//tutorial2.csv";
+					break;
+				case 4:
+					filename = "GameData//Maps//tutorial3.csv";
+					break;
+				}
+
+				InitLevel(filename);
+
+				f_timer = 0.f;
+				i_SimulationSpeed = 1;
+				onDanger = onExit = shownZone = shownSonar = shownEnemy = false;
+
+				toggleVisible = false;
+			}
+
+			else
+			{
+				InitSimulation();
+			}
 		}
 		else if (FetchBUTTON(BI_PREV_MAP)->active)
 		{
@@ -712,6 +896,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	//	v3_2DCam.x += static_cast<float>(dt) * f_camSpeed;
 	//}
 
+
 	if (Application::IsKeyPressed('F'))
 	{
 		toggleVisible = true;
@@ -728,12 +913,32 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		onExit = true;
 	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "-1")
 	{
-		if (!shownEnemy)
+		switch (tutorialStage)
 		{
-			shownEnemy = true;
-			SceneManager::Instance()->push(SceneManager::S_ENEMY);
+		case 2:
+			if (!shownSonar)
+			{
+				shownSonar = true;
+				SceneManager::Instance()->push(SceneManager::S_SONAR);
+			}
+			break;
+		case 3:
+			if (!shownSonar)
+			{
+				shownSonar = true;
+				SceneManager::Instance()->push(SceneManager::S_ZONE);
+			}
+			break;
+		case 4:
+			if (!shownEnemy)
+			{
+				shownEnemy = true;
+				SceneManager::Instance()->push(SceneManager::S_ENEMY);
+			}
+			break;
 		}
 
+		
 	}
 	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "-2")
 	{
@@ -744,18 +949,41 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		}
 	}
 
-
-	
-
 	if (f_timer > ML_map.star_one)
 	{
 		//onDanger = true;
 	}
 
-	if (onDanger)
+	if (onDanger && LEVEL != 1)
 	{
 		onDanger = false;
 		InitSimulation();
+	}
+
+	else if (onDanger && LEVEL == 1)
+	{
+		string filename;
+
+		switch (tutorialStage)
+		{
+		case 2:
+			filename = "GameData//Maps//tutorial1.csv";
+			break;
+		case 3:
+			filename = "GameData//Maps//tutorial2.csv";
+			break;
+		case 4:
+			filename = "GameData//Maps//tutorial3.csv";
+			break;
+		}
+
+		InitLevel(filename);
+
+		f_timer = 0.f;
+		i_SimulationSpeed = 1;
+		onDanger = onExit = shownZone = shownSonar = shownEnemy = false;
+
+		toggleVisible = false;
 	}
 		
 
@@ -772,8 +1000,40 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 				if (EO->currTile == player_ptr->currTile)
 				{
-					InitSimulation();
-					break;
+					if (LEVEL != 1)
+					{
+						InitSimulation();
+						break;
+					}
+					
+					else
+					{
+						string filename;
+
+						switch (tutorialStage)
+						{
+						case 2:
+							filename = "GameData//Maps//tutorial1.csv";
+							break;
+						case 3:
+							filename = "GameData//Maps//tutorial2.csv";
+							break;
+						case 4:
+							filename = "GameData//Maps//tutorial3.csv";
+							break;
+						}
+
+						InitLevel(filename);
+
+						f_timer = 0.f;
+						i_SimulationSpeed = 1;
+						onDanger = onExit = shownZone = shownSonar = shownEnemy = false;
+
+						toggleVisible = false;
+
+						break;
+					}
+
 				}
 
 				for (int i = 0; i < EO->sonarList.size(); ++i)
@@ -1447,72 +1707,169 @@ Renders the user interface
 /******************************************************************************/
 void MainScene::RenderUI()
 {
-	std::stringstream ss;
-	ss.precision(3);
-	ss << "Time: " << f_timer;
-
-	modelStack.PushMatrix();
-	modelStack.Translate(Application::GetWindowWidth() * 0.025f, Application::GetWindowHeight() * 0.970f, 0);
-	modelStack.Scale(25, 25, 0);
-	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
-	modelStack.PopMatrix();
-
-	if (f_timer < ML_map.star_three)
+	if (LEVEL == 1)
 	{
-		for (int i = 1; i <= 3; i++)
+		switch (tutorialStage)
 		{
-			modelStack.PushMatrix();
-			modelStack.Translate(Application::GetWindowWidth()/2 -(i*50), Application::GetWindowHeight() * 0.970f, 0);
-			modelStack.Scale(20, 20, 20);
-			RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
-			modelStack.PopMatrix();
-
-		}
-		ss.str("");
-		ss << ML_map.star_three<<"secs";
-		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth()/2 + 50, Application::GetWindowHeight() * 0.968f, 0);
-		modelStack.Scale(30, 30, 0);
-		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
-		modelStack.PopMatrix();
-	}
-	else if (f_timer < ML_map.star_two)
-	{
-		for (int i = 1; i <= 2; i++)
+		case 1:
 		{
-			modelStack.PushMatrix();
-			modelStack.Translate(Application::GetWindowWidth() / 2 - (i * 50), Application::GetWindowHeight() * 0.970f, 0);
-			modelStack.Scale(20, 20, 20);
-			RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
-			modelStack.PopMatrix();
+				  std::stringstream ss;
+				  ss << "Welcome to the tutorial. ";
 
+				  modelStack.PushMatrix();
+				  modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.95f, 0);
+				  modelStack.Scale(25, 25, 0);
+				  RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+				  modelStack.PopMatrix();
+
+				  std::stringstream ss2;
+				  ss2 << "Make your way toward the green area using the WASD keys. ";
+
+				  modelStack.PushMatrix();
+				  modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.9f, 0);
+				  modelStack.Scale(25, 25, 0);
+				  RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), UIColor);
+				  modelStack.PopMatrix();
 		}
-		ss.str("");
-		ss << ML_map.star_two << "secs";
+			break;
 
-		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() / 2 + 50, Application::GetWindowHeight() * 0.968f, 0);
-		modelStack.Scale(30, 30, 0);
-		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
-		modelStack.PopMatrix();
+		case 2:
+		{
+				  std::stringstream ss;
+				  ss << "Well done!";
+
+				  modelStack.PushMatrix();
+				  modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.95f, 0);
+				  modelStack.Scale(25, 25, 0);
+				  RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), Color(0.5, 1, 0.5));
+				  modelStack.PopMatrix();
+
+				  std::stringstream ss2;
+				  ss2 << "Now let's try that again... in the dark";
+
+				  modelStack.PushMatrix();
+				  modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.9f, 0);
+				  modelStack.Scale(25, 25, 0);
+				  RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), UIColor);
+				  modelStack.PopMatrix();
+		}
+			break;
+
+		case 3:
+		{
+				  std::stringstream ss;
+				  ss << "Excellent! Looks like you've gotten the hang of it";
+
+				  modelStack.PushMatrix();
+				  modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.95f, 0);
+				  modelStack.Scale(25, 25, 0);
+				  RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+				  modelStack.PopMatrix();
+
+				  std::stringstream ss2;
+				  ss2 << "This time, traps line the area. Becareful where you step";
+
+				  modelStack.PushMatrix();
+				  modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.9f, 0);
+				  modelStack.Scale(25, 25, 0);
+				  RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), Color(1, 0.5, 0.5));
+				  modelStack.PopMatrix();
+		}
+			break;
+		case 4:
+		{
+				  std::stringstream ss;
+				  ss << "Good job! One last thing: You are not alone";
+
+				  modelStack.PushMatrix();
+				  modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.95f, 0);
+				  modelStack.Scale(25, 25, 0);
+				  RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+				  modelStack.PopMatrix();
+
+				  std::stringstream ss2;
+				  ss2 << "Enemies patrol the area. Whatever you do, don't get caught!";
+
+				  modelStack.PushMatrix();
+				  modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.9f, 0);
+				  modelStack.Scale(25, 25, 0);
+				  RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), Color(1, 0.5, 0.5));
+				  modelStack.PopMatrix();
+		}
+			break;
+		}
 	}
+
 	else
 	{
-		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() / 2 - 50 , Application::GetWindowHeight() * 0.970f, 0);
-		modelStack.Scale(20, 20, 20);
-		RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
-		modelStack.PopMatrix();
-
-		ss.str("");
-		ss << ML_map.star_one << "secs";
+		std::stringstream ss;
+		ss.precision(3);
+		ss << "Time: " << f_timer;
 
 		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() / 2 + 50, Application::GetWindowHeight() * 0.968f, 0);
-		modelStack.Scale(30, 30, 20);
+		modelStack.Translate(Application::GetWindowWidth() * 0.025f, Application::GetWindowHeight() * 0.970f, 0);
+		modelStack.Scale(25, 25, 0);
 		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 		modelStack.PopMatrix();
+
+		if (f_timer < ML_map.star_three)
+		{
+			for (int i = 1; i <= 3; i++)
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(Application::GetWindowWidth() / 2 - (i * 50), Application::GetWindowHeight() * 0.970f, 0);
+				modelStack.Scale(20, 20, 20);
+				RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
+				modelStack.PopMatrix();
+
+			}
+			ss.str("");
+			ss << ML_map.star_three << "secs";
+			modelStack.PushMatrix();
+			modelStack.Translate(Application::GetWindowWidth() / 2 + 50, Application::GetWindowHeight() * 0.968f, 0);
+			modelStack.Scale(30, 30, 0);
+			RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+			modelStack.PopMatrix();
+		}
+		else if (f_timer < ML_map.star_two)
+		{
+			for (int i = 1; i <= 2; i++)
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(Application::GetWindowWidth() / 2 - (i * 50), Application::GetWindowHeight() * 0.970f, 0);
+				modelStack.Scale(20, 20, 20);
+				RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
+				modelStack.PopMatrix();
+
+			}
+			ss.str("");
+			ss << ML_map.star_two << "secs";
+
+			modelStack.PushMatrix();
+			modelStack.Translate(Application::GetWindowWidth() / 2 + 50, Application::GetWindowHeight() * 0.968f, 0);
+			modelStack.Scale(30, 30, 0);
+			RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+			modelStack.PopMatrix();
+		}
+		else
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(Application::GetWindowWidth() / 2 - 50, Application::GetWindowHeight() * 0.970f, 0);
+			modelStack.Scale(20, 20, 20);
+			RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
+			modelStack.PopMatrix();
+
+			ss.str("");
+			ss << ML_map.star_one << "secs";
+
+			modelStack.PushMatrix();
+			modelStack.Translate(Application::GetWindowWidth() / 2 + 50, Application::GetWindowHeight() * 0.968f, 0);
+			modelStack.Scale(30, 30, 20);
+			RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+			modelStack.PopMatrix();
+		}
 	}
+	
 }
 
 /******************************************************************************/

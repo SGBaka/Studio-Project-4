@@ -170,6 +170,7 @@ public:
 	bool onDanger, onExit, toggleVisible;
 	bool shownSonar, shownEnemy, shownZone;
 	int LEVEL;
+	int tutorialStage;
 private:
 	
 
@@ -278,6 +279,7 @@ private:
 
 	bool InitLevel(int level);
 
+	bool InitLevel(string filename);
 	
 	int MENU_STATE;
 
