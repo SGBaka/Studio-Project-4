@@ -603,7 +603,9 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
 
 			LuaScript scriptlevel("maps");
-			std::string luaName = "map.map.level_1";
+			stringstream ss;
+			ss << "map.map.level_" << LEVEL;
+			std::string luaName = ss.str();
 			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
 		}
 		else if (f_timer < ML_map.star_two)
@@ -614,7 +616,9 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
 
 			LuaScript scriptlevel("maps");
-			std::string luaName = "map.map.level_1";
+			stringstream ss;
+			ss << "map.map.level_" << LEVEL;
+			std::string luaName = ss.str();
 			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
 		}
 		else
@@ -624,7 +628,9 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
 
 			LuaScript scriptlevel("maps");
-			std::string luaName = "map.map.level_1";
+			stringstream ss;
+			ss << "map.map.level_" << LEVEL;
+			std::string luaName = ss.str();
 			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
 		}
 
