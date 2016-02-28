@@ -116,12 +116,6 @@ private:
 		E_UNI_TOTAL,
 	};
 
-	enum SOUND_TYPE
-	{
-		ST_BUTTON_CLICK,
-		ST_BUTTON_CLICK_2,
-		ST_TOTAL
-	};
 
 	enum E_BUTTON_ID
 	{
@@ -132,6 +126,18 @@ private:
 	};
 
 public:
+
+	enum SOUND_TYPE
+	{
+		ST_BUTTON_CLICK,
+		ST_BUTTON_CLICK_2,
+		ST_EXIT,
+		ST_DEATH,
+		ST_HEART,
+		ST_HEART2,
+		ST_CAUGHT,
+		ST_TOTAL
+	};
 
 	MainScene();
 	~MainScene();
@@ -171,6 +177,9 @@ public:
 	bool shownSonar, shownEnemy, shownZone;
 	int LEVEL;
 	int tutorialStage;
+
+	SoundEngine SE_Engine, SE_Engine2;
+	ISoundSource *SoundList[ST_TOTAL];
 private:
 	
 
@@ -329,9 +338,6 @@ private:
 	*/
 	/******************************************************************************/
 	MS projectionStack;
-
-	SoundEngine SE_Engine;
-	ISoundSource *SoundList[ST_TOTAL];
 
 private:
 	static MainScene* Instance;

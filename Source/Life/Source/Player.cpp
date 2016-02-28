@@ -23,7 +23,7 @@ Player::Player()
 
 Player::~Player()
 {
-
+	SE_Engine.Exit();
 }
 
 void Player::Init(Vector3 position)
@@ -50,6 +50,8 @@ void Player::Init(Vector3 position)
 
 	LuaScript sound("Sound");
 	SoundList[ST_FOOTSTEPS] = SE_Engine.preloadSound(sound.getGameData("sound.footsteps").c_str());
+	SoundList[ST_N_SONAR] = SE_Engine.preloadSound(sound.getGameData("sound.sonar_normal").c_str());
+	SoundList[ST_S_SONAR] = SE_Engine.preloadSound(sound.getGameData("sound.sonar_special").c_str());
 }
 
 
@@ -84,9 +86,11 @@ void Player::Update(double dt)
 			SNR->Init(playerScript.get<float>("player.sonar_radius"), playerScript.get<float>("player.sonar_radius2"), playerScript.get<int>("player.sonar_sides"), playerScript.get<float>("player.sonar_speed"));
 			SNR->GenerateSonar(position, 1);
 			sonarList.push_back(SNR);
+			SE_Engine.playSound2D(SoundList[ST_N_SONAR]);
 		}
 		else if (Application::IsKeyPressed(VK_RBUTTON) && specialTimer >= specialCooldown && !isSpecial)
 		{
+			SE_Engine.playSound2D(SoundList[ST_S_SONAR]);
 			specialPos = position;
 			specialTimer = 0;
 			isSpecial = true;

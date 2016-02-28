@@ -40,6 +40,8 @@ cEnemy::cEnemy()
 , suspDuration(0)
 , suspPos(0,0,0)
 {
+	SE_Engine.Init();
+
 	name = "Enemy";
 
 	n = MainScene::GetInstance()->ML_map.map_width;
@@ -55,11 +57,15 @@ cEnemy::cEnemy()
 				Map[j][i] = stoi(MainScene::GetInstance()->ML_map.map_data[i][j]);
 		}
 	}
+
+	LuaScript sound("Sound");
+	SoundList[ST_SONAR] = SE_Engine.preloadSound(sound.getGameData("sound.sonar_enemy").c_str());
 }
 
 cEnemy::~cEnemy()
 {
 	AI_counter = 0;
+	SE_Engine.Exit();
 }
 
 void cEnemy::Init(Vector3 position)
@@ -157,6 +163,9 @@ void cEnemy::Update(double dt)
 
 		if (sonarTimer >= sonarCooldown)
 		{
+			if (isVisible)
+				SE_Engine.playSound2D(SoundList[ST_SONAR]);
+
 			sonarTimer = 0;
 
 			Sonar *SNR;
@@ -281,6 +290,9 @@ void cEnemy::Update(double dt)
 				patrolPath.WayPointTileList[patrolPath.location].y);
 
 			AI_STATE = AS_ROAM;
+
+			if (!MainScene::GetInstance()->SE_Engine2.isSoundPlaying(MainScene::GetInstance()->SoundList[MainScene::ST_HEART]))
+				MainScene::GetInstance()->SE_Engine2.stopAllSounds();
 		}
 		break;
 	case cEnemy::AS_IDLE:

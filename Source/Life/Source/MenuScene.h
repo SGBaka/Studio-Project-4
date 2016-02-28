@@ -179,6 +179,7 @@ class MenuScene : public Scene
 	{
 		ST_BUTTON_CLICK,
 		ST_BUTTON_CLICK_2,
+		ST_BGM,
 		ST_TOTAL
 	};
 

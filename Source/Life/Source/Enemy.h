@@ -26,6 +26,13 @@ public:
 	{
 		AM_TOTAL_MSG,
 	};
+
+	enum SOUND_TYPE
+	{
+		ST_SONAR,
+		ST_TOTAL
+	};
+
 	int ID;
 	AI_STATES AI_STATE;
 
@@ -91,6 +98,8 @@ private:
 	bool smart;
 	int probability;
 	
+	SoundEngine SE_Engine;
+	ISoundSource *SoundList[ST_TOTAL];
 };
 
 #endif

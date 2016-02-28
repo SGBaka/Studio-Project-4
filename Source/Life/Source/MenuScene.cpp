@@ -159,6 +159,7 @@ void MenuScene::Init()
 	LuaScript sound("Sound");
 	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
+	SoundList[ST_BGM] = SE_Engine.preloadSound(sound.getGameData("sound.backgroundO").c_str());
 }
 
 /******************************************************************************/
@@ -545,11 +546,17 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 	{
 	case E_M_LOADING:
 	{
+						if (SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
+							SE_Engine.stopAllSounds();
+
 						SceneManager::Instance()->replace(SceneManager::S_GAME);
 						break;
 	}
 	case E_M_SPLASH:
 	{
+					   if (SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
+						   SE_Engine.stopAllSounds();
+
 					   if (f_timer > 2.f || Application::IsKeyPressed(VK_LBUTTON))
 					   {
 						   MENU_STATE = E_M_MAIN;
@@ -558,6 +565,9 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 	}
 	case E_M_MAIN:
 	{
+					 if (!SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
+						 SE_Engine.playSound2D(SoundList[ST_BGM], 1);
+
 					 static bool mRButtonPressed = false;
 					 if (Application::IsKeyPressed(VK_RBUTTON) && !mRButtonPressed)
 					 {
@@ -611,6 +621,9 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 	}
 	case E_M_END:
 	{
+					if (SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
+						SE_Engine.stopAllSounds();
+
 					static bool mRButtonPressed = false;
 					if (Application::IsKeyPressed(VK_RBUTTON) && !mRButtonPressed)
 					{
@@ -657,6 +670,9 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 	}
 	case E_M_SELECTION:
 	{
+						  if (!SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
+							  SE_Engine.playSound2D(SoundList[ST_BGM], 1);
+
 						  static bool mRButtonPressed = false;
 						  if (Application::IsKeyPressed(VK_RBUTTON) && !mRButtonPressed)
 						  {
@@ -699,6 +715,9 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 	}
 	case E_M_MAP:
 	{
+					if (!SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
+						SE_Engine.playSound2D(SoundList[ST_BGM], 1);
+
 					static bool mRButtonPressed = false;
 					if (Application::IsKeyPressed(VK_RBUTTON) && !mRButtonPressed)
 					{
@@ -739,6 +758,9 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 	}
 	case E_M_OPTIONS:
 	{
+						if (!SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
+							SE_Engine.playSound2D(SoundList[ST_BGM], 1);
+
 						static bool mRButtonPressed = false;
 						if (Application::IsKeyPressed(VK_RBUTTON) && !mRButtonPressed)
 						{
@@ -791,6 +813,9 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 
 	case E_M_SONAR: case E_M_ENEMY : case E_M_ZONE :
 	{
+		if (SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
+			SE_Engine.stopAllSounds();
+
 		if (Application::IsKeyPressed(VK_SPACE))
 		{
 			SceneManager::Instance()->pop();

@@ -63,6 +63,8 @@ Initialize default variables, create meshes, lighting
 void MainScene::Init()
 {
 	SE_Engine.Init();
+	SE_Engine2.Init();
+
 	f_fov = 0.f;
 	f_mouseSensitivity = 0.f;
 
@@ -81,6 +83,12 @@ void MainScene::Init()
 	LuaScript sound("Sound");
 	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
+	SoundList[ST_EXIT] = SE_Engine.preloadSound(sound.getGameData("sound.exit").c_str());
+	SoundList[ST_DEATH] = SE_Engine.preloadSound(sound.getGameData("sound.dead").c_str());
+	SoundList[ST_HEART] = SE_Engine.preloadSound(sound.getGameData("sound.heartbeat").c_str());
+	SoundList[ST_HEART2] = SE_Engine.preloadSound(sound.getGameData("sound.heartbeat2").c_str());
+	SoundList[ST_CAUGHT] = SE_Engine.preloadSound(sound.getGameData("sound.caught").c_str());
+
 	LEVEL = 1;
 	tutorialStage = 1;
 	InitSimulation();
@@ -692,7 +700,13 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	if (LEVEL == 1 && tutorialStage == 1)
 	{
 		toggleVisible = true;
+		SE_Engine2.stopAllSounds();
+
 	}
+
+	else if (!(SE_Engine2.isSoundPlaying(SoundList[ST_HEART]) || SE_Engine2.isSoundPlaying(SoundList[ST_HEART2])))
+		SE_Engine2.playSound2D(SoundList[ST_HEART],1);
+
 
 	//-----------------------------------------------------------------------------
 
@@ -717,6 +731,8 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 	if (onExit == true && LEVEL != 1)
 	{
+		SE_Engine2.stopAllSounds();
+
 		if (f_timer < ML_map.star_three)
 		{
 			SceneManager::Instance()->end_star = 3;
@@ -763,6 +779,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 	else if (onExit && LEVEL == 1)
 	{
+		SE_Engine2.stopAllSounds();
 		tutorialStage++;
 
 		string filename;
@@ -908,9 +925,16 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	}
 
 	if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "2")
+	{
 		onDanger = true;
+		SE_Engine.playSound2D(SoundList[ST_DEATH]);
+	}
 	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "3")
+	{
 		onExit = true;
+		SE_Engine.playSound2D(SoundList[ST_EXIT]);
+	}
+		
 	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "-1")
 	{
 		switch (tutorialStage)
@@ -1000,6 +1024,9 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 				if (EO->currTile == player_ptr->currTile)
 				{
+					SE_Engine2.stopAllSounds();
+					SE_Engine.playSound2D(SoundList[ST_CAUGHT]);
+
 					if (LEVEL != 1)
 					{
 						InitSimulation();
@@ -1045,7 +1072,15 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 						{
 							if (checkForCollision(EO->sonarList[i]->segmentList[j]->posStart,
 								EO->sonarList[i]->segmentList[j]->posEnd, player_ptr->topLeft, player_ptr->bottomRight))
+							{
 								EO->gotoChase = true;
+
+								if (!SE_Engine2.isSoundPlaying(SoundList[ST_HEART2]))
+								{
+									SE_Engine2.stopAllSounds();
+									SE_Engine2.playSound2D(SoundList[ST_HEART2], 1);
+								}
+							}
 						}
 
 						for (int a = 0; a < GO_List.size(); ++a)
@@ -1204,6 +1239,13 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 							cEnemy *EO = dynamic_cast<cEnemy*>(CO);
 							EO->gotoChase = true;
 							EO->timer = 0;
+
+							if (!SE_Engine2.isSoundPlaying(SoundList[ST_HEART2]))
+							{
+								SE_Engine2.stopAllSounds();
+								SE_Engine2.playSound2D(SoundList[ST_HEART2], 1);
+							}
+							
 						}
 					}
 				}
@@ -2139,7 +2181,8 @@ Clears memory upon exit
 /******************************************************************************/
 void MainScene::Exit()
 {
-	SE_Engine.Exit();
+	SE_Engine.stopAllSounds();
+	SE_Engine2.stopAllSounds();
 
 	while (GO_List.size() > 0)
 	{
