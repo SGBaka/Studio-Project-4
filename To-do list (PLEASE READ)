@@ -2,10 +2,9 @@
 == LOCAL MULTIPLAYER ==
 - Have single map with local multiplayer gameplay (with trap placing) [TROY]
 - Different color spectrum for sonar of players [WH]
-- Green and Yello avatars for different players. [WH]
+- Green and Yellow avatars for different players. [WH]
 
 == LUA ==
-- Use percentage values for position of buttons [RAYNER]
 - Have default values for all LUA variables so that program can still run even if LUA file is missing [RY]
 
 == Map Editor ==
@@ -15,7 +14,6 @@
 == Level design / loading ==
 - Randomize easy/medium/hard levels [RAYNER]
 - Allow the player to continue from where he left off [RAYNER]
-- Make a tutorial level [WH]
 - Allow player to load any map he wants [RAYNER]
 
 == Other ==
