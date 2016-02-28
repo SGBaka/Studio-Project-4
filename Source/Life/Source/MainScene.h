@@ -136,6 +136,7 @@ public:
 		ST_HEART,
 		ST_HEART2,
 		ST_CAUGHT,
+		ST_BGM,
 		ST_TOTAL
 	};
 

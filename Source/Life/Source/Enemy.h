@@ -77,6 +77,8 @@ public:
 	int idleTimemin, idleTimemax;
 	int map_min_x, map_max_x, map_min_y, map_max_y;
 	int vislble_range;
+
+	bool hasPath;
 private:
 
 	string route, route2, route3;

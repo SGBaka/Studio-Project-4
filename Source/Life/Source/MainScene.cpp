@@ -85,9 +85,10 @@ void MainScene::Init()
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
 	SoundList[ST_EXIT] = SE_Engine.preloadSound(sound.getGameData("sound.exit").c_str());
 	SoundList[ST_DEATH] = SE_Engine.preloadSound(sound.getGameData("sound.dead").c_str());
-	SoundList[ST_HEART] = SE_Engine.preloadSound(sound.getGameData("sound.heartbeat").c_str());
-	SoundList[ST_HEART2] = SE_Engine.preloadSound(sound.getGameData("sound.heartbeat2").c_str());
+	SoundList[ST_HEART] = SE_Engine2.preloadSound(sound.getGameData("sound.heartbeat").c_str());
+	SoundList[ST_HEART2] = SE_Engine2.preloadSound(sound.getGameData("sound.heartbeat2").c_str());
 	SoundList[ST_CAUGHT] = SE_Engine.preloadSound(sound.getGameData("sound.caught").c_str());
+	SoundList[ST_BGM] = SE_Engine2.preloadSound(sound.getGameData("sound.backgroundO").c_str());
 
 	LEVEL = 1;
 	tutorialStage = 1;
@@ -700,8 +701,9 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	if (LEVEL == 1 && tutorialStage == 1)
 	{
 		toggleVisible = true;
-		SE_Engine2.stopAllSounds();
 
+		if (!(SE_Engine2.isSoundPlaying(SoundList[ST_BGM])))
+			SE_Engine2.playSound2D(SoundList[ST_BGM], 1);
 	}
 
 	else if (!(SE_Engine2.isSoundPlaying(SoundList[ST_HEART]) || SE_Engine2.isSoundPlaying(SoundList[ST_HEART2])))
@@ -927,11 +929,13 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "2")
 	{
 		onDanger = true;
+		SE_Engine2.stopAllSounds();
 		SE_Engine.playSound2D(SoundList[ST_DEATH]);
 	}
 	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "3")
 	{
 		onExit = true;
+		SE_Engine2.stopAllSounds();
 		SE_Engine.playSound2D(SoundList[ST_EXIT]);
 	}
 		
@@ -1173,6 +1177,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 							{
 								if (!EO->gotoSusp)
 								{
+									EO->hasPath = false;
 									EO->gotoSusp = true;
 
 									EO->suspPos = calTilePos(player_ptr->sonarList[i]->position);
@@ -1180,7 +1185,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 									if (player_ptr->sonarList[i]->segmentList[j]->type == 1)
 										EO->suspDuration = player_ptr->sonarList[i]->segmentList[j]->lifeTime;
 									else if (player_ptr->sonarList[i]->segmentList[j]->type == 2)
-										EO->suspDuration = player_ptr->sonarList[i]->segmentList[j]->lifeTime * 3;
+										EO->suspDuration = 100;
 								}	
 							}
 
@@ -2181,8 +2186,8 @@ Clears memory upon exit
 /******************************************************************************/
 void MainScene::Exit()
 {
-	SE_Engine.stopAllSounds();
-	SE_Engine2.stopAllSounds();
+	SE_Engine.Exit();
+	SE_Engine2.Exit();
 
 	while (GO_List.size() > 0)
 	{

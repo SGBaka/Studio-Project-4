@@ -39,6 +39,7 @@ cEnemy::cEnemy()
 , gotoSusp(false)
 , suspDuration(0)
 , suspPos(0,0,0)
+, hasPath(false)
 {
 	SE_Engine.Init();
 
@@ -250,6 +251,7 @@ void cEnemy::Update(double dt)
 		}
 		if (gotoSusp && routeCounter == 0)
 		{
+			hasPath = false;
 			AI_STATE = AS_SUSP;
 			route = "";
 		}
@@ -328,18 +330,17 @@ void cEnemy::Update(double dt)
 
 		timer3 += dt;
 
-		if (timer3 <= suspDuration && routeCounter3 == 0)
+		if (timer3 <= suspDuration && routeCounter3 == 0 && !hasPath)
 		{
+			hasPath = true;
 			route3 = pathFind(currTile.x, currTile.y, suspPos.x, suspPos.y);
 		}
 
-		else if (timer3 > suspDuration)
+		else if (timer3 > suspDuration || (executePath(dt, route3, routeCounter3) && !route3.empty()))
 		{
 			gotoRoam = true;
 			timer3 = 0;
 		}
-
-		executePath(dt, route3, routeCounter3);
 
 		if (gotoRoam && routeCounter3 == 0)
 		{
