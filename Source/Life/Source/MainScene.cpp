@@ -1264,7 +1264,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 						else if (tempType == 2 && player_ptr->sonarList[i]->segmentList[j]->type == 1 && !player_ptr->sonarList[i]->segmentList[j]->attached)
 						{
-							if (player_ptr->sonarList[i]->segmentList[j]->attached == false)
+							if (player_ptr->sonarList[i]->segmentList[j]->attached == false && player_ptr->sonarList[i]->segmentList[j]->active)
 							{
 								GO_List[k]->visible = true;
 								player_ptr->sonarList[i]->GO.push_back(GO_List[k]);
@@ -1277,7 +1277,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 						else if (tempType == 3 && player_ptr->sonarList[i]->segmentList[j]->type == 1 && !player_ptr->sonarList[i]->segmentList[j]->attached)
 						{
-							if (player_ptr->sonarList[i]->segmentList[j]->attached == false)
+							if (player_ptr->sonarList[i]->segmentList[j]->attached == false && player_ptr->sonarList[i]->segmentList[j]->active)
 							{
 								GO_List[k]->visible = true;
 								player_ptr->sonarList[i]->GO.push_back(GO_List[k]);
