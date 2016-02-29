@@ -5,16 +5,13 @@
 - Green and Yellow avatars for different players. [WH]
 
 == Map Editor ==
-- Add tile names [TROY]
+- Add tile names [RY]
 
 == Level design / loading ==
 - Randomize easy/medium/hard levels [RAYNER]
-- Allow the player to continue from where he left off [RAYNER]
-- Allow player to load any map he wants [RAYNER]
 
 == Other ==
 - Difficulty settings changes gameplay variables & Show current difficulty in main menu [RAYNER]
-- Tagline [RAYNER]
 
 == DO ON MONDAY ==
 - Have at least 3 easy, medium and hard levels [ALL]
