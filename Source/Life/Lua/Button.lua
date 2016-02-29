@@ -34,6 +34,34 @@ main = {
 	total_button = 4
 }
 
+main_gamemode = {
+	--[[option_1 = Single Player]]--
+	option_1 = {
+		text = "Single Player",
+		scale = 30.0,
+		posX = 0.5,
+		posY = 0.5
+	},
+
+	--[[option_2 = Multi-Player]]--
+	option_2 = {
+		text = "Multi-Player",
+		scale = 30.0,
+		posX = 0.5,
+		posY = 0.45
+	},
+
+	--[[option_2 = Play Selected Level]]--
+	option_3 = {
+		text = "Find Your Level",
+		scale = 30.0,
+		posX = 0.5,
+		posY = 0.4
+	},
+
+	total_button = 3
+}
+
 main_selection = {
 	--[[option_1 = New Game]]--
 	option_1 = {
@@ -51,15 +79,7 @@ main_selection = {
 		posY = 0.45
 	},
 
-	--[[option_2 = Play Selected Level]]--
-	option_3 = {
-		text = "Find Your Level",
-		scale = 30.0,
-		posX = 0.5,
-		posY = 0.4
-	},
-
-	total_button = 3
+	total_button = 2
 }
 
 option = {

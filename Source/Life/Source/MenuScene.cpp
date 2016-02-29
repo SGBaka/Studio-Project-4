@@ -124,6 +124,9 @@ void MenuScene::Init()
 	case MenuScene::MT_MAIN_MENU_SELECTION:
 		MENU_STATE = E_M_SELECTION;
 		break;
+	case MenuScene::MT_MAIN_MENU_GAMEMODE:
+		MENU_STATE = E_M_GAMEMODE;
+		break;
 	case MenuScene::MT_MAIN_MENU_OPTION:
 		MENU_STATE = E_M_OPTIONS;
 		break;
@@ -291,8 +294,9 @@ void MenuScene::InitMenu(void)
 	v3_Menupos[E_M_SPLASH].Set(0, 0, 0);
 	v3_Menupos[E_M_MAIN].Set(0, 0, 0);
 	v3_Menupos[E_M_LOADING] = v3_Menupos[E_M_MAIN];
-	v3_Menupos[E_M_SELECTION].Set(4000, 0, 0);
-	v3_Menupos[E_M_FIND].Set(8000, 0, 0);
+	v3_Menupos[E_M_GAMEMODE].Set(4000, 0, 0);
+	v3_Menupos[E_M_SELECTION].Set(8000, 0, 0);
+	v3_Menupos[E_M_FIND].Set(4000, -2000, 0);
 	v3_Menupos[E_M_OPTIONS].Set(0, -2000, 0);
 	v3_Menupos[E_M_MAP].Set(-4000, 0, 0);
 	v3_Menupos[E_M_END].Set(0, 2000, 0);
@@ -321,6 +325,20 @@ void MenuScene::InitMenu(void)
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 		S_MB->gamestate = E_M_MAIN;
+		v_textButtonList.push_back(S_MB);
+	}
+
+	// Game Mode Menu (Single Player Game / Multi-Player Game)
+	total_button = buttonScript.get<int>("main_gamemode.total_button");
+	for (int i = 1; i <= total_button; i++)
+	{
+		std::string buttonName = "main_gamemode.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
+
+		S_MB = new TextButton;
+		S_MB->pos.Set(Application::GetWindowWidth()*buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
+		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
+		S_MB->gamestate = E_M_GAMEMODE;
 		v_textButtonList.push_back(S_MB);
 	}
 
@@ -578,8 +596,8 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 						 if (FetchTB(nameScript.get<std::string>("main.textbutton_1.text"))->active)
 						 {
 							 PREV_STATE = MENU_STATE;
-							 MENU_STATE = E_M_SELECTION;
-							 setMenu(MT_MAIN_MENU_SELECTION);
+							 MENU_STATE = E_M_GAMEMODE;
+							 setMenu(MT_MAIN_MENU_GAMEMODE);
 							 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
 							 transcomplete = false;
 						 }
@@ -653,6 +671,65 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 					}
 					break;
 	}
+	case E_M_GAMEMODE:
+	{
+						 if (!SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
+							 SE_Engine.playSound2D(SoundList[ST_BGM], 1);
+
+						 static bool mRButtonPressed = false;
+						 if (Application::IsKeyPressed(VK_RBUTTON) && !mRButtonPressed)
+						 {
+							 mRButtonPressed = true;
+						 }
+						 if (!Application::IsKeyPressed(VK_RBUTTON) && mRButtonPressed)
+						 {
+							 mRButtonPressed = false;
+
+							 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
+							 PREV_STATE = MENU_STATE;
+							 MENU_STATE = E_M_MAIN;
+							 setMenu(MT_MAIN_MENU);
+							 transcomplete = false;
+						 }
+
+						 static bool mLButtonPressed = false;
+						 if (!mLButtonPressed && Application::IsKeyPressed(VK_LBUTTON))
+						 {
+							 mLButtonPressed = true;
+						 }
+						 if (mLButtonPressed && !Application::IsKeyPressed(VK_LBUTTON))
+						 {
+							 mLButtonPressed = false;
+							 LuaScript nameScript("button");
+
+							 if (FetchTB(nameScript.get<std::string>("main_gamemode.option_1.text"))->active)
+							 {
+								 PREV_STATE = MENU_STATE;
+								 MENU_STATE = E_M_SELECTION;
+								 setMenu(MT_MAIN_MENU_SELECTION);
+								 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
+								 transcomplete = false;
+							 }
+							 else if (FetchTB(nameScript.get<std::string>("main_gamemode.option_2.text"))->active)
+							 {
+								 // --! For Troy's Multiplayer Mode !--
+
+								 //PREV_STATE = MENU_STATE;
+								 //MENU_STATE = E_M_LOADING;
+
+							 }
+							 else if (FetchTB(nameScript.get<std::string>("main_gamemode.option_3.text"))->active)
+							 {
+								 PREV_STATE = MENU_STATE;
+								 MENU_STATE = E_M_FIND;
+								 setMenu(MT_MAIN_MENU_FIND);
+								 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
+								 temp_total_string = "";
+							 }
+						 }
+						 break;
+	}
+
 	case E_M_SELECTION:
 	{
 						  if (!SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
@@ -669,8 +746,8 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 
 							  SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
 							  PREV_STATE = MENU_STATE;
-							  MENU_STATE = E_M_MAIN;
-							  setMenu(MT_MAIN_MENU);
+							  MENU_STATE = E_M_GAMEMODE;
+							  setMenu(MT_MAIN_MENU_GAMEMODE);
 							  transcomplete = false;
 						  }
 
@@ -696,14 +773,6 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 								  PREV_STATE = MENU_STATE;
 								  MENU_STATE = E_M_LOADING;
 
-							  }
-							  else if (FetchTB(nameScript.get<std::string>("main_selection.option_3.text"))->active)
-							  {
-								  PREV_STATE = MENU_STATE;
-								  MENU_STATE = E_M_FIND;
-								  setMenu(MT_MAIN_MENU_FIND);
-								  SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
-								  temp_total_string = "";
 							  }
 						  }
 						  break;
@@ -733,8 +802,8 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 
 						 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
 						 PREV_STATE = MENU_STATE;
-						 MENU_STATE = E_M_SELECTION;
-						 setMenu(MT_MAIN_MENU_SELECTION);
+						 MENU_STATE = E_M_GAMEMODE;
+						 setMenu(MT_MAIN_MENU_GAMEMODE);
 						 transcomplete = false;
 					 }
 
@@ -1472,6 +1541,18 @@ void MenuScene::Render()
 					 RenderTextButtons();
 					 RenderButtons();
 					 break;
+	}
+
+	case E_M_GAMEMODE:
+	{
+						  modelStack.PushMatrix();
+						  modelStack.LoadIdentity();
+						  modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+						  RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_MAIN]);
+						  modelStack.PopMatrix();
+						  RenderTextButtons();
+						  RenderButtons();
+						  break;
 	}
 
 	case E_M_OPTIONS:
