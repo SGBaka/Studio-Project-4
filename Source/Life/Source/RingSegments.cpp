@@ -16,7 +16,6 @@ RingSegments::RingSegments()
 
 RingSegments::~RingSegments()
 {
-
 }
 
 void RingSegments::Init(Vector3 position)

@@ -4,6 +4,7 @@
 #include "Vector3.h"
 #include "Mesh.h"
 #include <string>
+#include "Vertex.h"
 
 class GameObject
 {
@@ -26,6 +27,12 @@ public:
 	Vector3 currTile;
 
 	std::string name;
+
+	bool visible;
+
+	Color color;
+
+	float fadeTimer, fadeDur;
 	
 private:
 	

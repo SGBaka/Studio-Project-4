@@ -15,7 +15,6 @@ Sonar::Sonar()
 
 Sonar::~Sonar()
 {
-
 }
 
 void Sonar::Init(float radius, float radius2, int numSides, float speed)
@@ -235,6 +234,15 @@ void Sonar::Update(double dt)
 
 			if (segmentList[i]->lifeTime <= 0)
 			{
+				if (segmentList.size() <= numSides / 3)
+				{
+					for (int i = 0; i < GO.size(); ++i)
+					{
+						if (GO[i] != NULL)
+							GO[i]->visible = false;
+					}
+				}
+
 				delete segmentList[i];
 				segmentList.erase(segmentList.begin() + i);
 			}

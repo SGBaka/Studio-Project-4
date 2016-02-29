@@ -3,6 +3,9 @@
 
 #include "GameObject.h"
 #include "Vertex.h"
+#include <vector>
+
+using namespace::std;
 
 class RingSegments : public GameObject
 {

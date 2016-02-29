@@ -1004,10 +1004,44 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 		toggleVisible = false;
 	}
-		
+
 
 	for (int k = 0; k < GO_List.size(); ++k)
 	{
+		if (GO_List[k]->visible)
+		{
+			if (GO_List[k]->fadeTimer < GO_List[k]->fadeDur)
+			{
+				GO_List[k]->fadeTimer += dt;
+
+				GO_List[k]->color.r = (GO_List[k]->fadeTimer / GO_List[k]->fadeDur) / 2;
+
+				if (GO_List[k]->name == "EXIT")
+					GO_List[k]->color.b = (GO_List[k]->fadeTimer / GO_List[k]->fadeDur) / 2;
+				
+			}
+		}
+		else if (GO_List[k]->fadeTimer >= 0 && GO_List[k]->color.r >= 0)
+		{
+			GO_List[k]->fadeTimer -= dt;
+
+			GO_List[k]->color.r = (GO_List[k]->fadeTimer / GO_List[k]->fadeDur) / 2;
+
+			if (GO_List[k]->name == "EXIT")
+				GO_List[k]->color.b = (GO_List[k]->fadeTimer / GO_List[k]->fadeDur) / 2;
+		}
+
+		else
+		{
+			GO_List[k]->fadeTimer = 0;
+
+			GO_List[k]->color.r = 0;
+
+			if (GO_List[k]->name == "EXIT")
+				GO_List[k]->color.b = 0;
+
+		}
+
 		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[k]);
 
 		if (CO != NULL)
@@ -1218,6 +1252,10 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 						else if (tempType == 2 && player_ptr->sonarList[i]->segmentList[j]->type == 1 && !player_ptr->sonarList[i]->segmentList[j]->attached)
 						{
+
+							GO_List[k]->visible = true;
+							player_ptr->sonarList[i]->GO.push_back(GO_List[k]);
+					
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad)) * 2;
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = 0;
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = 0;
@@ -1225,9 +1263,15 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 						else if (tempType == 3 && player_ptr->sonarList[i]->segmentList[j]->type == 1 && !player_ptr->sonarList[i]->segmentList[j]->attached)
 						{
+
+							GO_List[k]->visible = true;
+							player_ptr->sonarList[i]->GO.push_back(GO_List[k]);
+
+
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad)) * 2;
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = 0;
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = (1 - (player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad)) * 2;
+
 						}
 
 						else if (tempType == 4)
@@ -1761,7 +1805,7 @@ void MainScene::RenderUI()
 				  modelStack.PopMatrix();
 
 				  std::stringstream ss2;
-				  ss2 << "Make your way toward the green area using the WASD keys. ";
+				  ss2 << "Make your way toward the purple area using the WASD keys. ";
 
 				  modelStack.PushMatrix();
 				  modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.9f, 0);
@@ -1993,6 +2037,7 @@ void MainScene::RenderGO()
 		{
 			for (unsigned x = 0; x < ML_map.map_width; ++x)
 			{
+
 				if (ML_map.map_data[y][x] == "2")
 				{
 					modelStack.PushMatrix();
@@ -2000,14 +2045,14 @@ void MainScene::RenderGO()
 					modelStack.Scale(ML_map.worldSize, ML_map.worldSize, 1);
 					RenderMeshOnScreen(P_meshArray[E_GEO_DANGER]);
 					modelStack.PopMatrix();
-				}
 
+				}
 				else if (ML_map.map_data[y][x] == "3")
 				{
 					modelStack.PushMatrix();
 					modelStack.Translate(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
 					modelStack.Scale(ML_map.worldSize, ML_map.worldSize, 1);
-					RenderMeshOnScreen(P_meshArray[E_GEO_DANGER], 13, Color(0,1,0));
+					RenderMeshOnScreen(P_meshArray[E_GEO_DANGER], 13, Color(1, 0, 1));
 					modelStack.PopMatrix();
 				}
 			}
@@ -2017,6 +2062,26 @@ void MainScene::RenderGO()
 	for (unsigned k = 0; k < GO_List.size(); k++)
 	{
 		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[k]);
+
+		if (GO_List[k]->visible || GO_List[k]->fadeTimer > 0)
+		{
+			if (GO_List[k]->name == "DANGER")
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(GO_List[k]->position);
+				modelStack.Scale(ML_map.worldSize, ML_map.worldSize, 1);
+				RenderMeshOnScreen(P_meshArray[E_GEO_DANGER], 13, GO_List[k]->color);
+				modelStack.PopMatrix();
+			}
+			else
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(GO_List[k]->position);
+				modelStack.Scale(ML_map.worldSize, ML_map.worldSize, 1);
+				RenderMeshOnScreen(P_meshArray[E_GEO_DANGER], 13, GO_List[k]->color);
+				modelStack.PopMatrix();
+			}
+		}
 
 		if (CO != NULL && CO->name == "ENEMY")
 		{
