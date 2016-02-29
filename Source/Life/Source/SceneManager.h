@@ -21,6 +21,7 @@ public:
 		S_MAIN_MENU,
 		S_PAUSE_MENU,
 		S_END_MENU,
+		S_FINAL_MENU,
 		S_END_MENU_MULT,
 		S_GAME,
 		S_GAME_MODE,

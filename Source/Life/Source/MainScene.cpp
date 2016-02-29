@@ -736,7 +736,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	}
 
 	float cal = ML_map.star_one;
-	if (onExit == true && (LEVEL == 0 || LEVEL == 10))
+	if (onExit == true && LEVEL == 0)
 	{
 		SceneManager::Instance()->replace(SceneManager::S_GAME_MODE);
 		return;
@@ -782,7 +782,11 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			std::string name = ss.str();
 			ML_map.saveMap(name);
 		}
-
+		if (LEVEL == 10)
+		{
+			SceneManager::Instance()->push(SceneManager::S_FINAL_MENU);
+		}
+		else
 		SceneManager::Instance()->push(SceneManager::S_END_MENU);
 		return;
 	}

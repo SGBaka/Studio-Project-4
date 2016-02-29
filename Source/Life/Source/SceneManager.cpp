@@ -121,6 +121,13 @@ void SceneManager::push(SCENES newScene)
 		ms_tmp->setMenu(MenuScene::MT_END_MENU);
 		break;
 	}
+	case SceneManager::S_FINAL_MENU:
+	{
+		scene = new MenuScene();
+		MenuScene *ms_tmp = dynamic_cast<MenuScene*>(scene);
+		ms_tmp->setMenu(MenuScene::MT_FINAL);
+		break;
+	}
 	case SceneManager::S_END_MENU_MULT:
 	{
 		scene = new MenuScene();
