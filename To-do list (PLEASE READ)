@@ -8,7 +8,6 @@
 - Have default values for all LUA variables so that program can still run even if LUA file is missing [RY]
 
 == Map Editor ==
-- Virtual keyboard [RY]
 - Add tile names [TROY]
 
 == Level design / loading ==
