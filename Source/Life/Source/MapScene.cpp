@@ -253,7 +253,7 @@ void MapScene::InitMenu(void)
 	Button *m_B;
 	m_B = new Button;
 	m_B->Position.Set(Application::GetWindowWidth()* 0.025f, Application::GetWindowHeight()*0.05f, 0.1f);
-	m_B->Scale.Set(18, 18, 18);
+	m_B->Scale.Set(19, 19, 19);
 	m_B->mesh = P_meshArray[E_GEO_BUTTON_LEFT];
 	m_B->ID = BI_BACK;
 	m_B->labeltype = Button::LT_NONE;

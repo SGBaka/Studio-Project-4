@@ -23,6 +23,7 @@ public:
 		S_END_MENU,
 		S_END_MENU_MULT,
 		S_GAME,
+		S_GAME_MODE,
 		S_MULT,
 		S_EDITOR_NEW,
 		S_EDITOR_EDIT,

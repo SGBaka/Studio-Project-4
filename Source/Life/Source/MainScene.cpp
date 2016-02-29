@@ -736,7 +736,11 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	}
 
 	float cal = ML_map.star_one;
-
+	if (onExit == true && LEVEL == 0)
+	{
+		SceneManager::Instance()->replace(SceneManager::S_GAME_MODE);
+		return;
+	}
 	if (onExit == true && LEVEL != 1)
 	{
 		SE_Engine2.stopAllSounds();

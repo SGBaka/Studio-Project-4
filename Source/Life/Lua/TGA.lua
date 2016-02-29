@@ -15,7 +15,7 @@ background = {
 
 button = {
     back = "UI//Button//back.tga",
-    left = "UI//Button//left.tga",
+    left = "UI//Button//leftv2.tga",
     right = "UI//Button//right.tga",
     refresh = "UI//Button//refresh.tga",
     Danger_Border = "UI//Button//Danger_Border.tga",

@@ -131,6 +131,13 @@ void SceneManager::push(SCENES newScene)
 	case SceneManager::S_GAME:
 		scene = MainScene::GetInstance();
 		break;
+	case SceneManager::S_GAME_MODE:
+	{
+		scene = new MenuScene();
+		MenuScene *ms_tmp = dynamic_cast<MenuScene*>(scene);
+		ms_tmp->setMenu(MenuScene::MT_MAIN_MENU_GAMEMODE);
+		break;
+	}
 	case SceneManager::S_MULT:
 		scene = MultScene::GetInstance();
 		break;
