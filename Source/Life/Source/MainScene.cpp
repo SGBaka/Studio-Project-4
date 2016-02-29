@@ -82,7 +82,6 @@ void MainScene::Init()
 	SoundList[ST_CAUGHT] = SE_Engine.preloadSound(sound.getGameData("sound.caught").c_str());
 	SoundList[ST_BGM] = SE_Engine2.preloadSound(sound.getGameData("sound.backgroundO").c_str());
 
-	LEVEL = 1;
 	tutorialStage = 1;
 	InitSimulation();
 }

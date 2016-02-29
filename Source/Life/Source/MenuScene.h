@@ -388,7 +388,7 @@ private:
 
 	void assignsave(bool save = false);
 	SaveHandler SH_1;
-
+	SaveHandler loader;
 	// Update/Control Functions
 	float MousePosX, MousePosY;
 	void editFOV(float &newFOV);

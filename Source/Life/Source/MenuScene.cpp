@@ -96,6 +96,7 @@ void MenuScene::Init()
 
 	LuaScript scriptSH("GameData");
 	SH_1.init(scriptSH.getGameData("gamedata.gamedata").c_str());
+	loader.init("Lua//save.txt");
 	assignsave(false);
 
 	InitMeshList();
@@ -637,11 +638,11 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 						LuaScript nameScript("button");
 
 						if (FetchTB(nameScript.get<std::string>("end_screen.textbutton_1.text"))->active)
-						{		
+						{
 							SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
 							SceneManager::Instance()->pop();
 							SceneManager::Instance()->pop();
-							SceneManager::Instance()->push(SceneManager::S_MAIN_MENU);						
+							SceneManager::Instance()->push(SceneManager::S_MAIN_MENU);							
 						}
 						else if (FetchTB(nameScript.get<std::string>("end_screen.textbutton_2.text"))->active)
 						{
@@ -651,11 +652,13 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 						
 						}
 						else if (FetchTB(nameScript.get<std::string>("end_screen.textbutton_3.text"))->active)
-						{
+						{							
 							SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
 							MainScene::GetInstance()->LEVEL++;
 							MainScene::GetInstance()->InitSimulation();
-							SceneManager::Instance()->pop();
+							loader.assign(MainScene::GetInstance()->LEVEL, 0, 1, true);
+							loader.saveData();
+							SceneManager::Instance()->pop();						
 						}
 					}
 					break;
@@ -699,8 +702,9 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 							  }
 							  else if (FetchTB(nameScript.get<std::string>("main_selection.option_2.text"))->active)
 							  {
-								  //PREV_STATE = MENU_STATE;
-								  //MENU_STATE = E_M_LOADING;
+								  MainScene::GetInstance()->LEVEL = stoi(loader.Data[0]);
+								  PREV_STATE = MENU_STATE;
+								  MENU_STATE = E_M_LOADING;
 							  }
 						  }
 						  break;
