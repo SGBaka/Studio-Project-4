@@ -836,7 +836,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 				switch (tutorialStage)
 				{
-				case 2:
+				case 1: case 2:
 					filename = "GameData//Maps//tutorial1.csv";
 					break;
 				case 3:
@@ -1252,10 +1252,12 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 						else if (tempType == 2 && player_ptr->sonarList[i]->segmentList[j]->type == 1 && !player_ptr->sonarList[i]->segmentList[j]->attached)
 						{
-
-							GO_List[k]->visible = true;
-							player_ptr->sonarList[i]->GO.push_back(GO_List[k]);
-					
+							if (player_ptr->sonarList[i]->segmentList[j]->attached == false)
+							{
+								GO_List[k]->visible = true;
+								player_ptr->sonarList[i]->GO.push_back(GO_List[k]);
+							}
+							
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad)) * 2;
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = 0;
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = 0;
@@ -1263,10 +1265,11 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 						else if (tempType == 3 && player_ptr->sonarList[i]->segmentList[j]->type == 1 && !player_ptr->sonarList[i]->segmentList[j]->attached)
 						{
-
-							GO_List[k]->visible = true;
-							player_ptr->sonarList[i]->GO.push_back(GO_List[k]);
-
+							if (player_ptr->sonarList[i]->segmentList[j]->attached == false)
+							{
+								GO_List[k]->visible = true;
+								player_ptr->sonarList[i]->GO.push_back(GO_List[k]);
+							}
 
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad)) * 2;
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = 0;
