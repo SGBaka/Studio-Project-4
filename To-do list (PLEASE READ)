@@ -4,9 +4,6 @@
 - Different color spectrum for sonar of players [WH]
 - Green and Yellow avatars for different players. [WH]
 
-== LUA ==
-- Have default values for all LUA variables so that program can still run even if LUA file is missing [RY]
-
 == Map Editor ==
 - Add tile names [TROY]
 
