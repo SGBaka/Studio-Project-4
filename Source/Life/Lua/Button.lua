@@ -62,6 +62,31 @@ main_gamemode = {
 	total_button = 3
 }
 
+main_skip = {
+	text = "Skip Tutorial?",
+	scale = 35.0,
+	posX = 0.5,
+	posY = 0.5,
+
+	--[[option_1 = Skip]]--
+	option_1 = {
+		text = "Skip",
+		scale = 30.0,
+		posX = 0.5,
+		posY = 0.45
+	},
+
+	--[[option_2 = No]]--
+	option_2 = {
+		text = "No",
+		scale = 30.0,
+		posX = 0.5,
+		posY = 0.4
+	},
+
+	total_button = 2
+}
+
 main_selection = {
 	--[[option_1 = New Game]]--
 	option_1 = {
@@ -182,8 +207,8 @@ editor_difficulty = {
 	textbutton_4 = {
 		text = "Back",
 		scale = 25.0,
-		posX = 0.73,
-		posY = 0.2
+		posX = 0.48,
+		posY = 0.25
 	},
 
 	total_button = 4

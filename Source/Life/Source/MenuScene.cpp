@@ -133,6 +133,9 @@ void MenuScene::Init()
 	case MenuScene::MT_MAIN_MENU_FIND:
 		MENU_STATE = E_M_FIND;
 		break;
+	case MenuScene::MT_MAIN_MENU_SKIP:
+		MENU_STATE = E_M_SKIP;
+		break;
 	case MenuScene::MT_PAUSE_MENU:
 		MENU_STATE = E_M_OPTIONS;
 		break;
@@ -296,6 +299,7 @@ void MenuScene::InitMenu(void)
 	v3_Menupos[E_M_LOADING] = v3_Menupos[E_M_MAIN];
 	v3_Menupos[E_M_GAMEMODE].Set(4000, 0, 0);
 	v3_Menupos[E_M_SELECTION].Set(8000, 0, 0);
+	v3_Menupos[E_M_SKIP].Set(12000, 0, 0);
 	v3_Menupos[E_M_FIND].Set(4000, -2000, 0);
 	v3_Menupos[E_M_OPTIONS].Set(0, -2000, 0);
 	v3_Menupos[E_M_MAP].Set(-4000, 0, 0);
@@ -353,6 +357,20 @@ void MenuScene::InitMenu(void)
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 		S_MB->gamestate = E_M_SELECTION;
+		v_textButtonList.push_back(S_MB);
+	}
+
+	// Skip Tutorial Menu (Skip / No)
+	total_button = buttonScript.get<int>("main_skip.total_button");
+	for (int i = 1; i <= total_button; i++)
+	{
+		std::string buttonName = "main_skip.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
+
+		S_MB = new TextButton;
+		S_MB->pos.Set(Application::GetWindowWidth()*buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
+		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
+		S_MB->gamestate = E_M_SKIP;
 		v_textButtonList.push_back(S_MB);
 	}
 
@@ -611,7 +629,7 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 							 MENU_STATE = E_M_OPTIONS;
 							 setMenu(MT_MAIN_MENU_OPTION);
 							 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
-							 transcomplete = false;			
+							 transcomplete = false;
 						 }
 						 else if (FetchTB(nameScript.get<std::string>("main.textbutton_4.text"))->active)
 						 {
@@ -646,27 +664,27 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 						LuaScript nameScript("button");
 
 						if (FetchTB(nameScript.get<std::string>("end_screen.textbutton_1.text"))->active)
-						{		
+						{
 							SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
 							SceneManager::Instance()->pop();
 							SceneManager::Instance()->pop();
-							SceneManager::Instance()->push(SceneManager::S_MAIN_MENU);						
+							SceneManager::Instance()->push(SceneManager::S_MAIN_MENU);
 						}
 						else if (FetchTB(nameScript.get<std::string>("end_screen.textbutton_2.text"))->active)
 						{
 							SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
 							MainScene::GetInstance()->InitSimulation();
 							SceneManager::Instance()->pop();
-						
+
 						}
 						else if (FetchTB(nameScript.get<std::string>("end_screen.textbutton_3.text"))->active)
-						{							
+						{
 							SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
 							MainScene::GetInstance()->LEVEL++;
 							MainScene::GetInstance()->InitSimulation();
 							loader.assign(MainScene::GetInstance()->LEVEL, 0, 1, true);
 							loader.saveData();
-							SceneManager::Instance()->pop();						
+							SceneManager::Instance()->pop();
 						}
 					}
 					break;
@@ -763,9 +781,11 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 
 							  if (FetchTB(nameScript.get<std::string>("main_selection.option_1.text"))->active)
 							  {
-								  MainScene::GetInstance()->LEVEL = 1;
 								  PREV_STATE = MENU_STATE;
-								  MENU_STATE = E_M_LOADING;
+								  MENU_STATE = E_M_SKIP;
+								  setMenu(MT_MAIN_MENU_SKIP);
+								  SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
+								  transcomplete = false;
 							  }
 							  else if (FetchTB(nameScript.get<std::string>("main_selection.option_2.text"))->active)
 							  {
@@ -776,6 +796,54 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 							  }
 						  }
 						  break;
+	}
+	case E_M_SKIP:
+	{
+					 if (!SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
+						 SE_Engine.playSound2D(SoundList[ST_BGM], 1);
+
+					 static bool mRButtonPressed = false;
+					 if (Application::IsKeyPressed(VK_RBUTTON) && !mRButtonPressed)
+					 {
+						 mRButtonPressed = true;
+					 }
+					 if (!Application::IsKeyPressed(VK_RBUTTON) && mRButtonPressed)
+					 {
+						 mRButtonPressed = false;
+
+						 SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
+						 PREV_STATE = MENU_STATE;
+						 MENU_STATE = E_M_SELECTION;
+						 setMenu(MT_MAIN_MENU_SELECTION);
+						 transcomplete = false;
+					 }
+
+					 static bool mLButtonPressed = false;
+					 if (!mLButtonPressed && Application::IsKeyPressed(VK_LBUTTON))
+					 {
+						 mLButtonPressed = true;
+					 }
+					 if (mLButtonPressed && !Application::IsKeyPressed(VK_LBUTTON))
+					 {
+						 mLButtonPressed = false;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+						 LuaScript nameScript("button");
+
+						 // Skip Tutorial
+						 if (FetchTB(nameScript.get<std::string>("main_skip.option_1.text"))->active)
+						 {
+							 MainScene::GetInstance()->LEVEL = 2;
+							 PREV_STATE = MENU_STATE;
+							 MENU_STATE = E_M_LOADING;
+						 }
+						 // Not Skipping
+						 else if (FetchTB(nameScript.get<std::string>("main_skip.option_2.text"))->active)
+						 {
+							 MainScene::GetInstance()->LEVEL = 1;
+							 PREV_STATE = MENU_STATE;
+							 MENU_STATE = E_M_LOADING;
+						 }
+					 }
+					 break;
 	}
 	case E_M_FIND:
 	{
@@ -830,7 +898,7 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 						 {
 							 MainScene::GetInstance()->LEVEL = 0;
 							 MainScene::GetInstance()->LEVELNAME = ss.str();
-							 
+
 							 PREV_STATE = MENU_STATE;
 							 MENU_STATE = E_M_LOADING;
 						 }
@@ -906,16 +974,16 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 						break;
 	}
 
-	case E_M_SONAR: case E_M_ENEMY : case E_M_ZONE :
+	case E_M_SONAR: case E_M_ENEMY: case E_M_ZONE:
 	{
-		if (SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
-			SE_Engine.stopAllSounds();
+						if (SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
+							SE_Engine.stopAllSounds();
 
-		if (Application::IsKeyPressed(VK_SPACE))
-		{
-			SceneManager::Instance()->pop();
-		}
-		break;
+						if (Application::IsKeyPressed(VK_SPACE))
+						{
+							SceneManager::Instance()->pop();
+						}
+						break;
 	}
 
 	}
@@ -1533,18 +1601,6 @@ void MenuScene::Render()
 	}
 	case E_M_SELECTION:
 	{
-					 modelStack.PushMatrix();
-					 modelStack.LoadIdentity();
-					 modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
-					 RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_MAIN]);
-					 modelStack.PopMatrix();
-					 RenderTextButtons();
-					 RenderButtons();
-					 break;
-	}
-
-	case E_M_GAMEMODE:
-	{
 						  modelStack.PushMatrix();
 						  modelStack.LoadIdentity();
 						  modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
@@ -1555,29 +1611,41 @@ void MenuScene::Render()
 						  break;
 	}
 
+	case E_M_GAMEMODE:
+	{
+						 modelStack.PushMatrix();
+						 modelStack.LoadIdentity();
+						 modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+						 RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_MAIN]);
+						 modelStack.PopMatrix();
+						 RenderTextButtons();
+						 RenderButtons();
+						 break;
+	}
+
 	case E_M_OPTIONS:
 	{
-					modelStack.PushMatrix();
-					modelStack.LoadIdentity();
-					modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
-					RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_OPTION]);
-					modelStack.PopMatrix();
-					LuaScript buttonScript("button");
-
-					int total_option = buttonScript.get<int>("option.total_option");
-					for (int i = 1; i <= total_option; i++)
-					{
-						std::string buttonName = "option.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 						modelStack.PushMatrix();
-						modelStack.Translate(v3_Menupos[MENU_STATE]);
-						modelStack.Translate(Application::GetWindowWidth()*0.5f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.48f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
-						modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
-						RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
+						modelStack.LoadIdentity();
+						modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+						RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_OPTION]);
 						modelStack.PopMatrix();
-					}
-					RenderTextButtons();
-					RenderButtons();
-					break;
+						LuaScript buttonScript("button");
+
+						int total_option = buttonScript.get<int>("option.total_option");
+						for (int i = 1; i <= total_option; i++)
+						{
+							std::string buttonName = "option.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
+							modelStack.PushMatrix();
+							modelStack.Translate(v3_Menupos[MENU_STATE]);
+							modelStack.Translate(Application::GetWindowWidth()*0.5f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.48f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+							modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
+							RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
+							modelStack.PopMatrix();
+						}
+						RenderTextButtons();
+						RenderButtons();
+						break;
 	}
 	case E_M_MAP:
 	{
@@ -1611,6 +1679,29 @@ void MenuScene::Render()
 					RenderTextButtons();
 					RenderButtons();
 					break;
+	}
+
+	case E_M_SKIP:
+	{
+					 modelStack.PushMatrix();
+					 modelStack.LoadIdentity();
+					 modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+					 RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_MAIN]);
+					 modelStack.PopMatrix();
+
+					 RenderTextButtons();
+					 RenderButtons();
+
+					 LuaScript buttonScript("button");
+
+					 std::string buttonName = "main_skip.";
+					 modelStack.PushMatrix();
+					 modelStack.Translate(v3_Menupos[MENU_STATE]);
+					 modelStack.Translate(Application::GetWindowWidth() * buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
+					 modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
+					 RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
+					 modelStack.PopMatrix();
+					 break;
 	}
 
 	case E_M_FIND:
@@ -1653,14 +1744,14 @@ void MenuScene::Render()
 	}
 	case E_M_SONAR:
 	{
-					modelStack.PushMatrix();
-					modelStack.LoadIdentity();
-					modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
-					RenderMeshOnScreen(P_meshArray[E_GEO_SONAR]);
-					modelStack.PopMatrix();			
-					RenderTextButtons();
-					RenderButtons();
-					break;
+					  modelStack.PushMatrix();
+					  modelStack.LoadIdentity();
+					  modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+					  RenderMeshOnScreen(P_meshArray[E_GEO_SONAR]);
+					  modelStack.PopMatrix();
+					  RenderTextButtons();
+					  RenderButtons();
+					  break;
 	}
 
 	case E_M_ENEMY:
@@ -1677,14 +1768,14 @@ void MenuScene::Render()
 
 	case E_M_ZONE:
 	{
-					  modelStack.PushMatrix();
-					  modelStack.LoadIdentity();
-					  modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
-					  RenderMeshOnScreen(P_meshArray[E_GEO_ZONE]);
-					  modelStack.PopMatrix();
-					  RenderTextButtons();
-					  RenderButtons();
-					  break;
+					 modelStack.PushMatrix();
+					 modelStack.LoadIdentity();
+					 modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+					 RenderMeshOnScreen(P_meshArray[E_GEO_ZONE]);
+					 modelStack.PopMatrix();
+					 RenderTextButtons();
+					 RenderButtons();
+					 break;
 	}
 	}
 
