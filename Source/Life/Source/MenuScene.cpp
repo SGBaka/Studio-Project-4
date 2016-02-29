@@ -1459,7 +1459,7 @@ void MenuScene::Render()
 						std::string buttonName = "option.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 						modelStack.PushMatrix();
 						modelStack.Translate(v3_Menupos[MENU_STATE]);
-						modelStack.Translate(Application::GetWindowWidth()*0.22f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.5f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+						modelStack.Translate(Application::GetWindowWidth()*0.5f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.48f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
 						modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 						RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
 						modelStack.PopMatrix();
@@ -1492,11 +1492,10 @@ void MenuScene::Render()
 					{
 						modelStack.PushMatrix();
 						modelStack.Translate(v3_Menupos[MENU_STATE]);
-						modelStack.Translate(Application::GetWindowWidth()*0.22f + 420.0f + (i * 100), Application::GetWindowHeight() * 0.5f, 0.1);
+						modelStack.Translate(Application::GetWindowWidth()*0.65f - ((SceneManager::Instance()->end_star - 1) * 80) + (i * 100), Application::GetWindowHeight() * 0.5f, 0.1);
 						modelStack.Scale(40, 40, 40);
 						RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
 						modelStack.PopMatrix();
-
 					}
 					RenderTextButtons();
 					RenderButtons();

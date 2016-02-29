@@ -3,32 +3,32 @@ main = {
 	textbutton_1 = {
 		text = "Start Game",
 		scale = 35.0,
-		posX = 0.4,
-		posY = 0.46
+		posX = 0.5,
+		posY = 0.5
 	},
 
 	--[[Button_2 = Map Editor]]--
 	textbutton_2 = {
 		text = "Map Editor",
-		scale = 25.0,
-		posX = 0.41,
-		posY = 0.4
+		scale = 30.0,
+		posX = 0.5,
+		posY = 0.45
 	},
 
 	--[[Button_3 = Option Button]]--
 	textbutton_3 = {
 		text = "Option",
-		scale = 25.0,
-		posX = 0.41,
-		posY = 0.35
+		scale = 30.0,
+		posX = 0.5,
+		posY = 0.40
 	},
 
 	--[[Button_4 = Quit Button]]--
 	textbutton_4 = {
 		text = "Quit",
-		scale = 25.0,
-		posX = 0.41,
-		posY = 0.3
+		scale = 30.0,
+		posX = 0.5,
+		posY = 0.35
 	},
 
 	total_button = 4
@@ -39,16 +39,16 @@ main_selection = {
 	option_1 = {
 		text = "New Game",
 		scale = 30.0,
-		posX = 0.4,
-		posY = 0.46
+		posX = 0.5,
+		posY = 0.5
 	},
 
 	--[[option_2 = Load Game]]--
 	option_2 = {
 		text = "Continue Game",
 		scale = 30.0,
-		posX = 0.4,
-		posY = 0.40
+		posX = 0.5,
+		posY = 0.45
 	},
 
 	total_button = 2
@@ -59,31 +59,31 @@ option = {
 	option_1 = {
 		text = "Difficulty",
 		scale = 35.0,
-		posX = 220.0,
-		posY = -30.0,
+		posX = 0,
+		posY = 0,
 		
 		--[[Button_1 = Easy Button]]--
 		textbutton_1 = {
 			text = "Easy",
-			scale = 25.0,
-			posX = 0.4,
+			scale = 30.0,
+			posX = 0.5,
 			posY = 0.40
 		},
 		
 		--[[Button_2 = Medium Button]]--
 		textbutton_2 = {
 			text = "Medium",
-			scale = 25.0,
-			posX = 0.4,
+			scale = 30.0,
+			posX = 0.5,
 			posY = 0.35
 		},
 		
 		--[[Button_3 = Hard Button]]--
 		textbutton_3 = {
 			text = "Hard",
-			scale = 25.0,
-			posX = 0.4,
-			posY = 0.30
+			scale = 30.0,
+			posX = 0.5,
+			posY = 0.30	
 		},
 
 		total_button = 3
@@ -97,16 +97,16 @@ map_screen = {
 	textbutton_1 = {
 		text = "New Map",
 		scale = 30.0,
-		posX = 0.41,
-		posY = 0.4
+		posX = 0.5,
+		posY = 0.45
 	},
 
 	--[[Button_2 = Edit Map]]--
 	textbutton_2 = {
 		text = "Edit Map",
 		scale = 30.0,
-		posX = 0.41,
-		posY = 0.34
+		posX = 0.5,
+		posY = 0.40
 	},
 
 	total_button = 2
@@ -135,23 +135,23 @@ editor_replace = {
 editor_difficulty = {
 	text = "Difficulty of Level",
 	scale = 30.0,
-	posX = 0.28,
-	posY = 0.60,
+	posX = 0.37,
+	posY = 0.67,
 		
 	--[[Button_1 = Easy Button]]--
 	textbutton_1 = {
 		text = "Easy",
 		scale = 25.0,
 		posX = 0.48,
-		posY = 0.48
+		posY = 0.55
 	},
 		
 	--[[Button_2 = Medium Button]]--
 	textbutton_2 = {
 		text = "Medium",
 		scale = 25.0,
-		posX = 0.46,
-		posY = 0.38
+		posX = 0.47,
+		posY = 0.45
 	},
 	
 	--[[Button_3 = Hard Button]]--
@@ -159,7 +159,7 @@ editor_difficulty = {
 		text = "Hard",
 		scale = 25.0,
 		posX = 0.48,
-		posY = 0.28
+		posY = 0.35
 	},
 
 	total_button = 3		
@@ -170,7 +170,7 @@ end_screen = {
 	textbutton_1 = {
 		text = "Back",
 		scale = 30.0,
-		posX = 0.40,
+		posX = 0.45,
 		posY = 0.20
 	},
 
@@ -178,7 +178,7 @@ end_screen = {
 	textbutton_2 = {
 		text = "Retry",
 		scale = 30.0,
-		posX = 0.53,
+		posX = 0.6,
 		posY = 0.20
 	},
 
@@ -186,7 +186,7 @@ end_screen = {
 	textbutton_3 = {
 		text = "Next Level",
 		scale = 30.0,
-		posX = 0.70,
+		posX = 0.75,
 		posY = 0.20
 	},
 
