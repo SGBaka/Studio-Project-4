@@ -12,7 +12,9 @@
 #include "TextButton.h"
 #include "Button.h"
 #include "GabrielDLC.h"
+#include "OtherDLC.h"
 #include "SoundEngine.h"
+#include "maploader.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -155,6 +157,7 @@ class MenuScene : public Scene
 		E_M_MAIN,
 		E_M_SELECTION,
 		E_M_MAP,
+		E_M_FIND,
 		E_M_END,
 		E_M_OPTIONS,
 		E_M_EDITOR_NEW,
@@ -208,7 +211,7 @@ public:
 		MT_MAIN_MENU_SPLASH,
 		MT_MAIN_MENU_SELECTION,
 		MT_MAIN_MENU_OPTION,
-		MT_MAIN_MENU_MAP,
+		MT_MAIN_MENU_FIND,
 		MT_END_MENU,
 		MT_PAUSE_MENU,
 		MT_EDITOR_NEW,
@@ -429,6 +432,13 @@ private:
 
 	SoundEngine SE_Engine;
 	ISoundSource *SoundList[ST_TOTAL];
+
+	std::string temp_total_string;
+	std::string file_Directory;
+	std::string OutputFolder;
+	MapLoader ML_map;
+	bool file_found;
+	float file_found_timer;
 };
 
 #endif

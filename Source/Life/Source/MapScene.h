@@ -11,6 +11,7 @@
 #include "TextButton.h"
 #include "Button.h"
 #include "GabrielDLC.h"
+#include "OtherDLC.h"
 #include "SoundEngine.h"
 #include "GameObject.h"
 #include "ItemObject.h"
@@ -48,6 +49,9 @@ public:
 		E_GEO_BUTTON_LEFT,
 		E_GEO_BUTTON_RIGHT,
 		E_GEO_BUTTON_REFRESH,
+		E_GEO_BUTTON_DIRECTORY,
+		E_GEO_BUTTON_SAVE,
+		E_GEO_BUTTON_LOAD,
 
 		E_GEO_POPUP,
 
@@ -58,7 +62,6 @@ public:
 		E_GEO_ENEMY_BORDER,
 		E_GEO_DANGER_BORDER,
 		E_GEO_WIN_BORDER,
-		E_GEO_SAVE,
 
 		//World
 		E_GEO_FLOOR_1,
@@ -132,6 +135,8 @@ private:
 		BI_BACK,
 		BI_REFRESH,
 		BI_SAVE,
+		BI_LOAD,
+		BI_DIRECTORY,
 
 		// Tiles
 		BI_WALL,
@@ -169,6 +174,8 @@ public:
 		MT_EDIT,
 		MT_NEW, // Cout File Name on Screen
 		MT_DIFFICULTY, // Difficulty Selection
+		MT_DIRECTORY,
+		MT_LOAD,
 		MT_REPLACE,
 	};
 
@@ -193,7 +200,6 @@ public:
 	Vector3 calWorldPos(Vector3 Tilepos);
 
 	void setState(MAP_TYPE MT);
-	void Virtual_Keyboard(double dt);
 
 	//Tile Placing
 	int selectedTile;
@@ -381,8 +387,7 @@ private:
 	std::string file_Directory;
 	std::string OutputFolder;
 
-	float keyboard_timer;
-	char temp_string;
+	//float keyboard_timer;
 	std::string temp_total_string;
 	std::vector <std::string> input_keyboard;
 

@@ -14,6 +14,7 @@
     <ClCompile Include="Source\GabrielDLC.cpp" />
     <ClCompile Include="Source\MatrixStack.cpp" />
     <ClCompile Include="Source\Mtx44.cpp" />
+    <ClCompile Include="Source\OtherDLC.cpp" />
     <ClCompile Include="Source\timer.cpp" />
     <ClCompile Include="Source\Vector2.cpp" />
     <ClCompile Include="Source\Vector3.cpp" />
@@ -23,6 +24,7 @@
     <ClInclude Include="Source\MatrixStack.h" />
     <ClInclude Include="Source\Mtx44.h" />
     <ClInclude Include="Source\MyMath.h" />
+    <ClInclude Include="Source\OtherDLC.h" />
     <ClInclude Include="Source\timer.h" />
     <ClInclude Include="Source\Vector2.h" />
     <ClInclude Include="Source\Vector3.h" />

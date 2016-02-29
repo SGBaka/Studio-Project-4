@@ -46,59 +46,6 @@ MapScene::~MapScene()
 
 }
 
-string ExePath() {
-	char buffer[MAX_PATH];
-	GetModuleFileNameA(NULL, buffer, MAX_PATH);
-	string::size_type pos = string(buffer).find_last_of("\\/");
-	string newBuffer = string(buffer).substr(0, pos);
-	pos = newBuffer.find_last_of("\\/");
-
-	return newBuffer.substr(0, pos);
-}
-
-vector<string> get_all_files_name_within_folder(string folder)
-{
-	vector<string> files_name;
-
-	char search_path[200];
-	std::sprintf(search_path, "%s/*.*", folder.c_str());
-	//WIN32_FIND_DATA fd;
-	LPWIN32_FIND_DATAA fd;
-	HANDLE hFind = ::FindFirstFileA(search_path, fd);
-
-	if (hFind != INVALID_HANDLE_VALUE) {
-		do {
-			if (!(fd->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-				files_name.push_back(fd->cFileName);
-			}
-		} while (::FindNextFileA(hFind, fd));
-		::FindClose(hFind);
-	}
-	return files_name;
-}
-
-vector<string> get_all_folder_name_within_folder(string folder)
-{
-	vector<string> folders_name;
-
-	char search_path[200];
-	std::sprintf(search_path, "%s/*.*", folder.c_str());
-	//WIN32_FIND_DATA fd;
-	LPWIN32_FIND_DATAA fd;
-	HANDLE hFind = ::FindFirstFileA(search_path, fd);
-
-	if (hFind != INVALID_HANDLE_VALUE) {
-		do {
-			if (!(fd->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {		
-			}
-			else
-				folders_name.push_back(fd->cFileName);
-		} while (::FindNextFileA(hFind, fd));
-		::FindClose(hFind);
-	}
-	return folders_name;
-}
-
 /******************************************************************************/
 /*!
 \brief
@@ -158,7 +105,6 @@ void MapScene::Init()
 	InitSimulation();
 
 	temp = false;
-	temp_string = -1;
 	temp_total_string = "";
 }
 
@@ -240,8 +186,14 @@ void MapScene::InitMeshList()
 	P_meshArray[E_GEO_BUTTON_LEFT] = MeshBuilder::GenerateQuad("Button Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_BUTTON_LEFT]->textureID[0] = LoadTGA(script.getGameData("image.button.left").c_str(), true);
 
-	P_meshArray[E_GEO_SAVE] = MeshBuilder::GenerateQuad("Save button", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_SAVE]->textureID[0] = LoadTGA(script.getGameData("image.button.Save").c_str(), true);
+	P_meshArray[E_GEO_BUTTON_SAVE] = MeshBuilder::GenerateQuad("Save button", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_BUTTON_SAVE]->textureID[0] = LoadTGA(script.getGameData("image.button.Save").c_str(), true);
+
+	P_meshArray[E_GEO_BUTTON_LOAD] = MeshBuilder::GenerateQuad("Load button", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_BUTTON_LOAD]->textureID[0] = LoadTGA(script.getGameData("image.button.load").c_str(), true);
+
+	P_meshArray[E_GEO_BUTTON_DIRECTORY] = MeshBuilder::GenerateQuad("Directory Button", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_BUTTON_DIRECTORY]->textureID[0] = LoadTGA(script.getGameData("image.button.directory").c_str(), true);
 
 	//Tile Selecteion (Bordered)
 	P_meshArray[E_GEO_WALL_BORDER] = MeshBuilder::GenerateQuad("Wall (Border)", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
@@ -316,8 +268,26 @@ void MapScene::InitMenu(void)
 	m_B = new Button;
 	m_B->Position.Set(Application::GetWindowWidth()*0.98f, Application::GetWindowHeight()*0.19f, 0.1f);
 	m_B->Scale.Set(20, 20, 20);
-	m_B->mesh = P_meshArray[E_GEO_SAVE];
+	m_B->mesh = P_meshArray[E_GEO_BUTTON_SAVE];
 	m_B->ID = BI_SAVE;
+	m_B->labeltype = Button::LT_NONE;
+	m_B->gamestate = MT_CREATE;
+	v_buttonList.push_back(m_B);
+
+	m_B = new Button;
+	m_B->Position.Set(Application::GetWindowWidth()*0.98f, Application::GetWindowHeight()*0.26f, 0.1f);
+	m_B->Scale.Set(20, 20, 20);
+	m_B->mesh = P_meshArray[E_GEO_BUTTON_LOAD];
+	m_B->ID = BI_LOAD;
+	m_B->labeltype = Button::LT_NONE;
+	m_B->gamestate = MT_CREATE;
+	v_buttonList.push_back(m_B);
+
+	m_B = new Button;
+	m_B->Position.Set(Application::GetWindowWidth()*0.98f, Application::GetWindowHeight()*0.33f, 0.1f);
+	m_B->Scale.Set(20, 20, 20);
+	m_B->mesh = P_meshArray[E_GEO_BUTTON_DIRECTORY];
+	m_B->ID = BI_DIRECTORY;
 	m_B->labeltype = Button::LT_NONE;
 	m_B->gamestate = MT_CREATE;
 	v_buttonList.push_back(m_B);
@@ -394,7 +364,8 @@ void MapScene::InitMenu(void)
 		S_MB->gamestate = MT_REPLACE;
 		v_textButtonList.push_back(S_MB);
 	}
-	//edot difficulty
+
+	//Editor Difficulty
 	total_button = buttonScript.get<int>("editor_difficulty.total_button");
 	for (int i = 1; i <= total_button; i++)
 	{
@@ -405,6 +376,20 @@ void MapScene::InitMenu(void)
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 		S_MB->gamestate = MT_DIFFICULTY;
+		v_textButtonList.push_back(S_MB);
+	}
+
+	//Editor Load Confirmation
+	total_button = buttonScript.get<int>("editor_load.total_button");
+	for (int i = 1; i <= total_button; i++)
+	{
+		std::string buttonName = "editor_load.textbutton_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
+
+		S_MB = new TextButton;
+		S_MB->pos.Set(Application::GetWindowWidth()* buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
+		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
+		S_MB->gamestate = MT_LOAD;
 		v_textButtonList.push_back(S_MB);
 	}
 }
@@ -531,14 +516,15 @@ bool MapScene::InitLevel(int level)
 
 	if (MENU_STATE == MT_EDIT)
 	{
-		std::string no;
+		/*std::string no;
 		cout << "Map Level: ";
 		cin >> no;
-		newMapName = no;
+		newMapName = no;*/
 
 		std::stringstream ss;
-		ss << file_Directory + no + ".csv";
+		ss << file_Directory + temp_total_string + ".csv";
 		temp = ML_map.loadMap(ss.str());
+		newMapName = temp_total_string;
 
 		if (temp == false)
 		{
@@ -768,60 +754,6 @@ void MapScene::UpdateButtons(void)
 	}
 }
 
-void MapScene::Virtual_Keyboard(double dt)
-{
-	keyboard_timer -= (float)dt;
-	static bool any_press = false;
-	if (any_press == false)
-	{
-		for (int i = VK_LBUTTON; i <= VK_OEM_CLEAR; i++)
-		{
-			//std::cout << i << std::endl;
-			if ((GetAsyncKeyState(i) & 0x8001) != 0)
-			{
-				keyboard_timer = 0.1f;
-				any_press = true;
-
-				if (i == VK_BACK)
-				{
-					temp_total_string = temp_total_string.substr(0, temp_total_string.size() - 1);
-				}
-				else
-				{
-					// Letter && Number
-					if ((i >= 65 && i <= 90 || i >= 48 && i <= 57) && temp_total_string.size() < 10)
-					{
-						temp_string = i;
-						std::stringstream ss;
-						std::string s;
-
-						ss << temp_string;
-						s = ss.str();
-						temp_total_string += s;
-					}
-				}
-			}
-		}
-	}
-	else if (any_press == true)
-	{
-		bool any_key = false;
-		for (int i = VK_LBUTTON; i <= VK_OEM_CLEAR; i++)
-		{
-			//std::cout << i << std::endl;
-			if ((GetAsyncKeyState(i) & 0x8001) != 0)
-			{
-				any_key = true;
-			}
-		}
-
-		if (any_key == false || keyboard_timer < 0)
-		{
-			any_press = false;
-		}
-	}
-}
-
 /******************************************************************************/
 /*!
 \brief
@@ -847,7 +779,6 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 
 	UpdateTextButtons();
 	UpdateButtons();
-	//Virtual_Keyboard(dt);
 
 	if (f_fov != f_fov_target)
 	{
@@ -932,6 +863,10 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 						   {
 							   MENU_STATE = MT_DIFFICULTY;
 						   }
+						   else if (FetchTB(nameScript.get<std::string>("editor_replace.textbutton_3.text"))->active)
+						   {
+							   MENU_STATE = MT_CREATE;
+						   }
 					   }
 	}
 		break;
@@ -1014,7 +949,60 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 								  }
 								  MENU_STATE = MT_NEW;
 							  }
+							  else if (FetchTB(nameScript.get<std::string>("editor_difficulty.textbutton_4.text"))->active)
+							  {
+								  MENU_STATE = MT_CREATE;
+							  }
 						  }
+	}
+		break;
+
+	case MT_LOAD:
+	{
+					temp_total_string = Virtual_Keyboard(dt, temp_total_string);
+					static bool isEscPressed = false;
+					if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
+					{
+						isEscPressed = true;
+					}
+					else if (!Application::IsKeyPressed(VK_ESCAPE) && isEscPressed)
+					{
+						isEscPressed = false;
+					}
+
+					static bool isEnterPressed = false;
+					if (Application::IsKeyPressed(VK_RETURN) && !isEnterPressed)
+					{
+						isEnterPressed = true;
+					}
+					else if (!Application::IsKeyPressed(VK_RETURN) && isEnterPressed)
+					{
+						isEnterPressed = false;
+
+						MENU_STATE = MT_EDIT;
+						InitSimulation();
+					}
+
+					if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
+					{
+						bLButtonState = true;
+					}
+					if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
+					{
+						bLButtonState = false;
+
+						LuaScript nameScript("button");
+
+						if (FetchTB(nameScript.get<std::string>("editor_load.textbutton_1.text"))->active)
+						{
+							MENU_STATE = MT_EDIT;
+							InitSimulation();
+						}
+						else if (FetchTB(nameScript.get<std::string>("editor_load.textbutton_2.text"))->active)
+						{
+							MENU_STATE = MT_CREATE;
+						}
+					}
 	}
 		break;
 
@@ -1103,6 +1091,11 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 					}
 				}
 			}
+			else if (FetchBUTTON(BI_LOAD)->active)
+			{
+				MENU_STATE = MT_LOAD;
+				temp_total_string = "";
+			}
 			else if (FetchBUTTON(BI_WALL)->active)
 			{
 				selectedTile = BI_WALL;
@@ -1132,30 +1125,6 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 			placeTile(selectedTile);
 		if (bRButtonState)
 			placeTile(BI_FLOOR);
-
-		/*if (Application::IsKeyPressed('P'))
-		{
-			if (Auto_MapName == false)
-			{
-				std::cout << "Map Name: ";
-				std::cin >> newMapName;
-
-				std::stringstream ss;
-				ss << "GameData//Maps//" << newMapName << ".csv";
-				ML_map.saveMap_Creator(ss.str());
-			}
-			else
-			{
-				if (newMapName != "")
-				{
-					MENU_STATE = MT_REPLACE;
-				}
-				else
-				{
-					MENU_STATE = MT_DIFFICULTY;
-				}
-			}
-		}*/
 		break;
 	}
 
@@ -1790,14 +1759,6 @@ void MapScene::RenderUI()
 	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), UIColor);
 	modelStack.PopMatrix();
 
-	std::stringstream ss3;
-	ss3 << temp_total_string;
-	modelStack.PushMatrix();
-	modelStack.Translate(Application::GetWindowWidth() * 0.5f - 300.0f, Application::GetWindowHeight() * 0.5f, 0);
-	modelStack.Scale(35, 35, 1);
-	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss3.str(), UIColor);
-	modelStack.PopMatrix();
-
 	if (selectedTile == BI_FLOOR)
 	{
 		modelStack.PushMatrix();
@@ -1951,7 +1912,7 @@ void MapScene::RenderUI()
 	{
 					   modelStack.PushMatrix();
 					   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
-					   modelStack.Scale(400, 300, 1);
+					   modelStack.Scale(Application::GetWindowWidth() * 0.3f, Application::GetWindowHeight() * 0.35f, 1);
 					   RenderMeshOnScreen(P_meshArray[E_GEO_POPUP]);
 					   modelStack.PopMatrix();
 
@@ -1960,10 +1921,38 @@ void MapScene::RenderUI()
 					   std::string buttonName = "editor_difficulty.";
 
 					   modelStack.PushMatrix();
-					   modelStack.Translate(Application::GetWindowWidth()*buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
+					   modelStack.Translate(Application::GetWindowWidth() * buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
 				       modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 					   RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
 					   modelStack.PopMatrix();
+	}
+		break;
+
+	case MT_LOAD:
+	{
+						  modelStack.PushMatrix();
+						  modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
+						  modelStack.Scale(Application::GetWindowWidth() * 0.3f, Application::GetWindowHeight() * 0.35f, 1);
+						  RenderMeshOnScreen(P_meshArray[E_GEO_POPUP]);
+						  modelStack.PopMatrix();
+
+						  LuaScript buttonScript("button");
+
+						  std::string buttonName = "editor_load.";
+
+						  modelStack.PushMatrix();
+						  modelStack.Translate(Application::GetWindowWidth()*buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
+						  modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
+						  RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
+						  modelStack.PopMatrix();
+
+						  std::stringstream ss3;
+						  ss3 << temp_total_string;
+						  modelStack.PushMatrix();
+						  modelStack.Translate(Application::GetWindowWidth() * 0.36f, Application::GetWindowHeight() * 0.5f, 0);
+						  modelStack.Scale(35, 35, 1);
+						  RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss3.str(), UIColor);
+						  modelStack.PopMatrix();
 	}
 		break;
 	}

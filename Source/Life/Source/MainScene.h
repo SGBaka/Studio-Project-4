@@ -118,7 +118,6 @@ private:
 	};
 
 public:
-
 	enum SOUND_TYPE
 	{
 		ST_BUTTON_CLICK,
@@ -170,6 +169,7 @@ public:
 	bool shownSonar, shownEnemy, shownZone;
 	int LEVEL;
 	int tutorialStage;
+	string LEVELNAME;
 
 	SoundEngine SE_Engine, SE_Engine2;
 	ISoundSource *SoundList[ST_TOTAL];

@@ -182,6 +182,7 @@ void MainScene::InitMeshList()
 	P_meshArray[E_GEO_STAR]->textureID[0] = LoadTGA(script.getGameData("image.background.star").c_str(), true);
 }
 
+
 /******************************************************************************/
 /*!
 \brief
@@ -252,9 +253,19 @@ Initializes simulation
 bool MainScene::InitSimulation(void)
 {
 	//Init Character/world stuff here
-	if (!InitLevel(LEVEL))
+	if (LEVEL == 0)
 	{
-		return false;
+		if (!InitLevel(LEVELNAME))
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (!InitLevel(LEVEL))
+		{
+			return false;
+		}
 	}
 
 	f_timer = 0.f;
@@ -396,6 +407,7 @@ bool MainScene::InitLevel(int level)
 
 bool MainScene::InitLevel(string filename)
 {
+	std::cout << filename << std::endl;
 	std::cout << "\nLoading map...\n";
 
 	if (!ML_map.loadMap(filename))

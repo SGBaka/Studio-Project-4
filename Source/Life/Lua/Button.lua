@@ -51,7 +51,15 @@ main_selection = {
 		posY = 0.45
 	},
 
-	total_button = 2
+	--[[option_2 = Play Selected Level]]--
+	option_3 = {
+		text = "Find Your Level",
+		scale = 30.0,
+		posX = 0.5,
+		posY = 0.4
+	},
+
+	total_button = 3
 }
 
 option = {
@@ -92,26 +100,6 @@ option = {
 	total_option = 1		
 }
 
-map_screen = {
-	--[[Button_1 = New Map]]--
-	textbutton_1 = {
-		text = "New Map",
-		scale = 30.0,
-		posX = 0.5,
-		posY = 0.45
-	},
-
-	--[[Button_2 = Edit Map]]--
-	textbutton_2 = {
-		text = "Edit Map",
-		scale = 30.0,
-		posX = 0.5,
-		posY = 0.40
-	},
-
-	total_button = 2
-}
-
 editor_replace = {
 	--[[Button_1 = Replace Map]]--
 	textbutton_1 = {
@@ -125,11 +113,19 @@ editor_replace = {
 	textbutton_2 = {
 		text = "No",
 		scale = 35.0,
+		posX = 0.49,
+		posY = 0.34
+	},
+
+	--[[Button_3 = Go Back]]--
+	textbutton_3 = {
+		text = "Back",
+		scale = 35.0,
 		posX = 0.59,
 		posY = 0.34
 	},
 
-	total_button = 2
+	total_button = 3
 }
 
 editor_difficulty = {
@@ -162,7 +158,40 @@ editor_difficulty = {
 		posY = 0.35
 	},
 
-	total_button = 3		
+	--[[Button_4 = Back Button]]--
+	textbutton_4 = {
+		text = "Back",
+		scale = 25.0,
+		posX = 0.48,
+		posY = 0.25
+	},
+
+	total_button = 4
+}
+
+editor_load = {
+	text = "Level Name:",
+	scale = 35.0,
+	posX = 0.35,
+	posY = 0.60,
+
+	--[[Button_1 = Confirm Button]]--
+	textbutton_1 = {
+		text = "Confirm",
+		scale = 25.0,
+		posX = 0.37,
+		posY = 0.30
+	},
+		
+	--[[Button_2 = Back Button]]--
+	textbutton_2 = {
+		text = "Back",
+		scale = 25.0,
+		posX = 0.60,
+		posY = 0.30
+	},
+
+	total_button = 2
 }
 
 end_screen = {
