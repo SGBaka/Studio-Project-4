@@ -16,7 +16,7 @@ std::string Virtual_Keyboard(double dt, std::string input)
 			//std::cout << i << std::endl;
 			if ((GetAsyncKeyState(i) & 0x8001) != 0)
 			{
-				keyboard_timer = 0.08f;
+				keyboard_timer = 0.1f;
 				any_press = true;
 				if (i == VK_BACK)
 				{

@@ -61,7 +61,7 @@ public:
 
 	bool isVisible;
 
-	static int AI_counter;
+	static int smartCount, stupidCount;
 
 	Color color;
 

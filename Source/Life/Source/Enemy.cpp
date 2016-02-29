@@ -2,7 +2,8 @@
 #include "Player.h"
 #include "MyMath.h"
 
-int cEnemy::AI_counter = 0;
+int cEnemy::smartCount = 0;
+int cEnemy::stupidCount = 0;
 
 cEnemy::cEnemy()
 : route("")
@@ -65,7 +66,7 @@ cEnemy::cEnemy()
 
 cEnemy::~cEnemy()
 {
-	AI_counter = 0;
+	smartCount = stupidCount = 0;
 	SE_Engine.Exit();
 }
 
@@ -95,11 +96,11 @@ void cEnemy::Init(Vector3 position)
 	this->position = position;
 	rotation = 0.f;
 
-	if (AI_counter < 2)
+	if ((smartCount < 2 && rand() % 2) || stupidCount >= 2)
 	{
 		this->smart = true;
 		setWaypoints();
-		AI_counter++;
+		smartCount++;
 	}
 	else
 	{
@@ -112,7 +113,7 @@ void cEnemy::Init(Vector3 position)
 
 		patrolPath.WayPointTileList.push_back(temp);
 		this->smart = false;
-		AI_counter++;
+		stupidCount++;
 	}
 
 	if (route.empty())

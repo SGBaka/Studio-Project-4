@@ -162,8 +162,8 @@ editor_difficulty = {
 	textbutton_4 = {
 		text = "Back",
 		scale = 25.0,
-		posX = 0.48,
-		posY = 0.25
+		posX = 0.73,
+		posY = 0.2
 	},
 
 	total_button = 4
