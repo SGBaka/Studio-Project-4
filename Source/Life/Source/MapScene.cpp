@@ -1901,9 +1901,9 @@ void MapScene::RenderUI()
 					   std::stringstream ss;
 					   ss << "Replace [" << newMapName << ".csv]?";
 					   modelStack.PushMatrix();
-					   modelStack.Translate(Application::GetWindowWidth() * 0.5f - 250.0f, Application::GetWindowHeight() * 0.5f, 0);
-					   modelStack.Scale(25, 25, 1);
-					   RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+					   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.7f, 0);
+					   modelStack.Scale(35, 35, 1);
+					   RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColorPressed);
 					   modelStack.PopMatrix();
 	}
 		break;
@@ -1923,7 +1923,7 @@ void MapScene::RenderUI()
 					   modelStack.PushMatrix();
 					   modelStack.Translate(Application::GetWindowWidth() * buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
 				       modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
-					   RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
+					   RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColorPressed);
 					   modelStack.PopMatrix();
 	}
 		break;
@@ -1949,9 +1949,9 @@ void MapScene::RenderUI()
 						  std::stringstream ss3;
 						  ss3 << temp_total_string;
 						  modelStack.PushMatrix();
-						  modelStack.Translate(Application::GetWindowWidth() * 0.36f, Application::GetWindowHeight() * 0.5f, 0);
+						  modelStack.Translate(Application::GetWindowWidth()*buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight() * 0.5f, 0);
 						  modelStack.Scale(35, 35, 1);
-						  RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss3.str(), UIColor);
+						  RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss3.str(), UIColorPressed);
 						  modelStack.PopMatrix();
 	}
 		break;

@@ -621,7 +621,7 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 					   if (SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
 						   SE_Engine.stopAllSounds();
 
-					   if (f_timer > 2.f || Application::IsKeyPressed(VK_LBUTTON))
+					   if (f_timer > 4.f || Application::IsKeyPressed(VK_LBUTTON))
 					   {
 						   MENU_STATE = E_M_MAIN;
 					   }
@@ -1766,9 +1766,9 @@ void MenuScene::Render()
 							std::string buttonName = "option.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 							modelStack.PushMatrix();
 							modelStack.Translate(v3_Menupos[MENU_STATE]);
-							modelStack.Translate(Application::GetWindowWidth()*0.5f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.48f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
+							modelStack.Translate(Application::GetWindowWidth()*0.5f + buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*0.45f + +buttonScript.get<float>(buttonName + "posY"), 0.1f);
 							modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
-							RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
+							RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), Color(1, 1, 1));
 							modelStack.PopMatrix();
 						}
 						RenderTextButtons();
@@ -1849,7 +1849,7 @@ void MenuScene::Render()
 					 modelStack.Translate(v3_Menupos[MENU_STATE]);
 					 modelStack.Translate(Application::GetWindowWidth() * buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
 					 modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
-					 RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
+					 RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), Color(1,1,1));
 					 modelStack.PopMatrix();
 					 break;
 	}

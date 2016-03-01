@@ -66,14 +66,14 @@ main_skip = {
 	text = "Skip Tutorial?",
 	scale = 35.0,
 	posX = 0.5,
-	posY = 0.5,
+	posY = 0.55,
 
 	--[[option_1 = Skip]]--
 	option_1 = {
-		text = "Skip",
+		text = "Yes",
 		scale = 30.0,
 		posX = 0.5,
-		posY = 0.45
+		posY = 0.5
 	},
 
 	--[[option_2 = No]]--
@@ -81,7 +81,7 @@ main_skip = {
 		text = "No",
 		scale = 30.0,
 		posX = 0.5,
-		posY = 0.4
+		posY = 0.45
 	},
 
 	total_button = 2
@@ -149,25 +149,25 @@ editor_replace = {
 	--[[Button_1 = Replace Map]]--
 	textbutton_1 = {
 		text = "Yes",
-		scale = 35.0,
-		posX = 0.39,
-		posY = 0.34
+		scale = 30.0,
+		posX = 0.44,
+		posY = 0.44
 	},
 
 	--[[Button_2 = Save as New Map]]--
 	textbutton_2 = {
 		text = "No",
-		scale = 35.0,
-		posX = 0.49,
-		posY = 0.34
+		scale = 30.0,
+		posX = 0.54,
+		posY = 0.44
 	},
 
 	--[[Button_3 = Go Back]]--
 	textbutton_3 = {
 		text = "Back",
-		scale = 35.0,
-		posX = 0.59,
-		posY = 0.34
+		scale = 25.0,
+		posX = 0.65,
+		posY = 0.25
 	},
 
 	total_button = 3
@@ -207,8 +207,8 @@ editor_difficulty = {
 	textbutton_4 = {
 		text = "Back",
 		scale = 25.0,
-		posX = 0.48,
-		posY = 0.25
+		posX = 0.73,
+		posY = 0.2
 	},
 
 	total_button = 4
@@ -224,7 +224,7 @@ editor_load = {
 	textbutton_1 = {
 		text = "Confirm",
 		scale = 25.0,
-		posX = 0.37,
+		posX = 0.35,
 		posY = 0.30
 	},
 		
@@ -232,7 +232,7 @@ editor_load = {
 	textbutton_2 = {
 		text = "Back",
 		scale = 25.0,
-		posX = 0.60,
+		posX = 0.550,
 		posY = 0.30
 	},
 
