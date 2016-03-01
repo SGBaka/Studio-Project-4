@@ -141,6 +141,8 @@ void MenuScene::Init()
 		break;
 	case MenuScene::MT_END_MENU:
 		MENU_STATE = E_M_END;
+	case MenuScene::MT_END_MENU_MULT:
+		MENU_STATE = E_M_END_MULT;
 		break;
 	case MenuScene::MT_SONAR:
 		MENU_STATE = E_M_SONAR;
@@ -333,6 +335,9 @@ void MenuScene::InitMenu(void)
 	if (CUR_MENU == MT_END_MENU)
 		v3_MenuCam = v3_Menupos[E_M_END] - Vector3(0, 80, 0);
 
+	if (CUR_MENU == MT_END_MENU_MULT)
+		v3_MenuCam = v3_Menupos[E_M_END_MULT] - Vector3(0, 80, 0);
+
 	LuaScript buttonScript("button");
 
 	int total_option = 0;
@@ -425,6 +430,20 @@ void MenuScene::InitMenu(void)
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 		S_MB->gamestate = E_M_END;
+		v_textButtonList.push_back(S_MB);
+	}
+
+	// Multiplayer End Menu (Back)
+	total_button = buttonScript.get<int>("end_screen_mult.total_button");
+	for (int i = 1; i <= total_button; i++)
+	{
+		std::string buttonName = "end_screen_mult.textbutton_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
+
+		S_MB = new TextButton;
+		S_MB->pos.Set(Application::GetWindowWidth()* buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()* buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
+		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
+		S_MB->gamestate = E_M_END_MULT;
 		v_textButtonList.push_back(S_MB);
 	}
 }
@@ -705,6 +724,41 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 							loader.assign(MainScene::GetInstance()->LEVEL, 0, 1, true);
 							loader.saveData();
 							SceneManager::Instance()->pop();
+						}
+					}
+					break;
+	}
+	case E_M_END_MULT:
+	{
+					if (SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
+						SE_Engine.stopAllSounds();
+
+					static bool mRButtonPressed = false;
+					if (Application::IsKeyPressed(VK_RBUTTON) && !mRButtonPressed)
+					{
+						mRButtonPressed = true;
+					}
+					if (!Application::IsKeyPressed(VK_RBUTTON) && mRButtonPressed)
+					{
+						mRButtonPressed = false;
+					}
+
+					if (!bLButtonState && Application::IsKeyPressed(VK_LBUTTON))
+					{
+						bLButtonState = true;
+					}
+					if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
+					{
+						bLButtonState = false;
+
+						LuaScript nameScript("button");
+
+						if (FetchTB(nameScript.get<std::string>("end_screen.textbutton_1.text"))->active)
+						{
+							SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK]);
+							SceneManager::Instance()->pop();
+							SceneManager::Instance()->pop();
+							SceneManager::Instance()->push(SceneManager::S_MAIN_MENU);
 						}
 					}
 					break;
@@ -1748,6 +1802,28 @@ void MenuScene::Render()
 						RenderMeshOnScreen(P_meshArray[E_GEO_STAR]);
 						modelStack.PopMatrix();
 					}
+					RenderTextButtons();
+					RenderButtons();
+					break;
+	}
+
+	case E_M_END_MULT:
+	{
+					modelStack.PushMatrix();
+					modelStack.LoadIdentity();
+					modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
+					RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_END]);
+					modelStack.PopMatrix();
+
+					std::stringstream ss2;
+					ss2 << "PLAYER " << SceneManager::Instance()->winner << " WINS!";
+					modelStack.PushMatrix();
+					modelStack.Translate(v3_Menupos[MENU_STATE]);
+					modelStack.Translate(Application::GetWindowWidth()*0.65f - 180, Application::GetWindowHeight() * 0.5f, 0.1);
+					modelStack.Scale(40, 40, 40);
+					RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), UIColor);
+					modelStack.PopMatrix();
+
 					RenderTextButtons();
 					RenderButtons();
 					break;

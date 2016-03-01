@@ -577,45 +577,50 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			CO->Update(dt);
 		}
 	}
-
-	//float cal = ML_map.star_one;
-	if (onExit == true)
+	for (int i = 0; i < player_List.size(); ++i)
 	{
-		/*if (f_timer < ML_map.star_three)
+		if (onExit == true)
 		{
-		SceneManager::Instance()->end_star = 3;
-		float cal2 = cal - f_timer;
-		ML_map.map_data[0][4] = std::to_string(static_cast<unsigned long long>(ML_map.star_three - (cal2 / 7)));
-		ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
-		ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
+			/*if (f_timer < ML_map.star_three)
+			{
+			SceneManager::Instance()->end_star = 3;
+			float cal2 = cal - f_timer;
+			ML_map.map_data[0][4] = std::to_string(static_cast<unsigned long long>(ML_map.star_three - (cal2 / 7)));
+			ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
+			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
 
-		LuaScript scriptlevel("maps");
-		std::string luaName = "map.map.level_1";
-		ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
+			LuaScript scriptlevel("maps");
+			std::string luaName = "map.map.level_1";
+			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
+			}
+			else if (f_timer < ML_map.star_two)
+			{
+			SceneManager::Instance()->end_star = 2;
+			float cal2 = cal - f_timer;
+			ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
+			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
+
+			LuaScript scriptlevel("maps");
+			std::string luaName = "map.map.level_1";
+			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
+			}
+			else
+			{
+			SceneManager::Instance()->end_star = 1;
+			float cal2 = cal - f_timer;
+			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
+
+			LuaScript scriptlevel("maps");
+			std::string luaName = "map.map.level_1";
+			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
+			}*/
+			if (player_List[i]->playerID == 1)
+				SceneManager::Instance()->winner = 1;
+			if (player_List[i]->playerID == 2)
+				SceneManager::Instance()->winner = 2;
+			SceneManager::Instance()->replace(SceneManager::S_END_MENU_MULT);
+			return;
 		}
-		else if (f_timer < ML_map.star_two)
-		{
-		SceneManager::Instance()->end_star = 2;
-		float cal2 = cal - f_timer;
-		ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
-		ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
-
-		LuaScript scriptlevel("maps");
-		std::string luaName = "map.map.level_1";
-		ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
-		}
-		else
-		{
-		SceneManager::Instance()->end_star = 1;
-		float cal2 = cal - f_timer;
-		ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
-
-		LuaScript scriptlevel("maps");
-		std::string luaName = "map.map.level_1";
-		ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
-		}*/
-		SceneManager::Instance()->replace(SceneManager::S_END_MENU);
-		return;
 	}
 
 	static bool isEscPressed = false;

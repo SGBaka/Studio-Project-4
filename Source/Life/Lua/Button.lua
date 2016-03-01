@@ -266,3 +266,15 @@ end_screen = {
 
 	total_button = 3
 }
+
+end_screen_mult = {
+	--[[Button_1 = Back]]--
+	textbutton_1 = {
+		text = "Back",
+		scale = 30.0,
+		posX = 0.45,
+		posY = 0.20
+	},
+
+	total_button = 1
+}

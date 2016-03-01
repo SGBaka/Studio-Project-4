@@ -13,6 +13,7 @@ Default constructor
 SceneManager::SceneManager()
 {
 	end_star = -1;
+	winner = -1;
 }
 
 /******************************************************************************/
@@ -117,6 +118,13 @@ void SceneManager::push(SCENES newScene)
 		scene = new MenuScene();
 		MenuScene *ms_tmp = dynamic_cast<MenuScene*>(scene);
 		ms_tmp->setMenu(MenuScene::MT_END_MENU);
+		break;
+	}
+	case SceneManager::S_END_MENU_MULT:
+	{
+		scene = new MenuScene();
+		MenuScene *ms_tmp = dynamic_cast<MenuScene*>(scene);
+		ms_tmp->setMenu(MenuScene::MT_END_MENU_MULT);
 		break;
 	}
 	case SceneManager::S_GAME:

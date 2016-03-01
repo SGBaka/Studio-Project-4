@@ -21,6 +21,7 @@ public:
 		S_MAIN_MENU,
 		S_PAUSE_MENU,
 		S_END_MENU,
+		S_END_MENU_MULT,
 		S_GAME,
 		S_MULT,
 		S_EDITOR_NEW,
@@ -44,6 +45,7 @@ public:
 	static void destroy();
 	
 	int end_star;
+	int winner;
 private:
 	SceneManager();
 	~SceneManager();
