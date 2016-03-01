@@ -19,6 +19,7 @@
 #include <iostream>
 #include <fstream>
 
+using namespace::std;
 /******************************************************************************/
 /*!
 Class Assignment3:
@@ -236,6 +237,10 @@ public:
 	virtual void Exit();
 	virtual void CleanShaders();
 
+	vector<string> listofMaps;
+	vector<string> listofEasy;
+	vector<string> listofMedium;
+	vector<string> listofHard;
 private:
 	// Static Constants
 	/******************************************************************************/

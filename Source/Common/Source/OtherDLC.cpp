@@ -94,15 +94,15 @@ std::vector<std::string> get_all_files_name_within_folder(std::string folder)
 	char search_path[200];
 	std::sprintf(search_path, "%s/*.*", folder.c_str());
 	//WIN32_FIND_DATA fd;
-	LPWIN32_FIND_DATAA fd;
-	HANDLE hFind = ::FindFirstFileA(search_path, fd);
+	WIN32_FIND_DATAA fd;
+	HANDLE hFind = ::FindFirstFileA(search_path, &fd);
 
 	if (hFind != INVALID_HANDLE_VALUE) {
 		do {
-			if (!(fd->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-				files_name.push_back(fd->cFileName);
+			if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+				files_name.push_back(fd.cFileName);
 			}
-		} while (::FindNextFileA(hFind, fd));
+		} while (::FindNextFileA(hFind, &fd));
 		::FindClose(hFind);
 	}
 	return files_name;

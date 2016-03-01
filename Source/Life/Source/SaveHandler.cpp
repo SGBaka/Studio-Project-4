@@ -86,6 +86,30 @@ void SaveHandler::assign(float &data, float default_data, unsigned int ID, bool 
 	}
 }
 
+void SaveHandler::assign(std::string &data, float default_data, unsigned int ID, bool save)
+{
+	std::string temp;
+	if (ID > Data.size())
+	{
+		data = default_data;
+		temp = static_cast<std::string>(data);
+		Data.push_back(temp);
+	}
+	else
+	{
+		if (save)
+		{
+			std::stringstream ss;
+			ss.str("");
+			ss << data << "\0";
+			Data[ID - 1] = ss.str();
+		}
+		else
+		{
+			data = static_cast<float>(std::stoi(Data[ID - 1]));
+		}
+	}
+}
 /****************************************************************************/
 /*!
 \brief

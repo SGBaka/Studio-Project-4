@@ -9,7 +9,7 @@
 #include "Mtx44.h"
 #include "MyMath.h"
 #include <math.h>
-
+#include <algorithm>
 #include "Application.h"
 #include "SceneManager.h"
 #include "MeshBuilder.h"
@@ -783,6 +783,7 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 							  {
 								  PREV_STATE = MENU_STATE;
 								  MENU_STATE = E_M_SKIP;
+								  listofMaps.clear();
 								  setMenu(MT_MAIN_MENU_SKIP);
 								  SE_Engine.playSound2D(SoundList[ST_BUTTON_CLICK_2]);
 								  transcomplete = false;
@@ -799,6 +800,56 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 	}
 	case E_M_SKIP:
 	{
+					 if (listofMaps.empty())
+					 {
+						 listofMaps = get_all_files_name_within_folder(file_Directory);
+
+						 for (int i = 0; i < listofMaps.size(); i++)
+						 {
+							 cout << listofMaps[i] << endl;
+						 }
+						 loader.Data.resize(10);
+
+						 for (int i = 0; i < listofMaps.size(); i++)
+						 {
+							 if (listofMaps[i][0] == 'e')
+							 {
+
+								 listofEasy.push_back(listofMaps[i]);
+							 }
+							 else if (listofMaps[i][0] == 'm')
+							 {
+								 listofMedium.push_back(listofMaps[i]);
+							 }
+							 else if (listofMaps[i][0] == 'h')
+							 {
+								 listofHard.push_back(listofMaps[i]);
+							 }
+
+						 }
+						 std::random_shuffle(listofEasy.begin(), listofEasy.end());
+						 std::random_shuffle(listofMedium.begin(), listofMedium.end());
+						 std::random_shuffle(listofHard.begin(), listofHard.end());
+						 int index = 1;
+						 for (int i = 0; i < 3; i++)
+						 {
+							 index++;
+							 loader.assign(listofEasy[i], 0, index, true);
+						 }
+						 for (int i = 0; i < 3; i++)
+						 {
+							 index++;
+							 loader.assign(listofMedium[i], 0, index, true);
+						 }
+						 for (int i = 0; i < 3; i++)
+						 {
+							 index++;
+							 loader.assign(listofHard[i], 0, index, true);
+						 }
+						 loader.saveData();
+
+					 }
+					
 					 if (!SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
 						 SE_Engine.playSound2D(SoundList[ST_BGM], 1);
 
@@ -825,7 +876,7 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 					 }
 					 if (mLButtonPressed && !Application::IsKeyPressed(VK_LBUTTON))
 					 {
-						 mLButtonPressed = false;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+						 mLButtonPressed = false;
 						 LuaScript nameScript("button");
 
 						 // Skip Tutorial

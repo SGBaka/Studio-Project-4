@@ -17,6 +17,7 @@
 #include "CharacterObject.h"
 #include "SpecialObject.h"
 #include "maploader.h"
+#include "SaveHandler.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -116,7 +117,7 @@ private:
 		BI_NEXT_MAP,
 		BI_REFRESH,
 	};
-
+	SaveHandler loader;
 public:
 	enum SOUND_TYPE
 	{

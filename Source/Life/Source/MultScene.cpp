@@ -266,7 +266,7 @@ bool MultScene::InitLevel(int level)
 {
 	std::cout << "\nLoading map...\n";
 	LuaScript scriptlevel("maps");
-	std::string luaName = "map.map.multiplayer_1";
+	std::string luaName = "map.map.Multiplayer_1";
 	if (!ML_map.loadMap(scriptlevel.getGameData(luaName.c_str())))
 	{
 		std::cout << "!!!ERROR!!! Unable to load map\n";

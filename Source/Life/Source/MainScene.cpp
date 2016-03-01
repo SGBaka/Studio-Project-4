@@ -83,6 +83,7 @@ void MainScene::Init()
 	SoundList[ST_BGM] = SE_Engine2.preloadSound(sound.getGameData("sound.backgroundO").c_str());
 
 	tutorialStage = 1;
+	loader.init("Lua//save.txt");
 	InitSimulation();
 }
 
@@ -287,13 +288,14 @@ the level to load
 bool MainScene::InitLevel(int level)
 {
 	std::cout << "\nLoading map...\n";
-	LuaScript scriptlevel("maps");
-
 	stringstream ss;
-	ss << "map.map.level_" << level;
-	std::string luaName = ss.str();
+	ss << "GameData\\Maps\\" << loader.Data[level - 1];
+	std::string name = ss.str();
 
-	if (!ML_map.loadMap(scriptlevel.getGameData(luaName.c_str())))
+	if (level == 1)
+		name = "GameData\\Maps\\tutorial1.csv";
+
+	if (!ML_map.loadMap(name))
 	{
 		std::cout << "!!!ERROR!!! Unable to load map\n";
 		return false;
@@ -746,11 +748,10 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
 			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
 
-			LuaScript scriptlevel("maps");
 			stringstream ss;
-			ss << "map.map.level_" << LEVEL;
-			std::string luaName = ss.str();
-			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
+			ss << "GameData\\Maps\\" << loader.Data[LEVEL - 1];
+			std::string name = ss.str();
+			ML_map.saveMap(name);
 		}
 		else if (f_timer < ML_map.star_two)
 		{
@@ -759,11 +760,10 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
 			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
 
-			LuaScript scriptlevel("maps");
 			stringstream ss;
-			ss << "map.map.level_" << LEVEL;
-			std::string luaName = ss.str();
-			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
+			ss << "GameData\\Maps\\" << loader.Data[LEVEL - 1];
+			std::string name = ss.str();
+			ML_map.saveMap(name);
 		}
 		else
 		{
@@ -771,11 +771,10 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			float cal2 = cal - f_timer;
 			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
 
-			LuaScript scriptlevel("maps");
 			stringstream ss;
-			ss << "map.map.level_" << LEVEL;
-			std::string luaName = ss.str();
-			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
+			ss << "GameData\\Maps\\" << loader.Data[LEVEL - 1];
+			std::string name = ss.str();
+			ML_map.saveMap(name);
 		}
 
 		SceneManager::Instance()->push(SceneManager::S_END_MENU);
@@ -787,27 +786,32 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		SE_Engine2.stopAllSounds();
 		tutorialStage++;
 
-		string filename;
-
-		switch (tutorialStage)
+		if (tutorialStage != 5)
 		{
-		case 2:
-			filename = "GameData//Maps//tutorial1.csv";
-			break;
-		case 3:
-			filename = "GameData//Maps//tutorial2.csv";
-			break;
-		case 4:
-			filename = "GameData//Maps//tutorial3.csv";
-			break;
-		case 5:
-			LEVEL++;
-			filename = "GameData//Maps//6.csv";
-			break;
+			string filename;
+
+			switch (tutorialStage)
+			{
+			case 2:
+				filename = "GameData//Maps//tutorial1.csv";
+				break;
+			case 3:
+				filename = "GameData//Maps//tutorial2.csv";
+				break;
+			case 4:
+				filename = "GameData//Maps//tutorial3.csv";
+				break;
+			}
+
+			InitLevel(filename);
 		}
 
-		InitLevel(filename);
-
+		else
+		{
+			InitLevel(2);
+			LEVEL = 2;
+		}
+	
 		f_timer = 0.f;
 		i_SimulationSpeed = 1;
 		onDanger = onExit = shownZone = shownSonar = shownEnemy = false;
