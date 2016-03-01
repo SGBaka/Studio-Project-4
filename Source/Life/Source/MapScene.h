@@ -136,7 +136,7 @@ private:
 		BI_REFRESH,
 		BI_SAVE,
 		BI_LOAD,
-		BI_DIRECTORY,
+		BI_DELETE,
 
 		// Tiles
 		BI_WALL,
@@ -174,7 +174,7 @@ public:
 		MT_EDIT,
 		MT_NEW, // Cout File Name on Screen
 		MT_DIFFICULTY, // Difficulty Selection
-		MT_DIRECTORY,
+		MT_DELETE,
 		MT_LOAD,
 		MT_REPLACE,
 	};
@@ -390,6 +390,11 @@ private:
 	//float keyboard_timer;
 	std::string temp_total_string;
 	std::vector <std::string> input_keyboard;
+	bool delete_file;
+	float delete_timer;
+
+	bool load_file;
+	float load_timer;
 
 public:
 	static MapScene* GetInstance();

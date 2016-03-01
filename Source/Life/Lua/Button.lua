@@ -220,6 +220,13 @@ editor_load = {
 	posX = 0.35,
 	posY = 0.60,
 
+	text_failed = {
+		text = "Failed to Load",
+		scale = 35.0,
+		posX = 0.37,
+		posY = 0.67
+	},
+
 	--[[Button_1 = Confirm Button]]--
 	textbutton_1 = {
 		text = "Confirm",
@@ -237,6 +244,83 @@ editor_load = {
 	},
 
 	total_button = 2
+}
+
+editor_button = {
+	button_7 = {
+		text = "Player"
+	},
+	
+	button_8 = {
+		text = "Enemy"
+	},
+
+	button_5 = {
+		text = "Wall"
+	},
+
+	button_6 = {
+		text = "Floor"
+	},
+
+	button_9 = {
+		text = "Danger"
+	},
+
+	button_10 = {
+		text = "Win"
+	},
+
+	button_0 = {
+		text = "Main Menu"
+	},
+
+	button_1 = {
+		text = "Restart"
+	},
+
+	button_2 = {
+		text = "Save Map"
+	},
+
+	button_3 = {
+		text = "Load Map"
+	},
+
+	button_4 = {
+		text = "Delete",
+
+		text_onscreen = "Delete [",
+		text_onscreen2 = "]?",
+		scale = 35.0,
+		posX = 0.37,
+		posY = 0.70,
+		
+		text_failed = {
+			text = "Failed to Delete",
+			scale = 35.0,
+			posX = 0.37,
+			posY = 0.63
+		},
+
+		--[[Option_ 1 = Yes to Delete]]--		
+		option_1 = {
+			text = "Yes",
+			scale = 30.0,
+			posX = 0.44,
+			posY = 0.44
+		},
+
+		--[[Option_ 1 = Cancel Delete]]--		
+		option_2 = {
+			text = "No",
+			scale = 30.0,
+			posX = 0.54,
+			posY = 0.44
+		},
+		
+		total_option = 2
+	}
 }
 
 end_screen = {
