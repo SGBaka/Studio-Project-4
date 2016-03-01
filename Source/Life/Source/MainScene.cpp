@@ -85,6 +85,7 @@ void MainScene::Init()
 	tutorialStage = 1;
 	loader.init("Lua//save.txt");
 	InitSimulation();
+
 }
 
 /******************************************************************************/
@@ -1164,6 +1165,13 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 						}
 					}
 				}
+
+				if (GO_List[j]->name == "DANGER" || GO_List[j]->name == "EXIT")
+				{
+					if (checkForCollision(GO_List[j]->position, player_ptr->position, GO_List[i]->topLeft, GO_List[i]->bottomRight))
+						GO_List[j]->visible = false;
+				}
+
 			}
 		}
 	}
@@ -1268,7 +1276,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 						else if (tempType == 2 && player_ptr->sonarList[i]->segmentList[j]->type == 1 && !player_ptr->sonarList[i]->segmentList[j]->attached)
 						{
-							if (player_ptr->sonarList[i]->segmentList[j]->attached == false && player_ptr->sonarList[i]->segmentList[j]->active)
+							if (player_ptr->sonarList[i]->segmentList[j]->active)
 							{
 								GO_List[k]->visible = true;
 								player_ptr->sonarList[i]->GO.push_back(GO_List[k]);
@@ -1281,7 +1289,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 						else if (tempType == 3 && player_ptr->sonarList[i]->segmentList[j]->type == 1 && !player_ptr->sonarList[i]->segmentList[j]->attached)
 						{
-							if (player_ptr->sonarList[i]->segmentList[j]->attached == false && player_ptr->sonarList[i]->segmentList[j]->active)
+							if (player_ptr->sonarList[i]->segmentList[j]->active)
 							{
 								GO_List[k]->visible = true;
 								player_ptr->sonarList[i]->GO.push_back(GO_List[k]);

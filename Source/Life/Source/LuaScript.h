@@ -20,6 +20,8 @@ public:
 	std::vector<std::string> getTableKeys(const std::string& name);
 	std::string getGameData(const std::string& variableName);
 
+	lua_State* L;
+
 	inline void clean()
 	{
 		int n = lua_gettop(L);
@@ -115,7 +117,6 @@ public:
 	}
 
 private:
-	lua_State* L;
 	std::string filename;
 	int level;
 };

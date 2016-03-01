@@ -165,6 +165,26 @@ void MenuScene::Init()
 	SoundList[ST_BGM] = SE_Engine.preloadSound(sound.getGameData("sound.backgroundO").c_str());
 
 	file_found_timer = 0.0f;
+
+	lua_State *luaState;
+	luaState = lua_open();
+	luaL_openlibs(luaState);
+
+	if (luaL_loadfile(luaState, "..\\Life\\Lua\\test.lua") || lua_pcall(luaState, 0, 0, 0))
+	{
+		printf("error: %s", lua_tostring(luaState, -1));
+	}
+
+	lua_pushnumber(luaState, 100);
+	lua_setglobal(luaState, "value");
+
+	lua_getglobal(luaState, "var");
+	int test = (int)lua_tonumber(luaState, -1);
+
+	lua_close(luaState);
+
+	cout << "C++ can read the value set from Lua luavar = " << test << endl;
+
 }
 
 /******************************************************************************/
