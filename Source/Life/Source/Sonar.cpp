@@ -253,4 +253,5 @@ void Sonar::Update(double dt)
 float Sonar::GetSonarRadius()
 {
 	return radius;
+
 }
