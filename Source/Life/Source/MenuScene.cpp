@@ -141,6 +141,7 @@ void MenuScene::Init()
 		break;
 	case MenuScene::MT_END_MENU:
 		MENU_STATE = E_M_END;
+		break;
 	case MenuScene::MT_END_MENU_MULT:
 		MENU_STATE = E_M_END_MULT;
 		break;
@@ -326,6 +327,7 @@ void MenuScene::InitMenu(void)
 	v3_Menupos[E_M_OPTIONS].Set(0, -2000, 0);
 	v3_Menupos[E_M_MAP].Set(-4000, 0, 0);
 	v3_Menupos[E_M_END].Set(0, 2000, 0);
+	v3_Menupos[E_M_END_MULT].Set(0, 2000, 0);
 	v3_Menupos[E_M_SONAR].Set(0, 0, 0);
 	v3_Menupos[E_M_ENEMY].Set(0, 0, 0);
 	v3_Menupos[E_M_ZONE].Set(0, 0, 0);
