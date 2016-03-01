@@ -1088,14 +1088,17 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 
 							if (FetchTB(nameScript.get<std::string>("option.option_1.textbutton_1.text"))->active)
 							{
+								SceneManager::Instance()->difficulty = 1;
 								std::cout << "Easy" << std::endl;
 							}
 							else if (FetchTB(nameScript.get<std::string>("option.option_1.textbutton_2.text"))->active)
 							{
+								SceneManager::Instance()->difficulty = 2;
 								std::cout << "Medium" << std::endl;
 							}
 							else if (FetchTB(nameScript.get<std::string>("option.option_1.textbutton_3.text"))->active)
 							{
+								SceneManager::Instance()->difficulty = 3;
 								std::cout << "Hard" << std::endl;
 							}
 						}
@@ -1723,6 +1726,33 @@ void MenuScene::Render()
 					 modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
 					 RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_MAIN]);
 					 modelStack.PopMatrix();
+
+					 string diff;
+					 Color diffColor;
+					 
+					 switch (SceneManager::Instance()->difficulty)
+					 {
+					 case 1:
+						 diff = "Easy";
+						 diffColor = Color(0.5, 1, 0.5);
+						 break;
+					 case 2:
+						 diff = "Medium";
+						 diffColor = Color(1, 1, 0.5);
+						 break;
+					 case 3:
+						 diff = "Hard";
+						 diffColor = Color(1, 0.5, 0.5);
+						 break;
+					 }
+
+					 modelStack.PushMatrix();
+					 modelStack.LoadIdentity();
+					 modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.02f), static_cast<float>(Application::GetWindowHeight() * 0.97f), 0);
+					 modelStack.Scale(30, 30, 30);
+					 RenderTextOnScreen(P_meshArray[E_GEO_TEXT], diff, diffColor);
+					 modelStack.PopMatrix();
+
 					 RenderTextButtons();
 					 RenderButtons();
 					 break;
@@ -1734,6 +1764,33 @@ void MenuScene::Render()
 						  modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
 						  RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_MAIN]);
 						  modelStack.PopMatrix();
+
+						  string diff;
+						  Color diffColor;
+
+						  switch (SceneManager::Instance()->difficulty)
+						  {
+						  case 1:
+							  diff = "Easy";
+							  diffColor = Color(0.5, 1, 0.5);
+							  break;
+						  case 2:
+							  diff = "Medium";
+							  diffColor = Color(1, 1, 0.5);
+							  break;
+						  case 3:
+							  diff = "Hard";
+							  diffColor = Color(1, 0.5, 0.5);
+							  break;
+						  }
+
+						  modelStack.PushMatrix();
+						  modelStack.LoadIdentity();
+						  modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.02f), static_cast<float>(Application::GetWindowHeight() * 0.97f), 0);
+						  modelStack.Scale(30, 30, 30);
+						  RenderTextOnScreen(P_meshArray[E_GEO_TEXT], diff, diffColor);
+						  modelStack.PopMatrix();
+
 						  RenderTextButtons();
 						  RenderButtons();
 						  break;
@@ -1746,6 +1803,33 @@ void MenuScene::Render()
 						 modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.5f), static_cast<float>(Application::GetWindowHeight() * 0.5f), 0);
 						 RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_MAIN]);
 						 modelStack.PopMatrix();
+
+						 string diff;
+						 Color diffColor;
+
+						 switch (SceneManager::Instance()->difficulty)
+						 {
+						 case 1:
+							 diff = "Easy";
+							 diffColor = Color(0.5, 1, 0.5);
+							 break;
+						 case 2:
+							 diff = "Medium";
+							 diffColor = Color(1, 1, 0.5);
+							 break;
+						 case 3:
+							 diff = "Hard";
+							 diffColor = Color(1, 0.5, 0.5);
+							 break;
+						 }
+
+						 modelStack.PushMatrix();
+						 modelStack.LoadIdentity();
+						 modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.02f), static_cast<float>(Application::GetWindowHeight() * 0.97f), 0);
+						 modelStack.Scale(30, 30, 30);
+						 RenderTextOnScreen(P_meshArray[E_GEO_TEXT], diff, diffColor);
+						 modelStack.PopMatrix();
+
 						 RenderTextButtons();
 						 RenderButtons();
 						 break;
@@ -1771,6 +1855,33 @@ void MenuScene::Render()
 							RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), Color(1, 1, 1));
 							modelStack.PopMatrix();
 						}
+
+						string diff;
+						Color diffColor;
+
+						switch (SceneManager::Instance()->difficulty)
+						{
+						case 1:
+							diff = "Easy";
+							diffColor = Color(0.5, 1, 0.5);
+							break;
+						case 2:
+							diff = "Medium";
+							diffColor = Color(1, 1, 0.5);
+							break;
+						case 3:
+							diff = "Hard";
+							diffColor = Color(1, 0.5, 0.5);
+							break;
+						}
+
+						modelStack.PushMatrix();
+						modelStack.LoadIdentity();
+						modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.02f), static_cast<float>(Application::GetWindowHeight() * 0.97f), 0);
+						modelStack.Scale(30, 30, 30);
+						RenderTextOnScreen(P_meshArray[E_GEO_TEXT], diff, diffColor);
+						modelStack.PopMatrix();
+
 						RenderTextButtons();
 						RenderButtons();
 						break;
@@ -1839,6 +1950,32 @@ void MenuScene::Render()
 					 RenderMeshOnScreen(P_meshArray[E_GEO_BACKGROUND_MAIN]);
 					 modelStack.PopMatrix();
 
+					 string diff;
+					 Color diffColor;
+
+					 switch (SceneManager::Instance()->difficulty)
+					 {
+					 case 1:
+						 diff = "Easy";
+						 diffColor = Color(0.5, 1, 0.5);
+						 break;
+					 case 2:
+						 diff = "Medium";
+						 diffColor = Color(1, 1, 0.5);
+						 break;
+					 case 3:
+						 diff = "Hard";
+						 diffColor = Color(1, 0.5, 0.5);
+						 break;
+					 }
+
+					 modelStack.PushMatrix();
+					 modelStack.LoadIdentity();
+					 modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.02f), static_cast<float>(Application::GetWindowHeight() * 0.97f), 0);
+					 modelStack.Scale(30, 30, 30);
+					 RenderTextOnScreen(P_meshArray[E_GEO_TEXT], diff, diffColor);
+					 modelStack.PopMatrix();
+
 					 RenderTextButtons();
 					 RenderButtons();
 
@@ -1879,6 +2016,32 @@ void MenuScene::Render()
 					 modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
 					 modelStack.Scale(35, 35, 1);
 					 RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss3.str(), UIColor);
+					 modelStack.PopMatrix();
+
+					 string diff;
+					 Color diffColor;
+
+					 switch (SceneManager::Instance()->difficulty)
+					 {
+					 case 1:
+						 diff = "Easy";
+						 diffColor = Color(0.5, 1, 0.5);
+						 break;
+					 case 2:
+						 diff = "Medium";
+						 diffColor = Color(1, 1, 0.5);
+						 break;
+					 case 3:
+						 diff = "Hard";
+						 diffColor = Color(1, 0.5, 0.5);
+						 break;
+					 }
+
+					 modelStack.PushMatrix();
+					 modelStack.LoadIdentity();
+					 modelStack.Translate(static_cast<float>(Application::GetWindowWidth() * 0.02f), static_cast<float>(Application::GetWindowHeight() * 0.97f), 0);
+					 modelStack.Scale(30, 30, 30);
+					 RenderTextOnScreen(P_meshArray[E_GEO_TEXT], diff, diffColor);
 					 modelStack.PopMatrix();
 
 					 if (file_found == true)

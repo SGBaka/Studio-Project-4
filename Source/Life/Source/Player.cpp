@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "SceneManager.h"
 
 Player::Player() 
 : moveSpeed(4)
@@ -48,6 +49,22 @@ void Player::Init(Vector3 position)
 
 	specialCounter = playerScript.get<float>("player.special_counter");
 
+	switch (SceneManager::Instance()->difficulty)
+	{
+	case 1:
+		sonarRad = playerScript.get<float>("player.sonar_radius_e");
+		specialRad = playerScript.get<float>("player.special_radius_e");
+		break;
+	case 2:
+		sonarRad = playerScript.get<float>("player.sonar_radius_m");
+		specialRad = playerScript.get<float>("player.special_radius_m");
+		break;
+	case 3:
+		sonarRad = playerScript.get<float>("player.sonar_radius_h");
+		specialRad = playerScript.get<float>("player.special_radius_h");
+		break;
+	}
+
 	LuaScript sound("Sound");
 	SoundList[ST_FOOTSTEPS] = SE_Engine.preloadSound(sound.getGameData("sound.footsteps").c_str());
 	SoundList[ST_N_SONAR] = SE_Engine.preloadSound(sound.getGameData("sound.sonar_normal").c_str());
@@ -83,7 +100,10 @@ void Player::Update(double dt)
 			sonarTimer = 0;
 			Sonar *SNR;
 			SNR = new Sonar();
-			SNR->Init(playerScript.get<float>("player.sonar_radius"), playerScript.get<float>("player.sonar_radius2"), playerScript.get<int>("player.sonar_sides"), playerScript.get<float>("player.sonar_speed"));
+
+			SNR->Init(sonarRad, sonarRad + playerScript.get<float>("player.radius_increment"),
+				      playerScript.get<int>("player.sonar_sides"), playerScript.get<float>("player.sonar_speed"));
+
 			SNR->GenerateSonar(position, 1);
 			sonarList.push_back(SNR);
 			SE_Engine.playSound2D(SoundList[ST_N_SONAR]);
@@ -104,7 +124,11 @@ void Player::Update(double dt)
 			specialTimer2 = 0;
 			Sonar *SNR;
 			SNR = new Sonar();
-			SNR->Init(playerScript.get<float>("player.special_radius"), playerScript.get<float>("player.special_radius2"), playerScript.get<int>("player.special_sides"), playerScript.get<float>("player.special_speed"));
+
+			SNR->Init(specialRad, specialRad + playerScript.get<float>("player.radius_increment"),
+				playerScript.get<int>("player.special_sides"), 
+				playerScript.get<float>("player.special_speed"));
+
 			SNR->GenerateSonar(specialPos, 2);
 			sonarList.push_back(SNR);
 		}

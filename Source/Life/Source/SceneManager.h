@@ -46,6 +46,7 @@ public:
 	
 	int end_star;
 	int winner;
+	int difficulty;
 private:
 	SceneManager();
 	~SceneManager();

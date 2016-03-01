@@ -44,7 +44,7 @@ public:
 	float sonarCooldown, specialCooldown;
 	float sonarTimer, specialTimer;
 
-	float specialDuration, specialROF, specialTimer2, specialCounter;
+	float specialDuration, specialROF, specialTimer2, specialCounter, sonarRad, specialRad;
 	Vector3 specialPos;
 
 	bool isSpecial;
