@@ -1933,9 +1933,9 @@ void MapScene::RenderUI()
 				   std::stringstream ss;
 				   ss << "File Name: [" << newMapName << ".csv]";
 				   modelStack.PushMatrix();
-				   modelStack.Translate(Application::GetWindowWidth() * 0.5f - 300.0f, Application::GetWindowHeight() * 0.5f, 0);
+				   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
 				   modelStack.Scale(25, 25, 1);
-				   RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
+				   RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 				   modelStack.PopMatrix();
 	}
 		break;
@@ -1971,9 +1971,9 @@ void MapScene::RenderUI()
 					   std::string buttonName = "editor_difficulty.";
 
 					   modelStack.PushMatrix();
-					   modelStack.Translate(Application::GetWindowWidth() * buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
+					   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
 				       modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
-					   RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColorPressed);
+					   RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColorPressed);
 					   modelStack.PopMatrix();
 	}
 		break;
@@ -2013,11 +2013,11 @@ void MapScene::RenderUI()
 		
 	case MT_LOAD:
 	{
-					   modelStack.PushMatrix();
-					   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
-					   modelStack.Scale(Application::GetWindowWidth() * 0.3f, Application::GetWindowHeight() * 0.35f, 1);
-					   RenderMeshOnScreen(P_meshArray[E_GEO_POPUP]);
-						  modelStack.PopMatrix();
+					modelStack.PushMatrix();
+					modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
+					modelStack.Scale(Application::GetWindowWidth() * 0.3f, Application::GetWindowHeight() * 0.35f, 1);
+					RenderMeshOnScreen(P_meshArray[E_GEO_POPUP]);
+					modelStack.PopMatrix();
 
 					LuaScript buttonScript("button");
 
@@ -2043,9 +2043,9 @@ void MapScene::RenderUI()
 						std::string button_name = buttonScript.get<std::string>(buttonName + "text");
 
 						modelStack.PushMatrix();
-						modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
+						modelStack.Translate(Application::GetWindowWidth()*buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
 						modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
-						RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], button_name, UIColorPressed);
+						RenderTextOnScreen(P_meshArray[E_GEO_TEXT], button_name, UIColorPressed);
 						modelStack.PopMatrix();
 					}
 	}

@@ -224,7 +224,7 @@ editor_load = {
 		text = "Failed to Load",
 		scale = 35.0,
 		posX = 0.37,
-		posY = 0.67
+		posY = 0.70
 	},
 
 	--[[Button_1 = Confirm Button]]--
@@ -239,7 +239,7 @@ editor_load = {
 	textbutton_2 = {
 		text = "Back",
 		scale = 25.0,
-		posX = 0.550,
+		posX = 0.55,
 		posY = 0.30
 	},
 
@@ -293,30 +293,30 @@ editor_button = {
 		text_onscreen = "Delete [",
 		text_onscreen2 = "]?",
 		scale = 35.0,
-		posX = 0.37,
-		posY = 0.70,
+		posX = 0.35,
+		posY = 0.60,
 		
 		text_failed = {
 			text = "Failed to Delete",
 			scale = 35.0,
 			posX = 0.37,
-			posY = 0.63
+			posY = 0.70
 		},
 
 		--[[Option_ 1 = Yes to Delete]]--		
 		option_1 = {
 			text = "Yes",
 			scale = 30.0,
-			posX = 0.44,
-			posY = 0.44
+			posX = 0.43,
+			posY = 0.30
 		},
 
 		--[[Option_ 1 = Cancel Delete]]--		
 		option_2 = {
 			text = "No",
 			scale = 30.0,
-			posX = 0.54,
-			posY = 0.44
+			posX = 0.55,
+			posY = 0.30
 		},
 		
 		total_option = 2
