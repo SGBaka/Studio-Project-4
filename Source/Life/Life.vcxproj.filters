@@ -225,6 +225,9 @@
     <ClCompile Include="Source\MPlayer.cpp">
       <Filter>Source Files\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Source\MSonar.cpp">
+      <Filter>Source Files\Sonar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -361,6 +364,9 @@
     </ClInclude>
     <ClInclude Include="Source\MPlayer.h">
       <Filter>Header Files\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MSonar.h">
+      <Filter>Header Files\Sonar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

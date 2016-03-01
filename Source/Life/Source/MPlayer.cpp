@@ -11,6 +11,9 @@ MPlayer::MPlayer()
 , specialTimer2(specialROF)
 , specialCounter(0)
 , isSpecial(false)
+, trapCooldown(20)
+, trap1Counter(0)
+, trap2Counter(0)
 , playerID(0)
 {
 	for (int i = 0; i < 4; ++i)
@@ -74,23 +77,43 @@ void MPlayer::Update(double dt)
 				SE_Engine.playSound2D(SoundList[ST_FOOTSTEPS]);
 		}
 
-		if ((Application::IsKeyPressed('N') && sonarTimer >= sonarCooldown && playerID == 2) || 
-			(Application::IsKeyPressed(VK_LBUTTON) && sonarTimer >= sonarCooldown && playerID == 1))
+		if ((Application::IsKeyPressed(VK_LBUTTON) && sonarTimer >= sonarCooldown && playerID == 2) ||
+			(Application::IsKeyPressed('G') && sonarTimer >= sonarCooldown && playerID == 1))
 		{
 			LuaScript playerScript("character");
 			sonarTimer = 0;
-			Sonar *SNR;
-			SNR = new Sonar();
+			MSonar *SNR;
+			SNR = new MSonar();
 			SNR->Init(playerScript.get<float>("player.sonar_radius"), playerScript.get<float>("player.sonar_radius2"), playerScript.get<int>("player.sonar_sides"), playerScript.get<float>("player.sonar_speed"));
 			SNR->GenerateSonar(position, 1);
 			sonarList.push_back(SNR);
+			//cout << "Sonar!" << endl;
 		}
-		else if ((Application::IsKeyPressed('M') && specialTimer >= specialCooldown && !isSpecial && playerID == 2) 
-			|| (Application::IsKeyPressed(VK_RBUTTON) && specialTimer >= specialCooldown && !isSpecial && playerID == 1))
+		if (Application::IsKeyPressed('H') && playerID == 1 && trapCooldown == 0 && trap1Counter < 2)
 		{
-			specialPos = position;
-			specialTimer = 0;
-			isSpecial = true;
+			GameObject *GO;
+			GO = new GameObject();
+			GO->Init(currTile);
+			GO->scale.Set(MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 1);
+			GO->name = "Danger";
+			MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] = "2";
+			MultScene::GetInstance()->GO_List.push_back(GO);
+			trapCooldown = 20;
+			trap1Counter++;
+			cout << "1 Trap placed!" << endl;
+		}
+		else if (Application::IsKeyPressed(VK_RBUTTON) && playerID == 2 && trapCooldown == 0 && trap2Counter < 2)
+		{
+			GameObject *GO;
+			GO = new GameObject();
+			GO->Init(currTile);
+			GO->scale.Set(MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 1);
+			GO->name = "Danger2";
+			MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] = "2A";
+			MultScene::GetInstance()->GO_List.push_back(GO);
+			trapCooldown = 20;
+			trap2Counter++;
+			cout << "2 Trap placed!" << endl;
 		}
 	}
 	if (isSpecial && specialCounter < specialDuration)
@@ -99,8 +122,8 @@ void MPlayer::Update(double dt)
 		{
 			LuaScript playerScript("character");
 			specialTimer2 = 0;
-			Sonar *SNR;
-			SNR = new Sonar();
+			MSonar *SNR;
+			SNR = new MSonar();
 			SNR->Init(playerScript.get<float>("player.special_radius"), playerScript.get<float>("player.special_radius2"), playerScript.get<int>("player.special_sides"), playerScript.get<float>("player.special_speed"));
 			SNR->GenerateSonar(specialPos, 2);
 			sonarList.push_back(SNR);
@@ -127,7 +150,6 @@ void MPlayer::Update(double dt)
 		specialPos.SetZero();
 	}
 
-
 	for (int i = 0; i < sonarList.size(); ++i)
 	{
 		sonarList[i]->Update(dt);
@@ -137,6 +159,10 @@ void MPlayer::Update(double dt)
 			delete sonarList[i];
 			sonarList.erase(sonarList.begin() + i);
 		}
+	}
+	for (int i = 0; i < trapCooldown; ++i)
+	{
+		trapCooldown--;
 	}
 	for (int i = 0; i < moveToDir.size(); ++i)
 	{
@@ -218,7 +244,6 @@ void MPlayer::checkMovement(int mode, double dt)
 
 	if (check != (int)check)
 		moveToDir[mode] = true;
-
 }
 
 void MPlayer::movePlayer(int mode, double dt)

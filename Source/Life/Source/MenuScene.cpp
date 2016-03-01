@@ -751,10 +751,11 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 							 else if (FetchTB(nameScript.get<std::string>("main_gamemode.option_2.text"))->active)
 							 {
 								 // --! For Troy's Multiplayer Mode !--
-
-								 //PREV_STATE = MENU_STATE;
-								 //MENU_STATE = E_M_LOADING;
-
+								 PREV_STATE = MENU_STATE;
+								 if (SE_Engine.isSoundPlaying(SoundList[ST_BGM]))
+									 SE_Engine.stopAllSounds();
+								 SceneManager::Instance()->replace(SceneManager::S_MULT);
+								 break;
 							 }
 							 else if (FetchTB(nameScript.get<std::string>("main_gamemode.option_3.text"))->active)
 							 {

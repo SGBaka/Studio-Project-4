@@ -5,7 +5,7 @@
 #include "MultScene.h"
 #include "Application.h"
 #include <algorithm> 
-#include "Sonar.h"
+#include "MSonar.h"
 
 using namespace::std;
 
@@ -37,7 +37,7 @@ public:
 
 	float moveSpeed;
 
-	vector<Sonar*> sonarList;
+	vector<MSonar*> sonarList;
 
 	float sonarCooldown, specialCooldown;
 	float sonarTimer, specialTimer;
@@ -47,6 +47,9 @@ public:
 
 	bool isSpecial;
 	float playerID;
+	float trapCooldown;
+	float trap1Counter;
+	float trap2Counter;
 
 private:
 	int mapWidth, mapHeight;

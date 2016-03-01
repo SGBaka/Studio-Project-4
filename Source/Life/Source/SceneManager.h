@@ -22,6 +22,7 @@ public:
 		S_PAUSE_MENU,
 		S_END_MENU,
 		S_GAME,
+		S_MULT,
 		S_EDITOR_NEW,
 		S_EDITOR_EDIT,
 		S_SONAR,

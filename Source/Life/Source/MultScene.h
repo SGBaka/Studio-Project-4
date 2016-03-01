@@ -58,6 +58,7 @@ public:
 		E_GEO_PLAYER_2,
 		E_GEO_ENEMY,
 		E_GEO_DANGER,
+		E_GEO_DANGER_2,
 		E_GEO_EXIT,
 		//Projectile
 		E_GEO_LINE,
@@ -159,7 +160,7 @@ public:
 	Vector3 calWorldPos(Vector3 Tilepos);
 	MPlayer *player_ptr;
 
-	bool onDanger, onExit, toggleVisible;
+	bool onDanger1, onDanger2, onExit, toggleVisible;
 
 private:
 

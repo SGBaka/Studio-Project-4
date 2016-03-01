@@ -159,6 +159,9 @@ void MultScene::InitMeshList()
 	P_meshArray[E_GEO_DANGER] = MeshBuilder::GenerateQuad("Danger Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_DANGER]->textureID[0] = LoadTGA(script.getGameData("image.tile.danger").c_str(), true);
 
+	P_meshArray[E_GEO_DANGER_2] = MeshBuilder::GenerateQuad("Danger Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
+	P_meshArray[E_GEO_DANGER_2]->textureID[0] = LoadTGA(script.getGameData("image.tile.danger").c_str(), true);
+
 	P_meshArray[E_GEO_WALL_1] = MeshBuilder::GenerateQuad("Wall Texture", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_WALL_1]->textureID[0] = LoadTGA(script.getGameData("image.tile.wall").c_str(), true);
 
@@ -266,8 +269,8 @@ bool MultScene::InitLevel(int level)
 {
 	std::cout << "\nLoading map...\n";
 	LuaScript scriptlevel("maps");
-	std::string luaName = "map.map.Multiplayer_1";
-	if (!ML_map.loadMap(scriptlevel.getGameData(luaName.c_str())))
+	std::string luaName = "map.map.multiplayer";
+	if (!ML_map.loadMap("GameData//Maps//mult_1.csv"))
 	{
 		std::cout << "!!!ERROR!!! Unable to load map\n";
 		return false;
@@ -303,7 +306,14 @@ bool MultScene::InitLevel(int level)
 
 				if (ML_map.map_data[y][x] == "2")
 				{
-					GO->name = "DANGER";
+					GO->name = "Danger";
+					GO->topLeft = GO->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
+					GO->bottomRight = GO->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
+				}
+
+				if (ML_map.map_data[y][x] == "2A")
+				{
+					GO->name = "Danger";
 					GO->topLeft = GO->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
 					GO->bottomRight = GO->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
 				}
@@ -536,6 +546,7 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	MousePosY = (Application::GetWindowHeight() - static_cast<float>(y)) / Application::GetWindowHeight() * Application::GetWindowHeight();
 
 	static bool bLButtonState = false;
+	static bool bRButtonState = false;
 	UpdateTextButtons();
 	UpdateButtons();
 
@@ -572,36 +583,36 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	{
 		/*if (f_timer < ML_map.star_three)
 		{
-			SceneManager::Instance()->end_star = 3;
-			float cal2 = cal - f_timer;
-			ML_map.map_data[0][4] = std::to_string(static_cast<unsigned long long>(ML_map.star_three - (cal2 / 7)));
-			ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
-			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
+		SceneManager::Instance()->end_star = 3;
+		float cal2 = cal - f_timer;
+		ML_map.map_data[0][4] = std::to_string(static_cast<unsigned long long>(ML_map.star_three - (cal2 / 7)));
+		ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
+		ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
 
-			LuaScript scriptlevel("maps");
-			std::string luaName = "map.map.level_1";
-			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
+		LuaScript scriptlevel("maps");
+		std::string luaName = "map.map.level_1";
+		ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
 		}
 		else if (f_timer < ML_map.star_two)
 		{
-			SceneManager::Instance()->end_star = 2;
-			float cal2 = cal - f_timer;
-			ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
-			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
+		SceneManager::Instance()->end_star = 2;
+		float cal2 = cal - f_timer;
+		ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
+		ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
 
-			LuaScript scriptlevel("maps");
-			std::string luaName = "map.map.level_1";
-			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
+		LuaScript scriptlevel("maps");
+		std::string luaName = "map.map.level_1";
+		ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
 		}
 		else
 		{
-			SceneManager::Instance()->end_star = 1;
-			float cal2 = cal - f_timer;
-			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
+		SceneManager::Instance()->end_star = 1;
+		float cal2 = cal - f_timer;
+		ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
 
-			LuaScript scriptlevel("maps");
-			std::string luaName = "map.map.level_1";
-			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
+		LuaScript scriptlevel("maps");
+		std::string luaName = "map.map.level_1";
+		ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
 		}*/
 		SceneManager::Instance()->replace(SceneManager::S_END_MENU);
 		return;
@@ -690,206 +701,175 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	{
 		toggleVisible = false;
 	}
-
-	if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "2")
-		onDanger = true;
-	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "3")
-		onExit = true;
-
-	if (f_timer > ML_map.star_one)
+	for (int i = 0; i < player_List.size(); ++i)
 	{
-		//onDanger = true;
-	}
-
-	if (onDanger)
-	{
-		onDanger = false;
-		InitSimulation();
-	}
-
-	for (int k = 0; k < GO_List.size(); ++k)
-	{
-		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[k]);
-
-		if (CO != NULL)
+		Vector3 newPlayerPos;
+		if (ML_map.map_data[player_List[i]->currTile.y][player_List[i]->currTile.x] == "2" && player_List[i]->playerID == 2)
 		{
-			/*if (CO->name == "ENEMY")
-			{
-				cEnemy *EO = dynamic_cast<cEnemy*>(CO);
-				EO->isVisible = true;
-
-				if (EO->currTile == player_ptr->currTile)
-				{
-					InitSimulation();
-					break;
-				}
-
-				for (int i = 0; i < EO->sonarList.size(); ++i)
-				{
-					for (int j = 0; j < EO->sonarList[i]->segmentList.size(); ++j)
-					{
-						if (EO->sonarList[i]->segmentList[j]->active && (EO->sonarList[i]->radius / EO->sonarList[i]->maxRad) <= 0.9 &&
-							!EO->sonarList[i]->segmentList[j]->hitWall)
-						{
-							if (checkForCollision(EO->sonarList[i]->segmentList[j]->posStart,
-								EO->sonarList[i]->segmentList[j]->posEnd, player_ptr->topLeft, player_ptr->bottomRight))
-								EO->gotoChase = true;
-						}
-
-						for (int a = 0; a < GO_List.size(); ++a)
-						{
-							if (GO_List[a]->name == "WALL")
-							{
-								if (checkForCollision(EO->sonarList[i]->segmentList[j]->posStart,
-									EO->sonarList[i]->segmentList[j]->posEnd, GO_List[a]->topLeft, GO_List[a]->bottomRight))
-									EO->sonarList[i]->segmentList[j]->hitWall = true;
-							}
-						}
-
-					}
-				}
-			}*/
+			player_List[i]->position.Set(27 * MultScene::GetInstance()->ML_map.worldSize * 2.f, (MultScene::GetInstance()->ML_map.map_height - 17) * MultScene::GetInstance()->ML_map.worldSize*2.f, -0.5f);
+			newPlayerPos = calTilePos(player_List[i]->position);
+			player_List[i]->currTile.Set(newPlayerPos.x, newPlayerPos.y);
+			
+		}		
+		if (ML_map.map_data[player_List[i]->currTile.y][player_List[i]->currTile.x] == "2A" && player_List[i]->playerID == 1)
+		{
+			player_List[i]->position.Set(4 * MultScene::GetInstance()->ML_map.worldSize * 2.f, (MultScene::GetInstance()->ML_map.map_height - 17) * MultScene::GetInstance()->ML_map.worldSize*2.f, -0.5f);
+			newPlayerPos = calTilePos(player_List[i]->position);
+			player_List[i]->currTile.Set(newPlayerPos.x, newPlayerPos.y);
 		}
+		else if ((ML_map.map_data[player_List[i]->currTile.y][player_List[i]->currTile.x] == "3" && player_List[i]->playerID == 1)
+			|| (ML_map.map_data[player_List[i]->currTile.y][player_List[i]->currTile.x] == "3" && player_List[i]->playerID == 2))
+			onExit = true;
+	}
+	/*for (int k = 0; k < GO_List.size(); ++k)
+	{
+	CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[k]);
+
+	if (CO != NULL)
+	{
+	if (CO->name == "ENEMY")
+	{
+	cEnemy *EO = dynamic_cast<cEnemy*>(CO);
+	EO->isVisible = true;
+
+	if (EO->currTile == player_ptr->currTile)
+	{
+	InitSimulation();
+	break;
 	}
 
+	for (int i = 0; i < EO->sonarList.size(); ++i)
+	{
+	for (int j = 0; j < EO->sonarList[j]->segmentList.size(); ++j)
+	{
+	if (EO->sonarList[J]->segmentList[k]->active && (EO->sonarList[J]->radius / EO->sonarList[J]->maxRad) <= 0.9 &&
+	!EO->sonarList[J]->segmentList[k]->hitWall)
+	{
+	if (checkForCollision(EO->sonarList[J]->segmentList[j]->posStart,
+	EO->sonarList[J]->segmentList[j]->posEnd, player_ptr->topLeft, player_ptr->bottomRight))
+	EO->gotoChase = true;
+	}
+
+	for (int a = 0; a < GO_List.size(); ++a)
+	{
+	if (GO_List[a]->name == "WALL")
+	{
+	if (checkForCollision(EO->sonarList[J]->segmentList[j]->posStart,
+	EO->sonarList[j]->segmentList[j]->posEnd, GO_List[a]->topLeft, GO_List[a]->bottomRight))
+	EO->sonarList[j]->segmentList[j]->hitWall = true;
+	}
+	}
+
+	}
+	}
+	}
+	}
+	}
 	for (int i = 0; i < GO_List.size(); ++i)
 	{
-		if (GO_List[i]->name == "WALL")
-		{
-			for (int j = 0; j < GO_List.size(); ++j)
-			{
-				CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[j]);
+	if (GO_List[i]->name == "WALL")
+	{
+	for (int j = 0; j < GO_List.size(); ++j)
+	{
+	CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[j]);
 
-				if (CO != NULL)
-				{
-					/*if (CO->name == "ENEMY")
-					{
-						cEnemy *EO = dynamic_cast<cEnemy*>(CO);
+	if (CO != NULL)
+	{
+	/*if (CO->name == "ENEMY")
+	{
+	cEnemy *EO = dynamic_cast<cEnemy*>(CO);
 
-						if (checkForCollision(EO->position, player_ptr->position, GO_List[i]->topLeft, GO_List[i]->bottomRight) && EO->AI_STATE != cEnemy::AS_CHASE && !toggleVisible)
-						{
-							EO->isVisible = false;
-						}
-					}*/
-				}
-			}
-		}
+	if (checkForCollision(EO->position, player_ptr->position, GO_List[i]->topLeft, GO_List[i]->bottomRight) && EO->AI_STATE != cEnemy::AS_CHASE && !toggleVisible)
+	{
+	EO->isVisible = false;
 	}
+	}
+	}
+	}
+	}
+	}*/
 
 	string sideHit = "";
-	for (int i = 0; i < player_List[i]->sonarList.size(); ++i)
+	for (int i = 0; i < player_List.size(); ++i)
 	{
-		for (int j = 0; j < player_List[i]->sonarList[i]->segmentList.size(); ++j)
+		for (int j = 0; j < player_List[i]->sonarList.size(); ++j)
 		{
-			if (player_List[i]->sonarList[i]->segmentList[j]->active)
+			for (int k = 0; k < player_List[i]->sonarList[j]->segmentList.size(); ++k)
 			{
-				for (int k = 0; k < GO_List.size(); ++k)
+				if (player_List[i]->sonarList[j]->segmentList[k]->active)
 				{
-					CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[k]);
-
-					Vector3 topLeft, botRight;
-					int tempType = 0;
-
-					if (GO_List[k]->name == "WALL")
+					for (int m = 0; m < GO_List.size(); ++m)
 					{
-						topLeft = GO_List[k]->topLeft;
-						botRight = GO_List[k]->bottomRight;
-						tempType = 1;
-					}
+						CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[m]);
 
-					else if (GO_List[k]->name == "DANGER")
-					{
-						topLeft = GO_List[k]->topLeft;
-						botRight = GO_List[k]->bottomRight;
-						tempType = 2;
-					}
+						Vector3 topLeft, botRight;
+						int tempType = 0;
 
-					else if (GO_List[k]->name == "EXIT")
-					{
-						topLeft = GO_List[k]->topLeft;
-						botRight = GO_List[k]->bottomRight;
-						tempType = 3;
-					}
-
-					else if (CO != NULL)
-					{
-						/*if (CO->name == "ENEMY")
+						if (GO_List[m]->name == "WALL")
 						{
-							topLeft = CO->topLeft;
-							botRight = CO->bottomRight;
-							tempType = 4;
+							topLeft = GO_List[m]->topLeft;
+							botRight = GO_List[m]->bottomRight;
+							tempType = 1;
+						}
 
-							cEnemy *EO = dynamic_cast<cEnemy*>(CO);
+						else if (GO_List[m]->name == "Danger"  && player_List[i]->playerID == 2 || GO_List[m]->name == "Danger2" && player_List[i]->playerID == 1)
+						{
+							topLeft = GO_List[m]->topLeft;
+							botRight = GO_List[m]->bottomRight;
+							tempType = 2;
+						}
 
-							if ((EO->position - player_ptr->sonarList[i]->position).Length() <= player_ptr->sonarList[i]->rad2Counter)
+						else if (GO_List[m]->name == "EXIT")
+						{
+							topLeft = GO_List[m]->topLeft;
+							botRight = GO_List[m]->bottomRight;
+							tempType = 3;
+						}
+						if (checkForCollision(player_List[i]->sonarList[j]->segmentList[k]->posStart,
+							player_List[i]->sonarList[j]->segmentList[k]->posEnd,
+							topLeft, botRight, &sideHit))
+						{
+							if (tempType == 1)
 							{
-								if (!EO->gotoSusp)
+								player_List[i]->sonarList[j]->segmentList[k]->active = false;
+
+								if (player_List[i]->sonarList[j]->segmentList[k]->type == 1)
 								{
-									EO->gotoSusp = true;
+									player_List[i]->sonarList[j]->segmentList[k]->attached = true;
+									player_List[i]->sonarList[j]->segmentList[k]->lifeTime = (1 - player_List[i]->sonarList[j]->radius / player_List[i]->sonarList[j]->maxRad) * 2;
 
-									EO->suspPos = calTilePos(player_ptr->sonarList[i]->position);
+									if (player_List[i]->sonarList[j]->type == 1)
+									{
+										player_List[i]->sonarList[j]->segmentList[k]->segmentColor.r = 0;
+										player_List[i]->sonarList[j]->segmentList[k]->segmentColor.g = (1 - player_List[i]->sonarList[j]->radius / player_List[i]->sonarList[j]->maxRad);
+										player_List[i]->sonarList[j]->segmentList[k]->segmentColor.b = (1 - player_List[i]->sonarList[j]->radius / player_List[i]->sonarList[j]->maxRad);
+									}
 
-									if (player_ptr->sonarList[i]->segmentList[j]->type == 1)
-										EO->suspDuration = player_ptr->sonarList[i]->segmentList[j]->lifeTime;
-									else if (player_ptr->sonarList[i]->segmentList[j]->type == 2)
-										EO->suspDuration = player_ptr->sonarList[i]->segmentList[j]->lifeTime * 3;
+									else
+										player_List[i]->sonarList[j]->segmentList[k]->segmentColor = player_List[i]->sonarList[j]->colorStore;
+
+									player_List[i]->sonarList[j]->segmentList[k]->scale.y *= 1.2;
+
+									if (sideHit == "Top" || sideHit == "Bottom")
+										player_List[i]->sonarList[j]->segmentList[k]->rotation = 0;
+									else
+										player_List[i]->sonarList[j]->segmentList[k]->rotation = 90;
 								}
 							}
 
-						}*/
-					}
-
-					if (checkForCollision(player_List[i]->sonarList[i]->segmentList[j]->posStart,
-						player_List[i]->sonarList[i]->segmentList[j]->posEnd,
-						topLeft, botRight, &sideHit))
-					{
-						if (tempType == 1)
-						{
-							player_List[i]->sonarList[i]->segmentList[j]->active = false;
-
-							if (player_List[i]->sonarList[i]->segmentList[j]->type == 1)
+							else if (tempType == 2 && player_List[i]->sonarList[j]->segmentList[k]->type == 1 && !player_List[i]->sonarList[j]->segmentList[k]->attached)
 							{
-								player_List[i]->sonarList[i]->segmentList[j]->attached = true;
-								player_List[i]->sonarList[i]->segmentList[j]->lifeTime = (1 - player_List[i]->sonarList[i]->radius / player_List[i]->sonarList[i]->maxRad) * 2;
-
-								if (player_List[i]->sonarList[i]->type == 1)
-								{
-									player_List[i]->sonarList[i]->segmentList[j]->segmentColor.r = 0;
-									player_List[i]->sonarList[i]->segmentList[j]->segmentColor.g = (1 - player_List[i]->sonarList[i]->radius / player_List[i]->sonarList[i]->maxRad);
-									player_List[i]->sonarList[i]->segmentList[j]->segmentColor.b = (1 - player_List[i]->sonarList[i]->radius / player_List[i]->sonarList[i]->maxRad);
-								}
-
-								else
-									player_List[i]->sonarList[i]->segmentList[j]->segmentColor = player_List[i]->sonarList[i]->colorStore;
-
-								player_List[i]->sonarList[i]->segmentList[j]->scale.y *= 1.2;
-								//player_ptr->sonarList[i]->segmentList[j]->scale.x *= 1.2;
-
-								if (sideHit == "Top" || sideHit == "Bottom")
-									player_List[i]->sonarList[i]->segmentList[j]->rotation = 0;
-								else
-									player_List[i]->sonarList[i]->segmentList[j]->rotation = 90;
+								player_List[i]->sonarList[j]->segmentList[k]->segmentColor.r = (1 - (player_List[i]->sonarList[j]->radius / player_List[i]->sonarList[j]->maxRad)) * 2;
+								player_List[i]->sonarList[j]->segmentList[k]->segmentColor.g = 0;
+								player_List[i]->sonarList[j]->segmentList[k]->segmentColor.b = 0;
 							}
-						}
 
-						else if (tempType == 2 && player_List[i]->sonarList[i]->segmentList[j]->type == 1 && !player_List[i]->sonarList[i]->segmentList[j]->attached)
-						{
-							player_List[i]->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_List[i]->sonarList[i]->radius / player_List[i]->sonarList[i]->maxRad)) * 2;
-							player_List[i]->sonarList[i]->segmentList[j]->segmentColor.g = 0;
-							player_List[i]->sonarList[i]->segmentList[j]->segmentColor.b = 0;
-						}
-
-						else if (tempType == 3 && player_List[i]->sonarList[i]->segmentList[j]->type == 1 && !player_List[i]->sonarList[i]->segmentList[j]->attached)
-						{
-							player_List[i]->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_List[i]->sonarList[i]->radius / player_List[i]->sonarList[i]->maxRad)) * 2;
-							player_List[i]->sonarList[i]->segmentList[j]->segmentColor.g = 0;
-							player_List[i]->sonarList[i]->segmentList[j]->segmentColor.b = (1 - (player_List[i]->sonarList[i]->radius / player_List[i]->sonarList[i]->maxRad)) * 2;
-						}
-
-						else if (tempType == 4)
-						{
-							//cEnemy *EO = dynamic_cast<cEnemy*>(CO);
-							//EO->gotoChase = true;
+							else if (tempType == 3 && player_List[i]->sonarList[j]->segmentList[k]->type == 1 && !player_List[i]->sonarList[j]->segmentList[k]->attached)
+							{
+								player_List[i]->sonarList[j]->segmentList[k]->segmentColor.r = (1 - (player_List[i]->sonarList[j]->radius / player_List[i]->sonarList[j]->maxRad)) * 2;
+								player_List[i]->sonarList[j]->segmentList[k]->segmentColor.g = 0;
+								player_List[i]->sonarList[j]->segmentList[k]->segmentColor.b = (1 - (player_List[i]->sonarList[j]->radius / player_List[i]->sonarList[j]->maxRad)) * 2;
+							}
 						}
 					}
 				}
@@ -1322,7 +1302,6 @@ void MultScene::RenderButtons(void)
 			{
 				RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], m_B->label, m_B->color);
 			}
-
 			modelStack.PopMatrix();
 		}
 	}
@@ -1373,7 +1352,6 @@ void MultScene::Render()
 		);
 
 	modelStack.LoadIdentity();
-
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-v3_2DCam);
@@ -1444,16 +1422,6 @@ void MultScene::RenderUI()
 	modelStack.Scale(20, 20, 20);
 	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss2.str(), UIColor);
 	modelStack.PopMatrix();
-
-	//AI Status
-	for (unsigned i = 0; i < GO_List.size(); ++i)
-	{
-		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[i]);
-		if (CO != NULL)
-		{
-			//
-		}
-	}
 }
 
 /******************************************************************************/
@@ -1482,7 +1450,7 @@ void MultScene::RenderGO()
 
 		if (GO_List[i]->active)
 		{
-			if (CO == NULL && GO_List[i]->name != "WALL")
+			if (CO == NULL && GO_List[i]->name != "WALL" && GO_List[i]->name != "Danger" && GO_List[i]->name != "Danger2")
 			{
 				modelStack.PushMatrix();
 				modelStack.Translate(GO_List[i]->position);
@@ -1491,24 +1459,37 @@ void MultScene::RenderGO()
 				RenderMeshOnScreen(GO_List[i]->mesh);
 				modelStack.PopMatrix();
 			}
-		}
-	}
-	for (int i = 0; i < player_List[i]->sonarList.size(); ++i)
-	{
-		for (int j = 0; j < player_List[i]->sonarList[i]->segmentList.size(); ++j)
-		{
-			if (player_List[i]->sonarList[i]->segmentList[j]->active || player_List[i]->sonarList[i]->segmentList[j]->attached)
+			
+			if ((CO == NULL))// && GO_List[i]->name == "Danger") || (CO == NULL && GO_List[i]->name == "Danger2"))
 			{
 				modelStack.PushMatrix();
-				modelStack.Translate(player_List[i]->sonarList[i]->segmentList[j]->position);
-				modelStack.Rotate(player_List[i]->sonarList[i]->segmentList[j]->rotation, 0, 0, 1);
-				modelStack.Scale(player_List[i]->sonarList[i]->segmentList[j]->scale);
-				RenderMeshOnScreen(player_List[i]->sonarList[i]->segmentList[j]->mesh, 13, player_List[i]->sonarList[i]->segmentList[j]->segmentColor);
+				modelStack.Translate(GO_List[i]->position);
+				modelStack.Rotate(GO_List[i]->rotation, 0, 0, 1);
+				modelStack.Scale(GO_List[i]->scale);
 				modelStack.PopMatrix();
 			}
 		}
 	}
 
+	for (int i = 0; i < player_List.size(); ++i)
+	{
+		for (int j = 0; j < player_List[i]->sonarList.size(); ++j)
+		{
+			for (int k = 0; k < player_List[i]->sonarList[j]->segmentList.size(); ++k)
+			{
+				if (player_List[i]->sonarList[j]->segmentList[k]->active || player_List[i]->sonarList[j]->segmentList[k]->attached)
+				{
+					modelStack.PushMatrix();
+					modelStack.Translate(player_List[i]->sonarList[j]->segmentList[k]->position);
+					modelStack.Rotate(player_List[i]->sonarList[j]->segmentList[k]->rotation, 0, 0, 1);
+					modelStack.Scale(player_List[i]->sonarList[j]->segmentList[k]->scale);
+					RenderMeshOnScreen(player_List[i]->sonarList[j]->segmentList[k]->mesh, 13, player_List[i]->sonarList[j]->segmentList[k]->segmentColor);
+					modelStack.PopMatrix();
+				}
+			}
+		}
+	}
+	
 	for (unsigned i = 0; i < GO_List.size(); i++)
 	{
 		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[i]);
@@ -1538,7 +1519,7 @@ void MultScene::RenderGO()
 		{
 			for (unsigned x = 0; x < ML_map.map_width; ++x)
 			{
-				if (ML_map.map_data[y][x] == "2")
+				if (ML_map.map_data[y][x] == "2" || ML_map.map_data[y][x] == "2A")
 				{
 					modelStack.PushMatrix();
 					modelStack.Translate(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, -0.5f));
@@ -1650,9 +1631,6 @@ bool  MultScene::LineIntersectsRect(Vector3 p1, Vector3 p2, Vector3 topLeft, Vec
 		*side = "Left";
 		return true;
 	}
-
-
-
 	return false;
 }
 

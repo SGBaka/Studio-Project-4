@@ -115,6 +115,7 @@
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
     <ClCompile Include="Source\MPlayer.cpp" />
+    <ClCompile Include="Source\MSonar.cpp" />
     <ClCompile Include="Source\MultScene.cpp" />
     <ClCompile Include="Source\Node.cpp" />
     <ClCompile Include="Source\particle.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="Source\MainScene.h" />
     <ClInclude Include="Source\MapScene.h" />
     <ClInclude Include="Source\MPlayer.h" />
+    <ClInclude Include="Source\MSonar.h" />
     <ClInclude Include="Source\MultScene.h" />
     <ClInclude Include="Source\Node.h" />
     <ClInclude Include="Source\Pathfinding.h" />
