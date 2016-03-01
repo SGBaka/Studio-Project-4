@@ -73,7 +73,7 @@ void MultScene::Init()
 	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
 
-	onDanger = onExit = false;
+	onDanger1 = onDanger2 = onExit = false;
 
 	toggleVisible = false;
 
@@ -1384,40 +1384,6 @@ void MultScene::RenderUI()
 	modelStack.Scale(20, 20, 20);
 	RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 	modelStack.PopMatrix();
-
-	if (f_timer < ML_map.star_three)
-	{
-		ss.str("");
-		ss << "3S " << ML_map.star_three;
-
-		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.975f, 0);
-		modelStack.Scale(20, 20, 20);
-		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
-		modelStack.PopMatrix();
-	}
-	else if (f_timer < ML_map.star_two)
-	{
-		ss.str("");
-		ss << "2S " << ML_map.star_two;
-
-		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.975f, 0);
-		modelStack.Scale(20, 20, 20);
-		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
-		modelStack.PopMatrix();
-	}
-	else
-	{
-		ss.str("");
-		ss << "1S " << ML_map.star_one;
-
-		modelStack.PushMatrix();
-		modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.975f, 0);
-		modelStack.Scale(20, 20, 20);
-		RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
-		modelStack.PopMatrix();
-	}
 
 	std::stringstream ss2;
 	ss2 << "Simulation Speed " << i_SimulationSpeed << "X";
