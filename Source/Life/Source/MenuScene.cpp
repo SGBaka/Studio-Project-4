@@ -173,10 +173,12 @@ void MenuScene::Init()
 	luaState = lua_open();
 	luaL_openlibs(luaState);
 
-	if (luaL_loadfile(luaState, "..\\Life\\Lua\\test.lua") || lua_pcall(luaState, 0, 0, 0))
+	//Uncomment if causing problems!
+		//-Troy
+	/*if (luaL_loadfile(luaState, "..\\Life\\Lua\\test.lua") || lua_pcall(luaState, 0, 0, 0))
 	{
 		printf("error: %s", lua_tostring(luaState, -1));
-	}
+	}*/
 
 	lua_pushnumber(luaState, 100);
 	lua_setglobal(luaState, "value");
@@ -270,8 +272,10 @@ void MenuScene::InitMeshList()
 	P_meshArray[E_GEO_BACKGROUND_CREDIT] = MeshBuilder::GenerateQuad("Background_Credit", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
 	P_meshArray[E_GEO_BACKGROUND_CREDIT]->textureID[0] = LoadTGA(script.getGameData("image.background.background_credit").c_str(), true, false);
 
-	P_meshArray[E_GEO_BACKGROUND_TUTORIAL] = MeshBuilder::GenerateQuad("Background_Tutorial", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
-	P_meshArray[E_GEO_BACKGROUND_TUTORIAL]->textureID[0] = LoadTGA(script.getGameData("image.background.background_tutorial").c_str(), true, false);
+	//Uncomment if causing problems!
+	//-Troy
+	/*P_meshArray[E_GEO_BACKGROUND_TUTORIAL] = MeshBuilder::GenerateQuad("Background_Tutorial", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
+	P_meshArray[E_GEO_BACKGROUND_TUTORIAL]->textureID[0] = LoadTGA(script.getGameData("image.background.background_tutorial").c_str(), true, false);*/
 
 	P_meshArray[E_GEO_BACKGROUND_END] = MeshBuilder::GenerateQuad("Background_End", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
 	P_meshArray[E_GEO_BACKGROUND_END]->textureID[0] = LoadTGA(script.getGameData("image.background.background_end").c_str(), true, false);

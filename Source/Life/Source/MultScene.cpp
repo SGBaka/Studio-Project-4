@@ -73,8 +73,6 @@ void MultScene::Init()
 	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
 
-	onDanger1 = onDanger2 = onExit = false;
-
 	toggleVisible = false;
 
 	LEVEL = 1;
@@ -549,51 +547,6 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			CO->Update(dt);
 		}
 	}
-	for (int i = 0; i < player_List.size(); ++i)
-	{
-		if (onExit == true)
-		{
-			/*if (f_timer < ML_map.star_three)
-			{
-			SceneManager::Instance()->end_star = 3;
-			float cal2 = cal - f_timer;
-			ML_map.map_data[0][4] = std::to_string(static_cast<unsigned long long>(ML_map.star_three - (cal2 / 7)));
-			ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
-			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
-
-			LuaScript scriptlevel("maps");
-			std::string luaName = "map.map.level_1";
-			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
-			}
-			else if (f_timer < ML_map.star_two)
-			{
-			SceneManager::Instance()->end_star = 2;
-			float cal2 = cal - f_timer;
-			ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
-			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
-
-			LuaScript scriptlevel("maps");
-			std::string luaName = "map.map.level_1";
-			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
-			}
-			else
-			{
-			SceneManager::Instance()->end_star = 1;
-			float cal2 = cal - f_timer;
-			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
-
-			LuaScript scriptlevel("maps");
-			std::string luaName = "map.map.level_1";
-			ML_map.saveMap(scriptlevel.getGameData(luaName.c_str()));
-			}*/
-			if (player_List[i]->playerID == 1)
-				SceneManager::Instance()->winner = 1;
-			if (player_List[i]->playerID == 2)
-				SceneManager::Instance()->winner = 2;
-			SceneManager::Instance()->replace(SceneManager::S_END_MENU_MULT);
-			return;
-		}
-	}
 
 	static bool isEscPressed = false;
 	if (Application::IsKeyPressed(VK_ESCAPE) && !isEscPressed)
@@ -659,9 +612,18 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			newPlayerPos = calTilePos(player_List[i]->position);
 			player_List[i]->currTile.Set(newPlayerPos.x, newPlayerPos.y);
 		}
-		else if ((ML_map.map_data[player_List[i]->currTile.y][player_List[i]->currTile.x] == "3" && player_List[i]->playerID == 1)
-			|| (ML_map.map_data[player_List[i]->currTile.y][player_List[i]->currTile.x] == "3" && player_List[i]->playerID == 2))
-			onExit = true;
+		if (ML_map.map_data[player_List[i]->currTile.y][player_List[i]->currTile.x] == "3" && player_List[i]->playerID == 1)
+		{
+			SceneManager::Instance()->winner = 1;
+			SceneManager::Instance()->replace(SceneManager::S_END_MENU_MULT);
+			return;
+		}
+		if (ML_map.map_data[player_List[i]->currTile.y][player_List[i]->currTile.x] == "3" && player_List[i]->playerID == 2)
+		{
+			SceneManager::Instance()->winner = 2;
+			SceneManager::Instance()->replace(SceneManager::S_END_MENU_MULT);
+			return;
+		}
 	}
 
 	string sideHit = "";

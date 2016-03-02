@@ -160,7 +160,7 @@ public:
 	Vector3 calWorldPos(Vector3 Tilepos);
 	MPlayer *player_ptr;
 
-	bool onDanger1, onDanger2, onExit, toggleVisible;
+	bool toggleVisible;
 
 private:
 
