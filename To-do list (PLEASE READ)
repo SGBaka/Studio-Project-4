@@ -2,15 +2,7 @@
 == LOCAL MULTIPLAYER ==
 - Have single map with local multiplayer gameplay (with trap placing) [TROY]
 - Different color spectrum for sonar of players [WH]
-- Green and Yellow avatars for different players. [WH]
-
-== Other ==
-- Difficulty settings changes gameplay variables & Show current difficulty in main menu [RAYNER][WH]
 
 == DO ON MONDAY ==
 - Have at least 3 easy, medium and hard levels [ALL]
 - Play test and determine the timings for all levels [ALL]
-- Change button design + font [RAYNER]
-- Fix Load Level crash [RAYNER] 
-
-
