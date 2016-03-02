@@ -1,1 +1,1 @@
-10 6 e_3.csv e_1.csv e_2.csv m_4.csv m_2.csv m_3.csv h_3.csv h_1.csv h_2.csv
+10 2 e_2.csv e_3.csv e_1.csv m_4.csv m_3.csv m_2.csv h_2.csv h_1.csv h_3.csv

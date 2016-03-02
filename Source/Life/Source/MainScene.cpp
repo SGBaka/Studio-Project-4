@@ -1258,7 +1258,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 							if (player_ptr->sonarList[i]->segmentList[j]->type == 1)
 							{
 								player_ptr->sonarList[i]->segmentList[j]->attached = true;
-								player_ptr->sonarList[i]->segmentList[j]->lifeTime = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad) * 2;
+								player_ptr->sonarList[i]->segmentList[j]->lifeTime = (1 - player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad) * 4;
 
 								if (player_ptr->sonarList[i]->type == 1)
 								{
