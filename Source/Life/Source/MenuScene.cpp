@@ -367,7 +367,7 @@ void MenuScene::InitMenu(void)
 		v_textButtonList.push_back(S_MB);
 	}
 
-	// Game Mode Menu (Single Player Game / Multi-Player Game)
+	// Game Mode Menu (Single Player Game / Multi-Player Game / Find Your Level)
 	total_button = buttonScript.get<int>("main_gamemode.total_button");
 	for (int i = 1; i <= total_button; i++)
 	{
@@ -469,6 +469,70 @@ void MenuScene::InitMenu(void)
 		S_MB->gamestate = E_M_END_MULT;
 		v_textButtonList.push_back(S_MB);
 	}
+
+	float offsetX = 0.0f;
+	float offsetY = 0.0f;
+	for (int i = 48; i <= 95; i++)
+	{
+		if ((i >= 48 && i <= 57) || (i >= 65 && i <= 90) || i == 95) // Numbers
+		{
+			char key = i;
+			std::stringstream ss;
+			ss << key;
+
+			float offX = 0.0f;
+			if (offsetY < 3)
+			{
+				offX = 0.5f + (offsetX / 20);
+			}
+			else
+			{
+				offX = 0.505f + (offsetX / 20);
+			}
+			float offY = 0.35f - (offsetY / 20);
+			//cout << "X:[" << offsetX << "] Y:[" << offsetY << "]" << endl;
+			//cout << "Letter:[" << ss.str() << "] offX:[" << offX << "] offY:[" << offY << "]" << endl;
+
+			S_MB = new TextButton;
+			S_MB->pos.Set(Application::GetWindowWidth() * offX, Application::GetWindowHeight() * offY, 0.5f);
+			S_MB->scale.Set(35, 35, 1);
+			S_MB->text = ss.str();
+			S_MB->gamestate = E_M_FIND;
+			v_textButtonList.push_back(S_MB);
+
+			offsetX++;
+			if (offsetX >= 10.0f)
+			{
+				offsetX = 0.0f;
+				offsetY++;
+			}
+
+			if (i == 95)
+			{
+				key = 8;
+				std::stringstream ss;
+				ss << key;
+				offX = 0.505f + (offsetX / 20);
+
+				S_MB = new TextButton;
+				S_MB->pos.Set(Application::GetWindowWidth() * offX, Application::GetWindowHeight() * offY, 0.5f);
+				S_MB->scale.Set(35, 35, 1);
+				S_MB->text = "BACK";
+				S_MB->gamestate = E_M_FIND;
+				v_textButtonList.push_back(S_MB);
+
+				offsetY += 2;
+				offY = 0.35f - (offsetY / 20);
+
+				S_MB = new TextButton;
+				S_MB->pos.Set(Application::GetWindowWidth() * 0.5, Application::GetWindowHeight() * offY, 0.5f);
+				S_MB->scale.Set(35, 35, 1);
+				S_MB->text = "Confirm";
+				S_MB->gamestate = E_M_FIND;
+				v_textButtonList.push_back(S_MB);
+			}
+		}
+	}
 }
 
 /******************************************************************************/
@@ -535,12 +599,18 @@ void MenuScene::UpdateTextButtons(void)
 			if (intersect2D((S_MB->pos + Vector3(S_MB->text.length() * (S_MB->scale.x) - S_MB->scale.x, S_MB->scale.y*0.4f, 0)) + offset, S_MB->pos + Vector3(-S_MB->scale.x*0.5f, -(S_MB->scale.y*0.4f), 0) + offset, Vector3(MousePosX, MousePosY, 0)))
 			{
 				S_MB->active = true;
-				S_MB->color = UIColorPressed;
+				if (S_MB->text != "BACK" && S_MB->text != "Confirm")
+					S_MB->color = UIColorPressed;
+				else
+					S_MB->color = UIColor;
 			}
 			else
 			{
 				S_MB->active = false;
-				S_MB->color = UIColor;
+				if (S_MB->text != "BACK" && S_MB->text != "Confirm")
+					S_MB->color = UIColor;
+				else
+					S_MB->color = UIColorPressed;
 			}
 		}
 	}
@@ -1105,6 +1175,64 @@ void MenuScene::Update(double dt)	//TODO: Reduce complexity of MenuScene::Update
 					 if (bLButtonState && !Application::IsKeyPressed(VK_LBUTTON))
 					 {
 						 bLButtonState = false;
+
+						 if (FetchTB("BACK")->active)
+						 {
+							 temp_total_string = temp_total_string.substr(0, temp_total_string.size() - 1);
+							 break;
+						 }
+						 else if (FetchTB("Confirm")->active)
+						 {
+							 std::stringstream ss;
+							 ss << file_Directory + temp_total_string + ".csv";
+							 bool temp = ML_map.loadMap(ss.str());
+
+							 if (temp == false)
+							 {
+								 cout << "File Not Found" << std::endl;
+								 file_found = true;
+								 file_found_timer = 0.5f;
+							 }
+							 else
+							 {
+								 MainScene::GetInstance()->LEVEL = 0;
+								 MainScene::GetInstance()->LEVELNAME = ss.str();
+
+								 PREV_STATE = MENU_STATE;
+								 MENU_STATE = E_M_LOADING;
+							 }
+							 break;
+						 }
+
+						 if (temp_total_string.size() < 15)
+						 {
+							 for (int i = 48; i <= 95; i++)
+							 {
+								 if ((i >= 48 && i <= 57) || (i >= 65 && i <= 90) || i == 95) // Numbers
+								 {
+									 char key = i;
+									 std::stringstream ss;
+									 ss << key;
+
+									 if (FetchTB(ss.str())->active)
+									 {
+										 if (i >= 65 && i < 90)
+										 {
+											 key = i + 32;
+											 std::stringstream ss2;
+											 ss2 << key;
+
+											 temp_total_string += ss2.str();
+										 }
+										 else
+										 {
+											 temp_total_string += ss.str();
+										 }
+										 break;
+									 }
+								 }
+							 }
+						 }
 					 }
 
 					 if (file_found == true && file_found_timer < 0)
@@ -2093,7 +2221,7 @@ void MenuScene::Render()
 					 modelStack.Translate(v3_Menupos[MENU_STATE]);
 					 modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.55f, 0);
 					 modelStack.Scale(35, 35, 1);
-					 RenderTextOnScreen(P_meshArray[E_GEO_TEXT], "Enter Level Name: ", UIColor);
+					 RenderTextOnScreen(P_meshArray[E_GEO_TEXT], "Enter Level Name: ", UIColorPressed);
 					 modelStack.PopMatrix();
 
 					 std::stringstream ss3;

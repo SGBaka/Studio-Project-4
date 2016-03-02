@@ -355,6 +355,60 @@ void MapScene::InitMenu(void)
 	LuaScript buttonScript("button");
 	int total_button;
 
+	float offsetX = 0.0f;
+	float offsetY = 0.0f;
+	for (int i = 48; i <= 95; i++)
+	{
+		if ((i >= 48 && i <= 57) || (i >= 65 && i <= 90) || i == 95) // Numbers
+		{
+			char key = i;
+			std::stringstream ss;
+			ss << key;
+
+			float offX = 0.0f;
+			if (offsetY < 3)
+			{
+				offX = 0.275f + (offsetX / 20) + 0.025f;
+			}
+			else
+			{
+				offX = 0.28f + (offsetX / 20) + 0.025f;
+			}
+			float offY = 0.5f - (offsetY / 20);
+			//cout << "X:[" << offsetX << "] Y:[" << offsetY << "]" << endl;
+			//cout << "Letter:[" << ss.str() << "] offX:[" << offX << "] offY:[" << offY << "]" << endl;
+
+			S_MB = new TextButton;
+			S_MB->pos.Set(Application::GetWindowWidth() * offX, Application::GetWindowHeight() * offY, 0.5f);
+			S_MB->scale.Set(35, 35, 1);
+			S_MB->text = ss.str();
+			S_MB->gamestate = MT_LOAD;
+			v_textButtonList.push_back(S_MB);
+
+			offsetX++;
+			if (offsetX >= 10.0f)
+			{
+				offsetX = 0.0f;
+				offsetY++;
+			}
+
+			if (i == 95)
+			{
+				key = 8;
+				std::stringstream ss;
+				ss << key;
+				offX = 0.28f + (offsetX / 20) + 0.025f;
+
+				S_MB = new TextButton;
+				S_MB->pos.Set(Application::GetWindowWidth() * offX, Application::GetWindowHeight() * offY, 0.5f);
+				S_MB->scale.Set(35, 35, 1);
+				S_MB->text = "BACK";
+				S_MB->gamestate = MT_LOAD;
+				v_textButtonList.push_back(S_MB);
+			}
+		}
+	}
+
 	// Editor replace(repalce and new map)
 	total_button = buttonScript.get<int>("editor_replace.total_button");
 	for (int i = 1; i <= total_button; i++)
@@ -362,7 +416,7 @@ void MapScene::InitMenu(void)
 		std::string buttonName = "editor_replace.textbutton_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 
 		S_MB = new TextButton;
-		S_MB->pos.Set(Application::GetWindowWidth()* buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()* buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->pos.Set(Application::GetWindowWidth()* (buttonScript.get<float>(buttonName + "posX") + 0.025f), Application::GetWindowHeight()* buttonScript.get<float>(buttonName + "posY"), 0.1f);
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 		S_MB->gamestate = MT_REPLACE;
@@ -376,7 +430,7 @@ void MapScene::InitMenu(void)
 		std::string buttonName = "editor_difficulty.textbutton_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 
 		S_MB = new TextButton;
-		S_MB->pos.Set(Application::GetWindowWidth()* buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->pos.Set(Application::GetWindowWidth()* (buttonScript.get<float>(buttonName + "posX") + 0.025f), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 		S_MB->gamestate = MT_DIFFICULTY;
@@ -390,7 +444,7 @@ void MapScene::InitMenu(void)
 		std::string buttonName = "editor_load.textbutton_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 
 		S_MB = new TextButton;
-		S_MB->pos.Set(Application::GetWindowWidth()* buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->pos.Set(Application::GetWindowWidth()* (buttonScript.get<float>(buttonName + "posX") + 0.045f), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 		S_MB->gamestate = MT_LOAD;
@@ -404,7 +458,7 @@ void MapScene::InitMenu(void)
 		std::string buttonName = "editor_button.button_4.option_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
 
 		S_MB = new TextButton;
-		S_MB->pos.Set(Application::GetWindowWidth()* buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
+		S_MB->pos.Set(Application::GetWindowWidth()* (buttonScript.get<float>(buttonName + "posX") + 0.025f), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
 		S_MB->scale.Set(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 		S_MB->text = buttonScript.get<std::string>(buttonName + "text");
 		S_MB->gamestate = MT_DELETE;
@@ -698,12 +752,18 @@ void MapScene::UpdateTextButtons(void)
 			if (intersect2D((S_MB->pos + Vector3(S_MB->text.length() * (S_MB->scale.x) - S_MB->scale.x, S_MB->scale.y*0.4f, 0)), S_MB->pos + Vector3(-S_MB->scale.x*0.5f, -(S_MB->scale.y*0.4f), 0), Vector3(MousePosX, MousePosY, 0)))
 			{
 				S_MB->active = true;
-				S_MB->color = UIColorPressed;
+				if (S_MB->text != "BACK")
+					S_MB->color = UIColorPressed;
+				else
+					S_MB->color = UIColor;
 			}
 			else
 			{
 				S_MB->active = false;
-				S_MB->color = UIColor;
+				if (S_MB->text != "BACK")
+					S_MB->color = UIColor;
+				else
+					S_MB->color = UIColorPressed;
 			}
 		}
 	}
@@ -1007,10 +1067,47 @@ void MapScene::Update(double dt)	//TODO: Reduce complexity of MapScene::Update()
 								MENU_STATE = MT_EDIT;
 								InitSimulation();
 							}
+							break;
 						}
 						else if (FetchTB(nameScript.get<std::string>("editor_load.textbutton_2.text"))->active)
 						{
 							MENU_STATE = MT_CREATE;
+							break;
+						}
+						else if (FetchTB("BACK")->active)
+						{
+							temp_total_string = temp_total_string.substr(0, temp_total_string.size() - 1);
+							break;
+						}
+
+						if (temp_total_string.size() < 15)
+						{
+							for (int i = 48; i <= 95; i++)
+							{
+								if ((i >= 48 && i <= 57) || (i >= 65 && i <= 90) || i == 95) // Numbers
+								{
+									char key = i;
+									std::stringstream ss;
+									ss << key;
+
+									if (FetchTB(ss.str())->active)
+									{
+										if (i >= 65 && i < 90)
+										{
+											key = i + 32;
+											std::stringstream ss2;
+											ss2 << key;
+
+											temp_total_string += ss2.str();
+										}
+										else
+										{
+											temp_total_string += ss.str();
+										}
+										break;
+									}
+								}
+							}
 						}
 					}
 
@@ -1925,15 +2022,15 @@ void MapScene::RenderUI()
 	case MT_NEW:
 	{
 				   modelStack.PushMatrix();
-				   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
-				   modelStack.Scale(400, 300, 1);
+				   modelStack.Translate(Application::GetWindowWidth() * 0.525f, Application::GetWindowHeight() * 0.5f, 0);
+				   modelStack.Scale(Application::GetWindowWidth() * 0.3f, Application::GetWindowHeight() * 0.35f, 1);
 				   RenderMeshOnScreen(P_meshArray[E_GEO_POPUP]);
 				   modelStack.PopMatrix();
 
 				   std::stringstream ss;
 				   ss << "File Name: [" << newMapName << ".csv]";
 				   modelStack.PushMatrix();
-				   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
+				   modelStack.Translate(Application::GetWindowWidth() * 0.525f, Application::GetWindowHeight() * 0.5f, 0);
 				   modelStack.Scale(25, 25, 1);
 				   RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColor);
 				   modelStack.PopMatrix();
@@ -1943,15 +2040,15 @@ void MapScene::RenderUI()
 	case MT_REPLACE:
 	{
 					   modelStack.PushMatrix();
-					   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
-					   modelStack.Scale(400, 300, 1);
+					   modelStack.Translate(Application::GetWindowWidth() * 0.525f, Application::GetWindowHeight() * 0.5f, 0);
+					   modelStack.Scale(Application::GetWindowWidth() * 0.3f, Application::GetWindowHeight() * 0.35f, 1);
 					   RenderMeshOnScreen(P_meshArray[E_GEO_POPUP]);
 					   modelStack.PopMatrix();
 
 					   std::stringstream ss;
 					   ss << "Replace [" << newMapName << ".csv]?";
 					   modelStack.PushMatrix();
-					   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.7f, 0);
+					   modelStack.Translate(Application::GetWindowWidth() * 0.525f, Application::GetWindowHeight() * 0.7f, 0);
 					   modelStack.Scale(35, 35, 1);
 					   RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], ss.str(), UIColorPressed);
 					   modelStack.PopMatrix();
@@ -1961,7 +2058,7 @@ void MapScene::RenderUI()
 	case MT_DIFFICULTY:
 	{
 					   modelStack.PushMatrix();
-					   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
+					   modelStack.Translate(Application::GetWindowWidth() * 0.525f, Application::GetWindowHeight() * 0.5f, 0);
 					   modelStack.Scale(Application::GetWindowWidth() * 0.3f, Application::GetWindowHeight() * 0.35f, 1);
 					   RenderMeshOnScreen(P_meshArray[E_GEO_POPUP]);
 					   modelStack.PopMatrix();
@@ -1971,7 +2068,7 @@ void MapScene::RenderUI()
 					   std::string buttonName = "editor_difficulty.";
 
 					   modelStack.PushMatrix();
-					   modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
+					   modelStack.Translate(Application::GetWindowWidth() * 0.525f, Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
 				       modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 					   RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColorPressed);
 					   modelStack.PopMatrix();
@@ -1981,7 +2078,7 @@ void MapScene::RenderUI()
 	case MT_DELETE:
 	{
 					  modelStack.PushMatrix();
-					  modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
+					  modelStack.Translate(Application::GetWindowWidth() * 0.525f, Application::GetWindowHeight() * 0.5f, 0);
 					  modelStack.Scale(Application::GetWindowWidth() * 0.3f, Application::GetWindowHeight() * 0.35f, 1);
 					  RenderMeshOnScreen(P_meshArray[E_GEO_POPUP]);
 					  modelStack.PopMatrix();
@@ -1992,7 +2089,7 @@ void MapScene::RenderUI()
 					  std::string delete_name = buttonScript.get<std::string>(buttonName + "text_onscreen") + newMapName + buttonScript.get<std::string>(buttonName + "text_onscreen2");
 
 					  modelStack.PushMatrix();
-					  modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
+					  modelStack.Translate(Application::GetWindowWidth() * 0.525f, Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
 					  modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 					  RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], delete_name, UIColorPressed);
 					  modelStack.PopMatrix();
@@ -2003,7 +2100,7 @@ void MapScene::RenderUI()
 						  delete_name = buttonScript.get<std::string>(buttonName + "text");
 
 						  modelStack.PushMatrix();
-						  modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
+						  modelStack.Translate(Application::GetWindowWidth() * 0.525f, Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
 						  modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 						  RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], delete_name, UIColorPressed);
 						  modelStack.PopMatrix();
@@ -2014,7 +2111,7 @@ void MapScene::RenderUI()
 	case MT_LOAD:
 	{
 					modelStack.PushMatrix();
-					modelStack.Translate(Application::GetWindowWidth() * 0.5f, Application::GetWindowHeight() * 0.5f, 0);
+					modelStack.Translate(Application::GetWindowWidth() * 0.525f, Application::GetWindowHeight() * 0.5f, 0);
 					modelStack.Scale(Application::GetWindowWidth() * 0.3f, Application::GetWindowHeight() * 0.35f, 1);
 					RenderMeshOnScreen(P_meshArray[E_GEO_POPUP]);
 					modelStack.PopMatrix();
@@ -2024,7 +2121,7 @@ void MapScene::RenderUI()
 					std::string buttonName = "editor_load.";
 
 					modelStack.PushMatrix();
-					modelStack.Translate(Application::GetWindowWidth()*buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
+					modelStack.Translate(Application::GetWindowWidth()*(buttonScript.get<float>(buttonName + "posX") + 0.025f), Application::GetWindowHeight()*buttonScript.get<float>(buttonName + "posY"), 0.1f);
 					modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
 					RenderTextOnScreen(P_meshArray[E_GEO_TEXT], buttonScript.get<std::string>(buttonName + "text"), UIColor);
 					modelStack.PopMatrix();
@@ -2032,7 +2129,7 @@ void MapScene::RenderUI()
 					std::stringstream ss3;
 					ss3 << temp_total_string;
 					modelStack.PushMatrix();
-					modelStack.Translate(Application::GetWindowWidth()*buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight() * 0.5f, 0);
+					modelStack.Translate(Application::GetWindowWidth()*(buttonScript.get<float>(buttonName + "posX") + 0.025f), Application::GetWindowHeight() * 0.65f, 0);
 					modelStack.Scale(35, 35, 1);
 					RenderTextOnScreen(P_meshArray[E_GEO_TEXT], ss3.str(), UIColorPressed);
 					modelStack.PopMatrix();
@@ -2043,9 +2140,9 @@ void MapScene::RenderUI()
 						std::string button_name = buttonScript.get<std::string>(buttonName + "text");
 
 						modelStack.PushMatrix();
-						modelStack.Translate(Application::GetWindowWidth()*buttonScript.get<float>(buttonName + "posX"), Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
+						modelStack.Translate(Application::GetWindowWidth() * 0.525f, Application::GetWindowHeight() * buttonScript.get<float>(buttonName + "posY"), 0.1f);
 						modelStack.Scale(buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"), buttonScript.get<float>(buttonName + "scale"));
-						RenderTextOnScreen(P_meshArray[E_GEO_TEXT], button_name, UIColorPressed);
+						RenderTextCenterOnScreen(P_meshArray[E_GEO_TEXT], button_name, UIColorPressed);
 						modelStack.PopMatrix();
 					}
 	}

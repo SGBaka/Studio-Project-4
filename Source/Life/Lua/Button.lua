@@ -218,13 +218,13 @@ editor_load = {
 	text = "Level Name:",
 	scale = 35.0,
 	posX = 0.35,
-	posY = 0.60,
+	posY = 0.75,
 
 	text_failed = {
 		text = "Failed to Load",
 		scale = 35.0,
-		posX = 0.37,
-		posY = 0.70
+		posX = 0.35,
+		posY = 0.58
 	},
 
 	--[[Button_1 = Confirm Button]]--
@@ -232,7 +232,7 @@ editor_load = {
 		text = "Confirm",
 		scale = 25.0,
 		posX = 0.35,
-		posY = 0.30
+		posY = 0.20
 	},
 		
 	--[[Button_2 = Back Button]]--
@@ -240,7 +240,7 @@ editor_load = {
 		text = "Back",
 		scale = 25.0,
 		posX = 0.55,
-		posY = 0.30
+		posY = 0.20
 	},
 
 	total_button = 2
