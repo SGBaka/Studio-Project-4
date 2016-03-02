@@ -1,15 +1,10 @@
 #include "MPlayer.h"
+#include "SceneManager.h"
 
 MPlayer::MPlayer()
 : moveSpeed(4)
 , sonarCooldown(1)
 , sonarTimer(sonarCooldown)
-, specialCooldown(2)
-, specialTimer(specialCooldown)
-, specialDuration(0.2)
-, specialROF(0.04)
-, specialTimer2(specialROF)
-, specialCounter(0)
 , isSpecial(false)
 , trapCooldown(20)
 , trap1Counter(0)
@@ -39,8 +34,7 @@ void MPlayer::Init(Vector3 position)
 	LuaScript playerScript("character");
 	sonarCooldown = playerScript.get<float>("player.sonar_cooldown");
 	sonarTimer = sonarCooldown;
-	specialCooldown = playerScript.get<float>("player.special_cooldown");
-	specialTimer = specialCooldown;
+	sonarRad = playerScript.get<float>("player.sonar_radius_m");
 
 	LuaScript sound("Sound");
 	SoundList[ST_FOOTSTEPS] = SE_Engine.preloadSound(sound.getGameData("sound.footsteps").c_str());
@@ -84,7 +78,7 @@ void MPlayer::Update(double dt)
 			sonarTimer = 0;
 			MSonar *SNR;
 			SNR = new MSonar();
-			SNR->Init(playerScript.get<float>("player.sonar_radius"), playerScript.get<float>("player.sonar_radius2"), playerScript.get<int>("player.sonar_sides"), playerScript.get<float>("player.sonar_speed"));
+			SNR->Init(sonarRad, sonarRad + playerScript.get<float>("player.radius_increment"), playerScript.get<int>("player.sonar_sides"), playerScript.get<float>("player.sonar_speed"));
 			SNR->GenerateSonar(position, 1);
 			sonarList.push_back(SNR);
 			//cout << "Sonar!" << endl;
@@ -116,39 +110,9 @@ void MPlayer::Update(double dt)
 			cout << "2 Trap placed!" << endl;
 		}
 	}
-	if (isSpecial && specialCounter < specialDuration)
-	{
-		if (specialTimer2 >= specialROF)
-		{
-			LuaScript playerScript("character");
-			specialTimer2 = 0;
-			MSonar *SNR;
-			SNR = new MSonar();
-			SNR->Init(playerScript.get<float>("player.special_radius"), playerScript.get<float>("player.special_radius2"), playerScript.get<int>("player.special_sides"), playerScript.get<float>("player.special_speed"));
-			SNR->GenerateSonar(specialPos, 2);
-			sonarList.push_back(SNR);
-		}
-	}
 
 	if (sonarTimer < sonarCooldown)
 		sonarTimer += dt;
-
-	if (specialTimer < specialCooldown)
-		specialTimer += dt;
-
-	if (specialTimer2 < specialROF && isSpecial)
-		specialTimer2 += dt;
-
-	if (isSpecial)
-		specialCounter += dt;
-
-	if (specialCounter >= specialDuration)
-	{
-		isSpecial = false;
-		specialCounter = 0;
-		specialTimer2 = 0;
-		specialPos.SetZero();
-	}
 
 	for (int i = 0; i < sonarList.size(); ++i)
 	{

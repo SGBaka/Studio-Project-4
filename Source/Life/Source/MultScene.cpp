@@ -166,7 +166,7 @@ void MultScene::InitMeshList()
 	P_meshArray[E_GEO_WALL_1]->textureID[0] = LoadTGA(script.getGameData("image.tile.wall").c_str(), true);
 
 	P_meshArray[E_GEO_PLAYER] = MeshBuilder::GenerateQuad("AI Player", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	P_meshArray[E_GEO_PLAYER]->textureID[0] = LoadTGA(script.getGameData("image.tile.player").c_str(), true);
+	P_meshArray[E_GEO_PLAYER]->textureID[0] = LoadTGA(script.getGameData("image.tile.player_1").c_str(), true);
 
 	P_meshArray[E_GEO_PLAYER_2] = MeshBuilder::GenerateQuad("AI Player", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_PLAYER_2]->textureID[0] = LoadTGA(script.getGameData("image.tile.player_2").c_str(), true);
@@ -205,34 +205,6 @@ void MultScene::InitMenu(void)
 	m_B->Scale.Set(20, 20, 20);
 	m_B->mesh = P_meshArray[E_GEO_BUTTON_LEFT];
 	m_B->ID = BI_BACK;
-	m_B->labeltype = Button::LT_NONE;
-	m_B->gamestate = 1;
-	v_buttonList.push_back(m_B);
-
-
-	m_B = new Button;
-	m_B->Position.Set(Application::GetWindowWidth()*0.97f - 50.f, Application::GetWindowHeight()*0.95f, 0.1f);
-	m_B->Scale.Set(20, 20, 20);
-	m_B->mesh = P_meshArray[E_GEO_BUTTON_LEFT];
-	m_B->ID = BI_PREV_MAP;
-	m_B->labeltype = Button::LT_NONE;
-	m_B->gamestate = 1;
-	v_buttonList.push_back(m_B);
-
-	m_B = new Button;
-	m_B->Position.Set(Application::GetWindowWidth()*0.97f, Application::GetWindowHeight()*0.95f, 0.1f);
-	m_B->Scale.Set(20, 20, 20);
-	m_B->mesh = P_meshArray[E_GEO_BUTTON_RIGHT];
-	m_B->ID = BI_NEXT_MAP;
-	m_B->labeltype = Button::LT_NONE;
-	m_B->gamestate = 1;
-	v_buttonList.push_back(m_B);
-
-	m_B = new Button;
-	m_B->Position.Set(Application::GetWindowWidth()*0.03f + 50.f, Application::GetWindowHeight()*0.05f, 0.1f);
-	m_B->Scale.Set(20, 20, 20);
-	m_B->mesh = P_meshArray[E_GEO_BUTTON_REFRESH];
-	m_B->ID = BI_REFRESH;
 	m_B->labeltype = Button::LT_NONE;
 	m_B->gamestate = 1;
 	v_buttonList.push_back(m_B);
@@ -648,24 +620,6 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			SceneManager::Instance()->replace(SceneManager::S_MAIN_MENU);
 			return;
 		}
-		else if (FetchBUTTON(BI_REFRESH)->active)
-		{
-			InitSimulation();
-		}
-		else if (FetchBUTTON(BI_PREV_MAP)->active)
-		{
-			if (i_SimulationSpeed > 1)
-			{
-				--i_SimulationSpeed;
-			}
-		}
-		else if (FetchBUTTON(BI_NEXT_MAP)->active)
-		{
-			if (i_SimulationSpeed < 5)
-			{
-				++i_SimulationSpeed;
-			}
-		}
 	}
 
 	float f_camSpeed = 50.f;
@@ -679,23 +633,6 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	{
 		f_camSpeed *= 2.f;
 	}
-
-	//if (Application::IsKeyPressed('W'))
-	//{
-	//	v3_2DCam.y += static_cast<float>(dt) * f_camSpeed;
-	//}
-	//if (Application::IsKeyPressed('S'))
-	//{
-	//	v3_2DCam.y -= static_cast<float>(dt) * f_camSpeed;
-	//}
-	//if (Application::IsKeyPressed('A'))
-	//{
-	//	v3_2DCam.x -= static_cast<float>(dt) * f_camSpeed;
-	//}
-	//if (Application::IsKeyPressed('D'))
-	//{
-	//	v3_2DCam.x += static_cast<float>(dt) * f_camSpeed;
-	//}
 
 	if (Application::IsKeyPressed('F'))
 	{
@@ -726,73 +663,6 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			|| (ML_map.map_data[player_List[i]->currTile.y][player_List[i]->currTile.x] == "3" && player_List[i]->playerID == 2))
 			onExit = true;
 	}
-	/*for (int k = 0; k < GO_List.size(); ++k)
-	{
-	CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[k]);
-
-	if (CO != NULL)
-	{
-	if (CO->name == "ENEMY")
-	{
-	cEnemy *EO = dynamic_cast<cEnemy*>(CO);
-	EO->isVisible = true;
-
-	if (EO->currTile == player_ptr->currTile)
-	{
-	InitSimulation();
-	break;
-	}
-
-	for (int i = 0; i < EO->sonarList.size(); ++i)
-	{
-	for (int j = 0; j < EO->sonarList[j]->segmentList.size(); ++j)
-	{
-	if (EO->sonarList[J]->segmentList[k]->active && (EO->sonarList[J]->radius / EO->sonarList[J]->maxRad) <= 0.9 &&
-	!EO->sonarList[J]->segmentList[k]->hitWall)
-	{
-	if (checkForCollision(EO->sonarList[J]->segmentList[j]->posStart,
-	EO->sonarList[J]->segmentList[j]->posEnd, player_ptr->topLeft, player_ptr->bottomRight))
-	EO->gotoChase = true;
-	}
-
-	for (int a = 0; a < GO_List.size(); ++a)
-	{
-	if (GO_List[a]->name == "WALL")
-	{
-	if (checkForCollision(EO->sonarList[J]->segmentList[j]->posStart,
-	EO->sonarList[j]->segmentList[j]->posEnd, GO_List[a]->topLeft, GO_List[a]->bottomRight))
-	EO->sonarList[j]->segmentList[j]->hitWall = true;
-	}
-	}
-
-	}
-	}
-	}
-	}
-	}
-	for (int i = 0; i < GO_List.size(); ++i)
-	{
-	if (GO_List[i]->name == "WALL")
-	{
-	for (int j = 0; j < GO_List.size(); ++j)
-	{
-	CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[j]);
-
-	if (CO != NULL)
-	{
-	/*if (CO->name == "ENEMY")
-	{
-	cEnemy *EO = dynamic_cast<cEnemy*>(CO);
-
-	if (checkForCollision(EO->position, player_ptr->position, GO_List[i]->topLeft, GO_List[i]->bottomRight) && EO->AI_STATE != cEnemy::AS_CHASE && !toggleVisible)
-	{
-	EO->isVisible = false;
-	}
-	}
-	}
-	}
-	}
-	}*/
 
 	string sideHit = "";
 	for (int i = 0; i < player_List.size(); ++i)
@@ -1431,7 +1301,7 @@ void MultScene::RenderGO()
 				modelStack.PopMatrix();
 			}
 			
-			if ((CO == NULL))// && GO_List[i]->name == "Danger") || (CO == NULL && GO_List[i]->name == "Danger2"))
+			if ((CO == NULL && GO_List[i]->name == "Danger") || (CO == NULL && GO_List[i]->name == "Danger2"))
 			{
 				modelStack.PushMatrix();
 				modelStack.Translate(GO_List[i]->position);

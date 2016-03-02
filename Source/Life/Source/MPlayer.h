@@ -39,11 +39,11 @@ public:
 
 	vector<MSonar*> sonarList;
 
-	float sonarCooldown, specialCooldown;
-	float sonarTimer, specialTimer;
+	float sonarCooldown;
+	float sonarTimer;
 
-	float specialDuration, specialROF, specialTimer2, specialCounter;
-	Vector3 specialPos;
+	float sonarRad;
+	//Vector3 specialPos;
 
 	bool isSpecial;
 	float playerID;
