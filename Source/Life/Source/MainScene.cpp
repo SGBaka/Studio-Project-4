@@ -172,9 +172,6 @@ void MainScene::InitMeshList()
 	P_meshArray[E_GEO_PLAYER] = MeshBuilder::GenerateQuad("AI Player", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_PLAYER]->textureID[0] = LoadTGA(script.getGameData("image.tile.player").c_str(), true);
 
-	//P_meshArray[E_GEO_PLAYER_2] = MeshBuilder::GenerateQuad("AI Player", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
-	//P_meshArray[E_GEO_PLAYER_2]->textureID[0] = LoadTGA(script.getGameData("image.tile.player_2").c_str(), true);
-
 	P_meshArray[E_GEO_ENEMY] = MeshBuilder::GenerateQuad("AI Enemy", Color(0.f, 0.f, 0.f), 1.f, 1.f, 1.0f);
 	P_meshArray[E_GEO_ENEMY]->textureID[0] = LoadTGA(script.getGameData("image.tile.enemy").c_str(), true);
 
