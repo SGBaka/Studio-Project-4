@@ -655,7 +655,7 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		}		
 		if (ML_map.map_data[player_List[i]->currTile.y][player_List[i]->currTile.x] == "2A" && player_List[i]->playerID == 1)
 		{
-			player_List[i]->position.Set(4 * MultScene::GetInstance()->ML_map.worldSize * 2.f, (MultScene::GetInstance()->ML_map.map_height - 17) * MultScene::GetInstance()->ML_map.worldSize*2.f, -0.5f);
+			player_List[i]->position.Set(2 * MultScene::GetInstance()->ML_map.worldSize * 2.f, (MultScene::GetInstance()->ML_map.map_height - 17) * MultScene::GetInstance()->ML_map.worldSize*2.f, -0.5f);
 			newPlayerPos = calTilePos(player_List[i]->position);
 			player_List[i]->currTile.Set(newPlayerPos.x, newPlayerPos.y);
 		}
