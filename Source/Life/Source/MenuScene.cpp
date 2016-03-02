@@ -261,7 +261,7 @@ void MenuScene::InitMeshList()
 
 	//Text
 	P_meshArray[E_GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	P_meshArray[E_GEO_TEXT]->textureID[0] = LoadTGA(script.getGameData("image.font.mainmenu").c_str(), false, false);
+	P_meshArray[E_GEO_TEXT]->textureID[0] = LoadTGA(script.getGameData("image.font.consolas").c_str(), false, false);
 
 	P_meshArray[E_GEO_BACKGROUND_MAIN] = MeshBuilder::GenerateQuad("Background_Main", Color(1.0f, 1.0f, 1.0f), static_cast<float>(Application::GetWindowWidth() / 2), static_cast<float>(Application::GetWindowHeight() / 2), 1.0f);
 	P_meshArray[E_GEO_BACKGROUND_MAIN]->textureID[0] = LoadTGA(script.getGameData("image.background.background_main").c_str(), true, false);

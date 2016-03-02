@@ -34,7 +34,8 @@ font = {
     calibri = "Font//calibri.tga",
     prism = "Font//Prism.tga",
     segoeUI = "Font//SegoeUI.tga",
-    univers = "Font//univers.tga"
+    univers = "Font//univers.tga",
+    consolas = "Font//consolas.tga"
 }
 
 tile = {

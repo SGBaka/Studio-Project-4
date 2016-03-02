@@ -337,7 +337,7 @@ bool MainScene::InitLevel(int level)
 					GO->bottomRight = GO->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
 				}
 
-				else if(ML_map.map_data[y][x] == "3")
+				else if (ML_map.map_data[y][x] == "3")
 				{
 					GO->name = "EXIT";
 					GO->topLeft = GO->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
@@ -372,7 +372,7 @@ bool MainScene::InitLevel(int level)
 						enemy->Init(Vector3(x*ML_map.worldSize*2.f, (ML_map.map_height - y)*ML_map.worldSize*2.f, 0));
 						enemy->scale.Set(ML_map.worldSize, ML_map.worldSize, ML_map.worldSize);
 						enemy->mesh = P_meshArray[E_GEO_ENEMY];
-						
+
 						enemy->name = "ENEMY";
 						enemy->topLeft = enemy->position + Vector3(-ML_map.worldSize, ML_map.worldSize, 0);
 						enemy->bottomRight = enemy->position + Vector3(ML_map.worldSize, -ML_map.worldSize, 0);
@@ -713,7 +713,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 	}
 
 	else if (!(SE_Engine2.isSoundPlaying(SoundList[ST_HEART]) || SE_Engine2.isSoundPlaying(SoundList[ST_HEART2])))
-		SE_Engine2.playSound2D(SoundList[ST_HEART],1);
+		SE_Engine2.playSound2D(SoundList[ST_HEART], 1);
 
 
 	//-----------------------------------------------------------------------------
@@ -816,7 +816,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			InitLevel(2);
 			LEVEL = 2;
 		}
-	
+
 		f_timer = 0.f;
 		i_SimulationSpeed = 1;
 		onDanger = onExit = shownZone = shownSonar = shownEnemy = false;
@@ -950,7 +950,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		SE_Engine2.stopAllSounds();
 		SE_Engine.playSound2D(SoundList[ST_EXIT]);
 	}
-		
+
 	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "-1")
 	{
 		switch (tutorialStage)
@@ -978,7 +978,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			break;
 		}
 
-		
+
 	}
 	else if (ML_map.map_data[player_ptr->currTile.y][player_ptr->currTile.x] == "-2")
 	{
@@ -1039,7 +1039,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 				if (GO_List[k]->name == "EXIT")
 					GO_List[k]->color.b = (GO_List[k]->fadeTimer / GO_List[k]->fadeDur) / 2;
-				
+
 			}
 		}
 		else if (GO_List[k]->fadeTimer >= 0 && GO_List[k]->color.r >= 0)
@@ -1082,7 +1082,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 						InitSimulation();
 						break;
 					}
-					
+
 					else
 					{
 						string filename;
@@ -1239,15 +1239,15 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 										EO->suspDuration = player_ptr->sonarList[i]->segmentList[j]->lifeTime * 2;
 									else if (player_ptr->sonarList[i]->segmentList[j]->type == 2)
 										EO->suspDuration = 100;
-								}	
+								}
 							}
 
 						}
 					}
 
 					if (checkForCollision(player_ptr->sonarList[i]->segmentList[j]->posStart,
-									      player_ptr->sonarList[i]->segmentList[j]->posEnd,
-										  topLeft, botRight, &sideHit))
+						player_ptr->sonarList[i]->segmentList[j]->posEnd,
+						topLeft, botRight, &sideHit))
 					{
 						if (tempType == 1)
 						{
@@ -1267,7 +1267,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 
 								else
 									player_ptr->sonarList[i]->segmentList[j]->segmentColor = player_ptr->sonarList[i]->colorStore;
-						
+
 								player_ptr->sonarList[i]->segmentList[j]->scale.y *= 1.2;
 								//player_ptr->sonarList[i]->segmentList[j]->scale.x *= 1.2;
 
@@ -1285,7 +1285,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 								GO_List[k]->visible = true;
 								player_ptr->sonarList[i]->GO.push_back(GO_List[k]);
 							}
-							
+
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.r = (1 - (player_ptr->sonarList[i]->radius / player_ptr->sonarList[i]->maxRad)) * 2;
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.g = 0;
 							player_ptr->sonarList[i]->segmentList[j]->segmentColor.b = 0;
@@ -1316,7 +1316,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 								SE_Engine2.stopAllSounds();
 								SE_Engine2.playSound2D(SoundList[ST_HEART2], 1);
 							}
-							
+
 						}
 					}
 				}
@@ -1982,7 +1982,7 @@ void MainScene::RenderUI()
 			modelStack.PopMatrix();
 		}
 	}
-	
+
 }
 
 /******************************************************************************/
@@ -2121,7 +2121,7 @@ void MainScene::RenderGO()
 			modelStack.PushMatrix();
 			modelStack.Translate(EO->position);
 			modelStack.Scale(EO->scale);
-			RenderMeshOnScreen(P_meshArray[E_GEO_PLAYER],13,EO->color);
+			RenderMeshOnScreen(P_meshArray[E_GEO_PLAYER], 13, EO->color);
 			modelStack.PopMatrix();
 
 			if (EO->isVisible)
@@ -2192,7 +2192,7 @@ bool MainScene::checkForCollision(Vector3 position_start, Vector3 position_end, 
 {
 	Vector3 ObjectTopLeft = top_left;
 	Vector3 ObjectBottomRight = bottom_right;
-	
+
 	Vector3 botLeft = Vector3(ObjectBottomRight.x - ML_map.worldSize * 2, ObjectBottomRight.y);
 	Vector3 topRight = Vector3(ObjectBottomRight.x, ObjectBottomRight.y + ML_map.worldSize * 2);
 
@@ -2207,7 +2207,7 @@ bool MainScene::checkForCollision(Vector3 position_start, Vector3 position_end, 
 		Hit = position_start;
 		return true;
 	}
-		
+
 	return false;
 }
 
