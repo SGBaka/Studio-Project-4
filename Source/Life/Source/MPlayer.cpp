@@ -38,6 +38,7 @@ void MPlayer::Init(Vector3 position)
 
 	LuaScript sound("Sound");
 	SoundList[ST_FOOTSTEPS] = SE_Engine.preloadSound(sound.getGameData("sound.footsteps").c_str());
+	SoundList[ST_N_SONAR] = SE_Engine.preloadSound(sound.getGameData("sound.sonar_normal").c_str());
 }
 
 
@@ -81,7 +82,7 @@ void MPlayer::Update(double dt)
 			SNR->Init(sonarRad, sonarRad + playerScript.get<float>("player.radius_increment"), playerScript.get<int>("player.sonar_sides"), playerScript.get<float>("player.sonar_speed"));
 			SNR->GenerateSonar(position, 1);
 			sonarList.push_back(SNR);
-			//cout << "Sonar!" << endl;
+			SE_Engine.playSound2D(SoundList[ST_N_SONAR]);
 		}
 		if (Application::IsKeyPressed('H') && playerID == 1 && trapCooldown == 0 && trap1Counter < 2)
 		{

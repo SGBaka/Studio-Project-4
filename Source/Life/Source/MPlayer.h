@@ -16,6 +16,7 @@ public:
 	enum SOUND_TYPE
 	{
 		ST_FOOTSTEPS,
+		ST_N_SONAR,
 		ST_TOTAL
 	};
 

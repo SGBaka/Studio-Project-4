@@ -113,6 +113,11 @@ private:
 	{
 		ST_BUTTON_CLICK,
 		ST_BUTTON_CLICK_2,
+		ST_EXIT,
+		ST_DEATH,
+		ST_HEART,
+		ST_HEART2,
+		ST_BGM,
 		ST_TOTAL
 	};
 
@@ -320,7 +325,7 @@ private:
 	/******************************************************************************/
 	MS projectionStack;
 
-	SoundEngine SE_Engine;
+	SoundEngine SE_Engine, SE_Engine2;
 	ISoundSource *SoundList[ST_TOTAL];
 
 private:

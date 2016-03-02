@@ -54,6 +54,7 @@ Initialize default variables, create meshes, lighting
 void MultScene::Init()
 {
 	SE_Engine.Init();
+	SE_Engine2.Init();
 	f_fov = 0.f;
 	f_mouseSensitivity = 0.f;
 
@@ -72,6 +73,11 @@ void MultScene::Init()
 	LuaScript sound("Sound");
 	SoundList[ST_BUTTON_CLICK] = SE_Engine.preloadSound(sound.getGameData("sound.button_click").c_str());
 	SoundList[ST_BUTTON_CLICK_2] = SE_Engine.preloadSound(sound.getGameData("sound.button_click2").c_str());
+	SoundList[ST_EXIT] = SE_Engine.preloadSound(sound.getGameData("sound.exit").c_str());
+	SoundList[ST_DEATH] = SE_Engine.preloadSound(sound.getGameData("sound.dead").c_str());
+	SoundList[ST_HEART] = SE_Engine2.preloadSound(sound.getGameData("sound.heartbeat").c_str());
+	SoundList[ST_HEART2] = SE_Engine2.preloadSound(sound.getGameData("sound.heartbeat2").c_str());
+	SoundList[ST_BGM] = SE_Engine2.preloadSound(sound.getGameData("sound.backgroundO").c_str());
 
 	toggleVisible = false;
 
@@ -575,18 +581,6 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		}
 	}
 
-	float f_camSpeed = 50.f;
-
-	if (Application::IsKeyPressed(VK_CONTROL))
-	{
-		f_camSpeed *= 0.5f;
-	}
-
-	if (Application::IsKeyPressed(VK_SHIFT))
-	{
-		f_camSpeed *= 2.f;
-	}
-
 	if (Application::IsKeyPressed('F'))
 	{
 		toggleVisible = true;
@@ -601,6 +595,8 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		Vector3 newPlayerPos;
 		if (ML_map.map_data[player_List[i]->currTile.y][player_List[i]->currTile.x] == "2" && player_List[i]->playerID == 2)
 		{
+			SE_Engine2.stopAllSounds();
+			SE_Engine.playSound2D(SoundList[ST_DEATH]);
 			player_List[i]->position.Set(27 * MultScene::GetInstance()->ML_map.worldSize * 2.f, (MultScene::GetInstance()->ML_map.map_height - 17) * MultScene::GetInstance()->ML_map.worldSize*2.f, -0.5f);
 			newPlayerPos = calTilePos(player_List[i]->position);
 			player_List[i]->currTile.Set(newPlayerPos.x, newPlayerPos.y);
@@ -608,18 +604,24 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		}		
 		if (ML_map.map_data[player_List[i]->currTile.y][player_List[i]->currTile.x] == "2A" && player_List[i]->playerID == 1)
 		{
+			SE_Engine2.stopAllSounds();
+			SE_Engine.playSound2D(SoundList[ST_DEATH]);
 			player_List[i]->position.Set(2 * MultScene::GetInstance()->ML_map.worldSize * 2.f, (MultScene::GetInstance()->ML_map.map_height - 17) * MultScene::GetInstance()->ML_map.worldSize*2.f, -0.5f);
 			newPlayerPos = calTilePos(player_List[i]->position);
 			player_List[i]->currTile.Set(newPlayerPos.x, newPlayerPos.y);
 		}
 		if (ML_map.map_data[player_List[i]->currTile.y][player_List[i]->currTile.x] == "3" && player_List[i]->playerID == 1)
 		{
+			SE_Engine2.stopAllSounds();
+			SE_Engine.playSound2D(SoundList[ST_EXIT]);
 			SceneManager::Instance()->winner = 1;
 			SceneManager::Instance()->replace(SceneManager::S_END_MENU_MULT);
 			return;
 		}
 		if (ML_map.map_data[player_List[i]->currTile.y][player_List[i]->currTile.x] == "3" && player_List[i]->playerID == 2)
 		{
+			SE_Engine2.stopAllSounds();
+			SE_Engine.playSound2D(SoundList[ST_EXIT]);
 			SceneManager::Instance()->winner = 2;
 			SceneManager::Instance()->replace(SceneManager::S_END_MENU_MULT);
 			return;
@@ -713,6 +715,8 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 			}
 		}
 	}
+	if (!(SE_Engine2.isSoundPlaying(SoundList[ST_HEART]) || SE_Engine2.isSoundPlaying(SoundList[ST_HEART2])))
+		SE_Engine2.playSound2D(SoundList[ST_HEART], 1);
 }
 
 /******************************************************************************/
@@ -1469,6 +1473,7 @@ Clears memory upon exit
 void MultScene::Exit()
 {
 	SE_Engine.Exit();
+	SE_Engine2.Exit();
 
 	while (GO_List.size() > 0)
 	{
