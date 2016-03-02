@@ -1264,7 +1264,7 @@ void MultScene::RenderGO()
 	//modelStack.PopMatrix();
 	//Temporary bandaid solution (render CO last)
 
-	for (unsigned i = 0; i < GO_List.size(); i++)
+	/*for (unsigned i = 0; i < GO_List.size(); i++)
 	{
 		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[i]);
 
@@ -1280,7 +1280,7 @@ void MultScene::RenderGO()
 				modelStack.PopMatrix();
 			}
 		}
-	}
+	}*/
 
 	for (int h = 0; h < player_List.size(); ++h)
 	{
@@ -1354,7 +1354,7 @@ void MultScene::RenderGO()
 
 	for (unsigned k = 0; k < GO_List.size(); k++)
 	{
-		CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[k]);
+		//CharacterObject *CO = dynamic_cast<CharacterObject*>(GO_List[k]);
 
 		if (GO_List[k]->visible || GO_List[k]->fadeTimer > 0)
 		{

@@ -15,7 +15,6 @@ MSonar::MSonar()
 
 MSonar::~MSonar()
 {
-
 }
 
 void MSonar::Init(float radius, float radius2, int numSides, float speed)
@@ -235,6 +234,19 @@ void MSonar::Update(double dt)
 
 			if (segmentList[i]->lifeTime <= 0)
 			{
+				if (segmentList.size() <= numSides / 3)
+				{
+					for (int k = 0; k < GO.size(); ++k)
+					{
+						if (GO[k] != NULL)
+						{
+							GO[k]->visible = false;
+							/*delete GO[k];
+							GO.erase(GO.begin() + k);*/
+						}
+					}
+				}
+
 				delete segmentList[i];
 				segmentList.erase(segmentList.begin() + i);
 			}
@@ -245,4 +257,5 @@ void MSonar::Update(double dt)
 float MSonar::GetSonarRadius()
 {
 	return radius;
+
 }

@@ -92,7 +92,7 @@ void MPlayer::Update(double dt)
 			GO->scale.Set(MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 1);
 			GO->name = "DANGER";
 			MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] = "2";
-			//MultScene::GetInstance()->GO_List.push_back(GO);
+			MultScene::GetInstance()->GO_List.push_back(GO);
 			trapCooldown = 20;
 			trap1Counter++;
 			cout << "1 Trap placed!" << endl;
@@ -105,7 +105,7 @@ void MPlayer::Update(double dt)
 			GO->scale.Set(MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 1);
 			GO->name = "DANGER2";
 			MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] = "2A";
-			//MultScene::GetInstance()->GO_List.push_back(GO);
+			MultScene::GetInstance()->GO_List.push_back(GO);
 			trapCooldown = 20;
 			trap2Counter++;
 			cout << "2 Trap placed!" << endl;

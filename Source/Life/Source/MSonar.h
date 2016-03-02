@@ -25,6 +25,7 @@ public:
 	Color colorStore;
 	int alertType;
 	Vector3 position;
+	vector<GameObject*> GO;
 
 private:
 	int numSides;
