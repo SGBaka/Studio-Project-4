@@ -236,10 +236,14 @@ void Sonar::Update(double dt)
 			{
 				if (segmentList.size() <= numSides / 3)
 				{
-					for (int i = 0; i < GO.size(); ++i)
+					for (int k = 0; k < GO.size(); ++k)
 					{
-						if (GO[i] != NULL)
-							GO[i]->visible = false;
+						if (GO[k] != NULL)
+						{
+							GO[k]->visible = false;
+							/*delete GO[k];
+							GO.erase(GO.begin() + k);*/
+						}				
 					}
 				}
 
