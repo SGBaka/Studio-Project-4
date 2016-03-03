@@ -747,9 +747,9 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		{
 			SceneManager::Instance()->end_star = 3;
 			float cal2 = cal - f_timer;
-			ML_map.map_data[0][4] = std::to_string(static_cast<unsigned long long>(ML_map.star_three - (cal2 / 7)));
-			ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
-			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
+			ML_map.map_data[0][4] = std::to_string(static_cast<unsigned long long>(ML_map.star_three - (cal2 / 9)));
+			ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 7)));
+			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 5)));
 
 			stringstream ss;
 			ss << "GameData\\Maps\\" << loader.Data[LEVEL - 1];
@@ -760,8 +760,8 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		{
 			SceneManager::Instance()->end_star = 2;
 			float cal2 = cal - f_timer;
-			ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 5)));
-			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
+			ML_map.map_data[0][3] = std::to_string(static_cast<unsigned long long>(ML_map.star_two - (cal2 / 7)));
+			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 5)));
 
 			stringstream ss;
 			ss << "GameData\\Maps\\" << loader.Data[LEVEL - 1];
@@ -772,7 +772,7 @@ void MainScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 		{
 			SceneManager::Instance()->end_star = 1;
 			float cal2 = cal - f_timer;
-			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 4)));
+			ML_map.map_data[0][2] = std::to_string(static_cast<unsigned long long>(ML_map.star_one - (cal2 / 5)));
 
 			stringstream ss;
 			ss << "GameData\\Maps\\" << loader.Data[LEVEL - 1];
