@@ -84,31 +84,39 @@ void MPlayer::Update(double dt)
 			sonarList.push_back(SNR);
 			SE_Engine.playSound2D(SoundList[ST_N_SONAR]);
 		}
-		if (Application::IsKeyPressed('H') && playerID == 1 && trapCooldown == 0 && trap1Counter < 2)
+		for (unsigned y = MultScene::GetInstance()->ML_map.map_height - 1; y > 0; --y)
 		{
-			GameObject *GO;
-			GO = new GameObject();
-			GO->Init(currTile);
-			GO->scale.Set(MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 1);
-			GO->name = "DANGER";
-			MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] = "2";
-			MultScene::GetInstance()->GO_List.push_back(GO);
-			trapCooldown = 20;
-			trap1Counter++;
-			cout << "1 Trap placed!" << endl;
-		}
-		else if (Application::IsKeyPressed(VK_RBUTTON) && playerID == 2 && trapCooldown == 0 && trap2Counter < 2)
-		{
-			GameObject *GO;
-			GO = new GameObject();
-			GO->Init(currTile);
-			GO->scale.Set(MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 1);
-			GO->name = "DANGER2";
-			MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] = "2A";
-			MultScene::GetInstance()->GO_List.push_back(GO);
-			trapCooldown = 20;
-			trap2Counter++;
-			cout << "2 Trap placed!" << endl;
+			for (unsigned x = 0; x < MultScene::GetInstance()->ML_map.map_width; ++x)
+			{
+				if (Application::IsKeyPressed('H') && playerID == 1 && trapCooldown == 0 && trap1Counter < 2)
+				{
+					GameObject *GO;
+					GO = new GameObject();
+					GO->Init(Vector3(x * MultScene::GetInstance()->ML_map.worldSize * 2.f, (MultScene::GetInstance()->ML_map.map_height - y) * MultScene::GetInstance()->ML_map.worldSize * 2.f, -0.5f));
+					GO->scale.Set(MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 1);
+					GO->name = "DANGER";
+					GO->topLeft = GO->position + Vector3(-MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 0);
+					GO->bottomRight = GO->position + Vector3(MultScene::GetInstance()->ML_map.worldSize, -MultScene::GetInstance()->ML_map.worldSize, 0);
+					MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] = "2";
+					MultScene::GetInstance()->GO_List.push_back(GO);
+					trapCooldown = 20;
+					trap1Counter++;
+				}
+				else if (Application::IsKeyPressed(VK_RBUTTON) && playerID == 2 && trapCooldown == 0 && trap2Counter < 2)
+				{
+					GameObject *GO;
+					GO = new GameObject();
+					GO->Init(Vector3(x * MultScene::GetInstance()->ML_map.worldSize * 2.f, (MultScene::GetInstance()->ML_map.map_height - y) * MultScene::GetInstance()->ML_map.worldSize * 2.f, -0.5f));
+					GO->scale.Set(MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 1);
+					GO->name = "DANGER2";
+					GO->topLeft = GO->position + Vector3(-MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 0);
+					GO->bottomRight = GO->position + Vector3(MultScene::GetInstance()->ML_map.worldSize, -MultScene::GetInstance()->ML_map.worldSize, 0);
+					MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] = "2A";
+					MultScene::GetInstance()->GO_List.push_back(GO);
+					trapCooldown = 20;
+					trap2Counter++;
+				}
+			}
 		}
 	}
 

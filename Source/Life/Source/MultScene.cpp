@@ -673,10 +673,12 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 							tempType = 1;
 						}
 
-						else if (GO_List[m]->name == "DANGER" && player_List[i]->playerID == 2 || GO_List[m]->name == "DANGER2" && player_List[i]->playerID == 1)
+						else if ((GO_List[m]->name == "DANGER" && player_List[i]->playerID == 2) || (GO_List[m]->name == "DANGER2" && player_List[i]->playerID == 1))
 						{
 							topLeft = GO_List[m]->topLeft;
 							botRight = GO_List[m]->bottomRight;
+							cout << topLeft << endl;
+							cout << botRight << endl;
 							tempType = 2;
 						}
 
@@ -717,7 +719,7 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 										player_List[i]->sonarList[j]->segmentList[k]->rotation = 90;
 								}
 							}
-
+							//NOT THE PROBLEM
 							else if (tempType == 2 && player_List[i]->sonarList[j]->segmentList[k]->type == 1 && !player_List[i]->sonarList[j]->segmentList[k]->attached)
 							{
 								player_List[i]->sonarList[j]->segmentList[k]->segmentColor.r = (1 - (player_List[i]->sonarList[j]->radius / player_List[i]->sonarList[j]->maxRad)) * 2;
