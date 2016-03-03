@@ -84,11 +84,11 @@ void MPlayer::Update(double dt)
 			sonarList.push_back(SNR);
 			SE_Engine.playSound2D(SoundList[ST_N_SONAR]);
 		}
-		for (unsigned y = MultScene::GetInstance()->ML_map.map_height - 1; y > 0; --y)
+		if (Application::IsKeyPressed('H') && playerID == 1 && trapCooldown == 0 && trap1Counter < 2)
 		{
-			for (unsigned x = 0; x < MultScene::GetInstance()->ML_map.map_width; ++x)
+			for (unsigned y = MultScene::GetInstance()->ML_map.map_height - 1; y > 0; --y)
 			{
-				if (Application::IsKeyPressed('H') && playerID == 1 && trapCooldown == 0 && trap1Counter < 2)
+				for (unsigned x = 0; x < MultScene::GetInstance()->ML_map.map_width; ++x)
 				{
 					GameObject *GO;
 					GO = new GameObject();
@@ -102,7 +102,13 @@ void MPlayer::Update(double dt)
 					trapCooldown = 20;
 					trap1Counter++;
 				}
-				else if (Application::IsKeyPressed(VK_RBUTTON) && playerID == 2 && trapCooldown == 0 && trap2Counter < 2)
+			}
+		}
+		else if (Application::IsKeyPressed(VK_RBUTTON) && playerID == 2 && trapCooldown == 0 && trap2Counter < 2)
+		{
+			for (unsigned y = MultScene::GetInstance()->ML_map.map_height - 1; y > 0; --y)
+			{
+				for (unsigned x = 0; x < MultScene::GetInstance()->ML_map.map_width; ++x)
 				{
 					GameObject *GO;
 					GO = new GameObject();

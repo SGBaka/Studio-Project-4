@@ -677,8 +677,6 @@ void MultScene::Update(double dt)	//TODO: Reduce complexity of MainScene::Update
 						{
 							topLeft = GO_List[m]->topLeft;
 							botRight = GO_List[m]->bottomRight;
-							cout << topLeft << endl;
-							cout << botRight << endl;
 							tempType = 2;
 						}
 
