@@ -1,0 +1,17 @@
+Thing to mention during game demo:
+- How we determine the difficulty of each level (longer pathways = harder, etc.)
+- Player's choice carries risk/reward (using sonar will alert enemy, if not might fall into traps, etc.)
+- Timing to get stars is dynamic. Theytill automatically update depending on the player's performance.
+- 
+easy
+3 -15
+2 - 25
+1  35
+med
+1- 20
+2 - 30
+3 - 40
+hard
+3 - 30
+2 - 55
+1 - 60 
