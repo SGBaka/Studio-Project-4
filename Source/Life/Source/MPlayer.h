@@ -52,6 +52,9 @@ public:
 	float trap1Counter;
 	float trap2Counter;
 
+	Vector3 trap1Tile;
+	Vector3 trap2Tile;
+
 private:
 	int mapWidth, mapHeight;
 

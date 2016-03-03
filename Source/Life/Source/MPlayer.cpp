@@ -90,17 +90,35 @@ void MPlayer::Update(double dt)
 			{
 				for (unsigned x = 0; x < MultScene::GetInstance()->ML_map.map_width; ++x)
 				{
-					GameObject *GO;
-					GO = new GameObject();
-					GO->Init(Vector3(x * MultScene::GetInstance()->ML_map.worldSize * 2.f, (MultScene::GetInstance()->ML_map.map_height - y) * MultScene::GetInstance()->ML_map.worldSize * 2.f, -0.5f));
-					GO->scale.Set(MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 1);
-					GO->name = "DANGER";
-					GO->topLeft = GO->position + Vector3(-MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 0);
-					GO->bottomRight = GO->position + Vector3(MultScene::GetInstance()->ML_map.worldSize, -MultScene::GetInstance()->ML_map.worldSize, 0);
-					MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] = "2";
-					MultScene::GetInstance()->GO_List.push_back(GO);
-					trapCooldown = 20;
-					trap1Counter++;
+					if (MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] != "2")
+					{
+						GameObject *GO;
+						GO = new GameObject();
+						GO->Init(Vector3(x * MultScene::GetInstance()->ML_map.worldSize * 2.f, (MultScene::GetInstance()->ML_map.map_height - y) * MultScene::GetInstance()->ML_map.worldSize * 2.f, -0.5f));
+						GO->scale.Set(MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 1);
+						GO->name = "DANGER";
+						GO->topLeft = GO->position + Vector3(-MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 0);
+						GO->bottomRight = GO->position + Vector3(MultScene::GetInstance()->ML_map.worldSize, -MultScene::GetInstance()->ML_map.worldSize, 0);
+						//MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] = "2";
+						if (trap1Counter == 2)
+						{
+							MultScene::GetInstance()->ML_map.map_data[trap1Tile.y][trap1Tile.x] = "0";
+							for (int i = 0; i < MultScene::GetInstance()->GO_List.size(); ++i)
+							{
+								if (MultScene::GetInstance()->GO_List[i]->currTile == trap1Tile)
+								{
+									delete MultScene::GetInstance()->GO_List[i];
+									MultScene::GetInstance()->GO_List.erase(MultScene::GetInstance()->GO_List.begin() + i);
+									trap1Counter = 1;
+								}
+							}
+						}
+						MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] = "2";
+						trap1Tile.Set(currTile.x, currTile.y);
+						MultScene::GetInstance()->GO_List.push_back(GO);
+						trapCooldown = 60;
+						trap1Counter++;
+					}
 				}
 			}
 		}
@@ -110,17 +128,35 @@ void MPlayer::Update(double dt)
 			{
 				for (unsigned x = 0; x < MultScene::GetInstance()->ML_map.map_width; ++x)
 				{
-					GameObject *GO;
-					GO = new GameObject();
-					GO->Init(Vector3(x * MultScene::GetInstance()->ML_map.worldSize * 2.f, (MultScene::GetInstance()->ML_map.map_height - y) * MultScene::GetInstance()->ML_map.worldSize * 2.f, -0.5f));
-					GO->scale.Set(MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 1);
-					GO->name = "DANGER2";
-					GO->topLeft = GO->position + Vector3(-MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 0);
-					GO->bottomRight = GO->position + Vector3(MultScene::GetInstance()->ML_map.worldSize, -MultScene::GetInstance()->ML_map.worldSize, 0);
-					MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] = "2A";
-					MultScene::GetInstance()->GO_List.push_back(GO);
-					trapCooldown = 20;
-					trap2Counter++;
+					if (MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] != "2A")
+					{
+						GameObject *GO;
+						GO = new GameObject();
+						GO->Init(Vector3(x * MultScene::GetInstance()->ML_map.worldSize * 2.f, (MultScene::GetInstance()->ML_map.map_height - y) * MultScene::GetInstance()->ML_map.worldSize * 2.f, -0.5f));
+						GO->scale.Set(MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 1);
+						GO->name = "DANGER2";
+						GO->topLeft = GO->position + Vector3(-MultScene::GetInstance()->ML_map.worldSize, MultScene::GetInstance()->ML_map.worldSize, 0);
+						GO->bottomRight = GO->position + Vector3(MultScene::GetInstance()->ML_map.worldSize, -MultScene::GetInstance()->ML_map.worldSize, 0);
+						//MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] = "2A";
+						if (trap2Counter == 2)
+						{
+							MultScene::GetInstance()->ML_map.map_data[trap2Tile.y][trap2Tile.x] = "0";
+							for (int i = 0; i < MultScene::GetInstance()->GO_List.size(); ++i)
+							{
+								if (MultScene::GetInstance()->GO_List[i]->currTile == trap2Tile)
+								{
+									delete MultScene::GetInstance()->GO_List[i];
+									MultScene::GetInstance()->GO_List.erase(MultScene::GetInstance()->GO_List.begin() + i);
+									trap2Counter = 1;
+								}
+							}
+						}
+						MultScene::GetInstance()->ML_map.map_data[currTile.y][currTile.x] = "2A";
+						trap2Tile.Set(currTile.x, currTile.y);
+						MultScene::GetInstance()->GO_List.push_back(GO);
+						trapCooldown = 60;
+						trap2Counter++;
+					}
 				}
 			}
 		}
