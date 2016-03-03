@@ -105,13 +105,16 @@ void cEnemy::Init(Vector3 position)
 	else
 	{
 		Vector3 temp;
+		string test;
 
 		do {
 			temp.x = Math::RandIntMinMax(map_min_x, map_max_x);
 			temp.y = Math::RandIntMinMax(map_min_y, map_max_y);
-		} while (MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "1");
+			test = pathFind(currTile.x, currTile.y, temp.x, temp.y);
+		} while (test == "");
 
 		patrolPath.WayPointTileList.push_back(temp);
+
 		this->smart = false;
 		stupidCount++;
 	}
@@ -219,13 +222,16 @@ void cEnemy::Update(double dt)
 				if (!smart)
 				{
 					Vector3 temp;
+					string test;
 
 					do {
 						temp.x = Math::RandIntMinMax(map_min_x, map_max_x);
 						temp.y = Math::RandIntMinMax(map_min_y, map_max_y);
-					} while (MainScene::GetInstance()->ML_map.map_data[temp.y][temp.x] == "1");
+						test = pathFind(currTile.x, currTile.y, temp.x, temp.y);
+					} while (test ==  "");
 
 					patrolPath.WayPointTileList.push_back(temp);
+
 				}
 
 				if (patrolPath.location >= patrolPath.WayPointTileList.size() && smart)
