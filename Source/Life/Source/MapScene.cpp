@@ -503,6 +503,7 @@ bool MapScene::InitLevel(int level)
 	if (MENU_STATE == MT_CREATE)
 	{
 		newMapName = "";
+		enemyCounter = 0;
 
 		ML_map.map_width = 30;
 		ML_map.map_height = 22;
@@ -570,6 +571,7 @@ bool MapScene::InitLevel(int level)
 	if (MENU_STATE == MT_EDIT)
 	{
 		MENU_STATE = MT_CREATE;
+		enemyCounter = 0;
 		newMapName = temp_total_string;
 		for (unsigned y = ML_map.map_height - 1; y > 0; --y)
 		{
@@ -634,6 +636,8 @@ bool MapScene::InitLevel(int level)
 						GO->enableCollision = false;
 						GO->mesh = P_meshArray[E_GEO_ENEMY_BORDER];
 						GO_List.push_back(GO);
+
+						enemyCounter++;
 					}
 				}
 			}
@@ -1881,7 +1885,7 @@ void MapScene::RenderButtons(void)
 			}
 			modelStack.PopMatrix();
 
-			std::string button_tipname = "editor_button.button_" + std::to_string(static_cast<unsigned long long>(i)) + ".";
+			std::string button_tipname = "editor_button.button_" + std::to_string(static_cast<unsigned long long>(m_B->ID)) + ".";
 
 			if (m_B->active == true)
 			{
